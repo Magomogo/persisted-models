@@ -2,6 +2,7 @@
 namespace Person;
 use Model\DataContainer\ArrayMap;
 use Mockery as m;
+use Test\ObjectMother\CreditCard;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -61,7 +62,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                 'lastName' => 'Doe',
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
-                'creditCard' => self::cc()
+                'creditCard' => CreditCard::datatransTesting()
             )
         );
     }
@@ -81,26 +82,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function personProperties(array $map)
     {
-        $properties = new Properties();
-        $properties->loadFrom(new ArrayMap($map));
-        return $properties;
-    }
-
-    private static function cc()
-    {
-        $properties = new \CreditCard\Properties();
-        $properties->loadFrom(
-            new ArrayMap(
-                array(
-                    'system' => 'VISA',
-                    'pan' => '9500000000000001',
-                    'validMonth' => '12',
-                    'validYear' => '2015',
-                    'ccv' => '234',
-                    'cardholderName' => 'John Doe'
-                )
-            )
-        );
-        return new \CreditCard\Model($properties);
+        $container = new ArrayMap($map);
+        return $container->loadProperties(new Properties());
     }
 }

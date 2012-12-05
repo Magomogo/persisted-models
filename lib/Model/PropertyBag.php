@@ -10,17 +10,6 @@ class PropertyBag implements \IteratorAggregate
         $this->nameToDataMap = $nameToDataMap;
     }
 
-    public function loadFrom(\Model\DataContainer\ContainerInterface $container)
-    {
-        $container->loadProperties($this);
-        return $this;
-    }
-
-    public function putIn(\Model\DataContainer\ContainerInterface $container)
-    {
-        return $container->saveProperties($this);
-    }
-
     public function __get($name)
     {
         return $this->prop($name)->value();

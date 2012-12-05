@@ -42,6 +42,6 @@ class Model
 
     public function putInto(ContainerInterface $container)
     {
-        return $this->properties->putIn($container);
+        return $container->saveProperties($this->properties);
     }
 }

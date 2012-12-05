@@ -41,7 +41,7 @@ class Db implements ContainerInterface
         foreach ($propertyBag as $name => $property) {
             $property->setValue($row[$name]);
         }
-        return $this;
+        return $propertyBag;
     }
 
     public function saveProperties(PropertyBag $propertyBag)

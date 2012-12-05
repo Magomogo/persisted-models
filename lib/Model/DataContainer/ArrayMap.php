@@ -25,7 +25,7 @@ class ArrayMap implements ContainerInterface
             $property->setValue(array_key_exists($name, $this->nameToValueMap) ? $this->nameToValueMap[$name] : null);
         }
 
-        return $this;
+        return $propertyBag;
     }
 
     public function saveProperties(PropertyBag $propertyBag)

@@ -14,20 +14,17 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function cc()
     {
-        $properties = new Properties;
-        $properties->loadFrom(
-            new ArrayMap(
-                array(
-                    'system' => 'VISA',
-                    'pan' => '9500000000000001',
-                    'validMonth' => '12',
-                    'validYear' => '2015',
-                    'ccv' => '234',
-                    'cardholderName' => 'John Doe'
-                )
+        $container = new ArrayMap(
+            array(
+                'system' => 'VISA',
+                'pan' => '9500000000000001',
+                'validMonth' => '12',
+                'validYear' => '2015',
+                'ccv' => '234',
+                'cardholderName' => 'John Doe'
             )
         );
 
-        return new Model($properties);
+        return new Model($container->loadProperties(new Properties()));
     }
 }
