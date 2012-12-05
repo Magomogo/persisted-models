@@ -21,7 +21,7 @@ class ContainerArray implements ContainerInterface
     {
         /** @var DataTypeInterface $property */
         foreach ($properties as $name => $property) {
-            $property->setValue($this->nameToValueMap[$name]);
+            $property->setValue(array_key_exists($name, $this->nameToValueMap) ? $this->nameToValueMap[$name] : null);
         }
 
         return $this;

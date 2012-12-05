@@ -27,4 +27,15 @@ class Model
     {
         $this->properties->phone = $newNumber;
     }
+
+    public function paymentInfo()
+    {
+        return $this->ableToPay() ?
+            $this->properties->creditCard->paymentSystem() . ', ' . $this->properties->creditCard->maskedPan() : null;
+    }
+
+    public function ableToPay()
+    {
+        return !is_null($this->properties->creditCard);
+    }
 }

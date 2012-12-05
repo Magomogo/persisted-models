@@ -4,11 +4,12 @@ use Model\PropertyBag;
 use Model\DataType\Text;
 
 /**
- * @property $title
- * @property $firstName
- * @property $lastName
- * @property $phone
- * @property $email
+ * @property string $title
+ * @property string $firstName
+ * @property string $lastName
+ * @property string $phone
+ * @property string $email
+ * @property \CreditCard\Model $creditCard
  */
 class Properties extends PropertyBag
 {
@@ -20,6 +21,7 @@ class Properties extends PropertyBag
             'lastName' => new Text(),
             'phone' => new Text(),
             'email' => new Text(),
+            'creditCard' => new Text(),
         );
     }
 

@@ -4,17 +4,19 @@ use Model\PropertyBag;
 use Model\DataType\Text;
 
 /**
- * @property Text $pan
- * @property Text $validMonth
- * @property Text $validYear
- * @property Text $ccv
- * @property Text $cardholderName
+ * @property string $system
+ * @property string $pan
+ * @property string $validMonth
+ * @property string $validYear
+ * @property string $ccv
+ * @property string $cardholderName
  */
 class Properties extends PropertyBag
 {
     private static function properties()
     {
         return array(
+            'system' => new Text(),
             'pan' => new Text(),
             'validMonth' => new Text(),
             'validYear' => new Text(),
