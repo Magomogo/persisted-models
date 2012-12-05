@@ -16,4 +16,14 @@ class Person
     {
         return $this->properties->title . ' ' . $this->properties->firstName . ' ' . $this->properties->lastName;
     }
+
+    public function contactInfo()
+    {
+        return 'Phone: ' . $this->properties->phone . "\n" . 'Email: ' . $this->properties->email;
+    }
+
+    public function phoneNumberIsChanged($newNumber)
+    {
+        $this->properties->phone = $newNumber;
+    }
 }
