@@ -28,7 +28,6 @@
         "phpunit/phpunit": "3.7.1",
         "hamcrest/hamcrest": "*"
     },
-    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Maxim Gnatenko",
