@@ -1,7 +1,7 @@
 <?php
 namespace Model;
 
-class PropertyBag implements \Iterator
+class PropertyBag implements \IteratorAggregate
 {
     private $nameToDataMap;
 
@@ -31,31 +31,9 @@ class PropertyBag implements \Iterator
         $this->prop($name)->setValue($value);
     }
 
-    public function current()
+    public function getIterator()
     {
-        return current($this->nameToDataMap);
-    }
-
-    public function next()
-    {
-        next($this->nameToDataMap);
-    }
-
-    public function key()
-    {
-        return key($this->nameToDataMap);
-    }
-
-    public function valid()
-    {
-        $key = key($this->nameToDataMap);
-        $var = ($key !== NULL && $key !== FALSE);
-        return $var;
-    }
-
-    public function rewind()
-    {
-        reset($this->nameToDataMap);
+        return new \ArrayIterator($this->nameToDataMap);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
