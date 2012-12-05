@@ -1,8 +1,8 @@
 <?php
-namespace Person\Container;
+namespace Model;
 use Model\DataType\DataTypeInterface;
 
-class Form implements \Model\ContainerInterface
+class ContainerArray implements ContainerInterface
 {
     /**
      * @var array
@@ -29,6 +29,8 @@ class Form implements \Model\ContainerInterface
 
     public function saveProperties(array $properties)
     {
+        $this->nameToValueMap = array();
+
         /** @var DataTypeInterface $property */
         foreach ($properties as $name => $property) {
             $this->nameToValueMap[$name] = $property->value();

@@ -1,5 +1,6 @@
 <?php
 namespace Person;
+use Model\PropertyBag;
 use Model\DataType\Text;
 
 /**
@@ -9,48 +10,8 @@ use Model\DataType\Text;
  * @property $phone
  * @property $email
  */
-class Properties
+class Properties extends PropertyBag
 {
-    private $properties;
-
-    public function __construct()
-    {
-        $this->properties = self::properties();
-    }
-
-    public function load(\Model\ContainerInterface $container)
-    {
-        $container->loadProperties($this->properties);
-        return $this;
-    }
-
-    public function save(\Model\ContainerInterface $container)
-    {
-        $container->saveProperties($this->properties);
-        return $this;
-    }
-
-    public function __get($name)
-    {
-        return $this->prop($name)->value();
-    }
-
-    public function __set($name, $value)
-    {
-        $this->prop($name)->setValue($value);
-    }
-
-//----------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * @param $name
-     * @return \Model\DataType\DataTypeInterface
-     */
-    private function prop($name)
-    {
-        return $this->properties[$name];
-    }
-
     private static function properties()
     {
         return array(
@@ -60,5 +21,10 @@ class Properties
             'phone' => new Text(),
             'email' => new Text(),
         );
+    }
+
+    public function __construct()
+    {
+        parent::__construct(self::properties());
     }
 }

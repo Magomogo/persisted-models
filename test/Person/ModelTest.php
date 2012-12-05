@@ -1,9 +1,14 @@
 <?php
 namespace Person;
-use Person\Container\Form;
+use Model\ContainerArray;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
+    public function testCreatingANewPerson()
+    {
+        $person = new Model(new Properties());
+    }
+
     public function testReadItsPropertiesToImplementSomeBusinessLogic()
     {
         $this->assertEquals(
@@ -26,7 +31,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     {
         $properties = new Properties();
         $properties->load(
-            new Form(
+            new ContainerArray(
                 array(
                     'title' => 'Mr.',
                     'firstName' => 'John',

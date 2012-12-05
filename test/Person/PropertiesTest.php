@@ -1,6 +1,7 @@
 <?php
 namespace Person;
-use Person\Container\Form;
+use Person\Properties;
+use Model\ContainerArray;
 use Mockery as m;
 
 class PropertiesTest extends \PHPUnit_Framework_TestCase
@@ -33,7 +34,7 @@ class PropertiesTest extends \PHPUnit_Framework_TestCase
 
     private static function container()
     {
-        return new Form(
+        return new ContainerArray(
             array(
                 'title' => 'Mr.',
                 'firstName' => 'John',
