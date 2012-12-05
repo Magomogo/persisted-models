@@ -1,0 +1,43 @@
+{
+    "name": "xiag/domain-model",
+    "description": "Finding a best way",
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "hamcrest/hamcrest",
+                "version": "0.3.0",
+                "source": {
+                    "url": "http://hamcrest.googlecode.com/svn/",
+                    "type": "svn",
+                    "reference": "tags/hamcrest-php-0.3.0/"
+                },
+                "autoload": {
+                    "psr-0": {
+                        "Hamcrest": "hamcrest/hamcrest"
+                    },
+                    "files": ["hamcrest.php"]
+                },
+                "include-path": ["hamcrest"]
+            }
+        }
+    ],
+    "require": {
+        "php":">=5.3.0",
+        "mockery/mockery": "0.7.2",
+        "phpunit/phpunit": "3.7.1",
+        "hamcrest/hamcrest": "*"
+    },
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Maxim Gnatenko",
+            "email": "maxim@xiag.ch"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "": ["lib/"]
+        }
+    }
+}
