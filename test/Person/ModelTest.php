@@ -1,6 +1,6 @@
 <?php
 namespace Person;
-use Person\DataSource\Form;
+use Person\Container\Form;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {

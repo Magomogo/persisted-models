@@ -1,30 +1,46 @@
 <?php
 namespace Person;
-use Person\DataSource\Db;
+use Person\Container\Form;
 use Mockery as m;
 
 class PropertiesTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCanBeLoadedFromDatabase()
+    public function testCanBeLoadedFromAContainer()
     {
         $properties = new Properties();
-        $properties->load(self::dbDataSource());
+        $properties->load(self::container());
 
         $this->assertEquals('John', $properties->firstName);
     }
 
+    public function testCanBeSaved()
+    {
+        $storage = m::mock('Model\\ContainerInterface');
+        $storage->shouldIgnoreMissing();
+        $storage->shouldReceive('saveProperty')->atLeast(5);
+
+        self::loadedProperties()->save($storage);
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
-    private static function dbDataSource()
+    private static function loadedProperties()
     {
-        $stm = m::mock(array('fetch' => array(
-            'title' => 'Mr.',
-            'firstName' => 'John',
-            'lastName' => 'Doe',
-            'email' => 'maxim@xiag.ch',
-            'phone' => '+7923-117-2801',
-        )));
-        $stm->shouldIgnoreMissing();
-        return new Db(88, m::mock(array('prepare' => $stm)));
+        $properties = new Properties();
+        $properties->load(self::container());
+        return $properties;
+    }
+
+    private static function container()
+    {
+        return new Form(
+            array(
+                'title' => 'Mr.',
+                'firstName' => 'John',
+                'lastName' => 'Doe',
+                'email' => 'maxim@xiag.ch',
+                'phone' => '+7923-117-2801',
+            )
+        );
     }
 }
