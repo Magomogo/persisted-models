@@ -1,4 +1,5 @@
 <?php
+use Person\DataSource\Form;
 
 class PersonTest extends PHPUnit_Framework_TestCase
 {
@@ -22,16 +23,18 @@ class PersonTest extends PHPUnit_Framework_TestCase
 
     private static function person()
     {
-        return new Person(
-            new Person\Properties(
+        $properties = new \Person\Properties();
+        $properties->load(
+            new Form(
                 array(
                     'title' => 'Mr.',
-                    'first_name' => 'John',
-                    'last_name' => 'Doe',
+                    'firstName' => 'John',
+                    'lastName' => 'Doe',
                     'email' => 'maxim@xiag.ch',
                     'phone' => '+7923-117-2801',
                 )
             )
         );
+        return new Person($properties);
     }
 }
