@@ -1,5 +1,5 @@
 <?php
-namespace Model;
+namespace Model\DataContainer;
 
 interface ContainerInterface
 {

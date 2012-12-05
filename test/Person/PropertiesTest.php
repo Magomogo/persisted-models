@@ -1,7 +1,7 @@
 <?php
 namespace Person;
 use Person\Properties;
-use Model\ContainerArray;
+use Model\DataContainer\ArrayMap;
 use Mockery as m;
 
 class PropertiesTest extends \PHPUnit_Framework_TestCase
@@ -16,7 +16,7 @@ class PropertiesTest extends \PHPUnit_Framework_TestCase
 
     public function testCanBeSaved()
     {
-        $storage = m::mock('Model\\ContainerInterface');
+        $storage = m::mock('Model\\DataContainer\\ContainerInterface');
         $storage->shouldIgnoreMissing();
         $storage->shouldReceive('saveProperties')->with(typeOf('array'))->once();
 
@@ -34,7 +34,7 @@ class PropertiesTest extends \PHPUnit_Framework_TestCase
 
     private static function container()
     {
-        return new ContainerArray(
+        return new ArrayMap(
             array(
                 'title' => 'Mr.',
                 'firstName' => 'John',

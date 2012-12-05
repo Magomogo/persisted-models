@@ -10,13 +10,13 @@ class PropertyBag
         $this->properties = $properties;
     }
 
-    public function load(\Model\ContainerInterface $container)
+    public function load(\Model\DataContainer\ContainerInterface $container)
     {
         $container->loadProperties($this->properties);
         return $this;
     }
 
-    public function save(\Model\ContainerInterface $container)
+    public function save(\Model\DataContainer\ContainerInterface $container)
     {
         return $container->saveProperties($this->properties);
     }

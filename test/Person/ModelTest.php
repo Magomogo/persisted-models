@@ -1,6 +1,6 @@
 <?php
 namespace Person;
-use Model\ContainerArray;
+use Model\DataContainer\ArrayMap;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -68,7 +68,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     private static function personProperties(array $map)
     {
         $properties = new Properties();
-        $properties->load(new ContainerArray($map));
+        $properties->load(new ArrayMap($map));
         return $properties;
     }
 
@@ -76,7 +76,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     {
         $properties = new \CreditCard\Properties();
         $properties->load(
-            new ContainerArray(
+            new ArrayMap(
                 array(
                     'system' => 'VISA',
                     'pan' => '9500000000000001',

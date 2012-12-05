@@ -1,8 +1,8 @@
 <?php
-namespace Model;
+namespace Model\DataContainer;
 use Model\DataType\DataTypeInterface;
 
-class ContainerArray implements ContainerInterface
+class ArrayMap implements ContainerInterface
 {
     /**
      * @var array

@@ -1,5 +1,6 @@
 <?php
 namespace CreditCard;
+use \Model\DataContainer\ArrayMap;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +16,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     {
         $properties = new Properties;
         $properties->load(
-            new \Model\ContainerArray(
+            new ArrayMap(
                 array(
                     'system' => 'VISA',
                     'pan' => '9500000000000001',
