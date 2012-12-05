@@ -1,6 +1,7 @@
 <?php
 namespace Model\DataContainer;
 use Mockery as m;
+use Test\ObjectMother\Person;
 
 class DbTest extends \PHPUnit_Framework_TestCase
 {
@@ -9,8 +10,17 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Model\\DataContainer\\ContainerInterface', self::container());
     }
 
-    private static function container()
+    public function testFollowsTableNamingConvention()
     {
-        return new Db('Person\\Model', m::mock());
+        $db = m::mock();
+        $db->shouldReceive('insert')->with('person_model', typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('creditcard_model', typeOf('array'))->once();
+        $db->shouldIgnoreMissing();
+        Person::maxim()->putInto(self::container($db));
+    }
+
+    private static function container($db = null)
+    {
+        return new Db('Person\\Model', $db ?: m::mock());
     }
 }

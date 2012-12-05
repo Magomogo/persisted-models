@@ -1,5 +1,6 @@
 <?php
 namespace CreditCard;
+use Model\DataContainer\ContainerInterface;
 
 class Model
 {
@@ -28,4 +29,8 @@ class Model
 
     }
 
+    public function putInto(ContainerInterface $container)
+    {
+        return $this->properties->putIn($container);
+    }
 }

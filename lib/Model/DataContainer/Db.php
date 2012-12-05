@@ -2,6 +2,7 @@
 namespace Model\DataContainer;
 use Model\DataType\DataTypeInterface;
 use Doctrine\DBAL\Connection;
+use Model\PropertyBag;
 
 class Db implements ContainerInterface
 {
@@ -32,29 +33,41 @@ class Db implements ContainerInterface
         $this->db = $db;
     }
 
-    public function loadProperties(array $properties)
+    public function loadProperties(PropertyBag $propertyBag)
     {
         $row = $this->begin();
 
         /** @var DataTypeInterface $property */
-        foreach ($properties as $name => $property) {
+        foreach ($propertyBag as $name => $property) {
             $property->setValue($row[$name]);
         }
         return $this;
     }
 
-    public function saveProperties(array $properties)
+    public function saveProperties(PropertyBag $propertyBag)
     {
         $row = array();
         /** @var DataTypeInterface $property */
-        foreach ($properties as $name => $property) {
-            $row[$name] = $property->value();
+        foreach ($propertyBag as $name => $property) {
+            $row[$name] = $this->dbValue($property);
         }
 
         return $this->commit($row);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+    private function dbValue(DataTypeInterface $property)
+    {
+        if (is_scalar($property->value())) {
+            return $property->value();
+        } elseif (method_exists($property->value(), 'putInto')) {
+            $container = new self(get_class($property->value()), $this->db, null);
+            return $property->value()->putInto($container);
+        } else {
+            return null;
+        }
+    }
 
     private function begin()
     {

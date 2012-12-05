@@ -1,6 +1,7 @@
 <?php
 namespace Model\DataContainer;
 use Model\DataType\DataTypeInterface;
+use Model\PropertyBag;
 
 class ArrayMap implements ContainerInterface
 {
@@ -17,22 +18,22 @@ class ArrayMap implements ContainerInterface
         $this->nameToValueMap = $nameToValueMap;
     }
 
-    public function loadProperties(array $properties)
+    public function loadProperties(PropertyBag $propertyBag)
     {
         /** @var DataTypeInterface $property */
-        foreach ($properties as $name => $property) {
+        foreach ($propertyBag as $name => $property) {
             $property->setValue(array_key_exists($name, $this->nameToValueMap) ? $this->nameToValueMap[$name] : null);
         }
 
         return $this;
     }
 
-    public function saveProperties(array $properties)
+    public function saveProperties(PropertyBag $propertyBag)
     {
         $this->nameToValueMap = array();
 
         /** @var DataTypeInterface $property */
-        foreach ($properties as $name => $property) {
+        foreach ($propertyBag as $name => $property) {
             $this->nameToValueMap[$name] = $property->value();
         }
 

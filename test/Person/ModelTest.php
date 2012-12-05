@@ -1,6 +1,7 @@
 <?php
 namespace Person;
 use Model\DataContainer\ArrayMap;
+use Mockery as m;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,11 +37,24 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(self::personWithoutCreditCard()->ableToPay());
     }
 
+    public function testCanBeSavedIntoADataContainer()
+    {
+        $container = m::mock('Model\\DataContainer\\ContainerInterface');
+        $container->shouldReceive('saveProperties')->once();
+
+        self::person()->putInto($container);
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function person()
     {
-        return new Model(self::personProperties(
+        return new Model(self::johnDoeProperties());
+    }
+
+    private static function johnDoeProperties()
+    {
+        return self::personProperties(
             array(
                 'title' => 'Mr.',
                 'firstName' => 'John',
@@ -49,7 +63,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                 'phone' => '+7923-117-2801',
                 'creditCard' => self::cc()
             )
-        ));
+        );
     }
 
     private static function personWithoutCreditCard()
@@ -68,14 +82,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     private static function personProperties(array $map)
     {
         $properties = new Properties();
-        $properties->load(new ArrayMap($map));
+        $properties->loadFrom(new ArrayMap($map));
         return $properties;
     }
 
     private static function cc()
     {
         $properties = new \CreditCard\Properties();
-        $properties->load(
+        $properties->loadFrom(
             new ArrayMap(
                 array(
                     'system' => 'VISA',

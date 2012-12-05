@@ -1,5 +1,6 @@
 <?php
 namespace Person;
+use Model\DataContainer\ContainerInterface;
 
 class Model
 {
@@ -37,5 +38,10 @@ class Model
     public function ableToPay()
     {
         return !is_null($this->properties->creditCard);
+    }
+
+    public function putInto(ContainerInterface $container)
+    {
+        return $this->properties->putIn($container);
     }
 }

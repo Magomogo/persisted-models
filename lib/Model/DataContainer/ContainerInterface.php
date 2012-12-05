@@ -1,17 +1,18 @@
 <?php
 namespace Model\DataContainer;
+use Model\PropertyBag;
 
 interface ContainerInterface
 {
     /**
-     * @param array $properties name to Model\DataType\DataTypeInterface map
+     * @param \Model\PropertyBag $propertyBag
      * @return self
      */
-    public function loadProperties(array $properties);
+    public function loadProperties(PropertyBag $propertyBag);
 
     /**
-     * @param array $properties name to Model\DataType\DataTypeInterface map
+     * @param \Model\PropertyBag $propertyBag
      * @return array unique key
      */
-    public function saveProperties(array $properties);
+    public function saveProperties(PropertyBag $propertyBag);
 }

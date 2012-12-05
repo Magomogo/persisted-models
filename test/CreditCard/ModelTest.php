@@ -15,7 +15,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     private static function cc()
     {
         $properties = new Properties;
-        $properties->load(
+        $properties->loadFrom(
             new ArrayMap(
                 array(
                     'system' => 'VISA',

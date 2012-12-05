@@ -1,24 +1,24 @@
 <?php
 namespace Model;
 
-class PropertyBag
+class PropertyBag implements \Iterator
 {
-    private $properties;
+    private $nameToDataMap;
 
-    public function __construct(array $properties)
+    public function __construct(array $nameToDataMap)
     {
-        $this->properties = $properties;
+        $this->nameToDataMap = $nameToDataMap;
     }
 
-    public function load(\Model\DataContainer\ContainerInterface $container)
+    public function loadFrom(\Model\DataContainer\ContainerInterface $container)
     {
-        $container->loadProperties($this->properties);
+        $container->loadProperties($this);
         return $this;
     }
 
-    public function save(\Model\DataContainer\ContainerInterface $container)
+    public function putIn(\Model\DataContainer\ContainerInterface $container)
     {
-        return $container->saveProperties($this->properties);
+        return $container->saveProperties($this);
     }
 
     public function __get($name)
@@ -31,6 +31,33 @@ class PropertyBag
         $this->prop($name)->setValue($value);
     }
 
+    public function current()
+    {
+        return current($this->nameToDataMap);
+    }
+
+    public function next()
+    {
+        next($this->nameToDataMap);
+    }
+
+    public function key()
+    {
+        return key($this->nameToDataMap);
+    }
+
+    public function valid()
+    {
+        $key = key($this->nameToDataMap);
+        $var = ($key !== NULL && $key !== FALSE);
+        return $var;
+    }
+
+    public function rewind()
+    {
+        reset($this->nameToDataMap);
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -39,6 +66,7 @@ class PropertyBag
      */
     private function prop($name)
     {
-        return $this->properties[$name];
+        return $this->nameToDataMap[$name];
     }
+
 }

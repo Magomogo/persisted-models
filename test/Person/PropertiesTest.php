@@ -9,7 +9,7 @@ class PropertiesTest extends \PHPUnit_Framework_TestCase
     public function testCanBeLoadedFromAContainer()
     {
         $properties = new Properties();
-        $properties->load(self::container());
+        $properties->loadFrom(self::container());
 
         $this->assertEquals('John', $properties->firstName);
     }
@@ -18,9 +18,9 @@ class PropertiesTest extends \PHPUnit_Framework_TestCase
     {
         $storage = m::mock('Model\\DataContainer\\ContainerInterface');
         $storage->shouldIgnoreMissing();
-        $storage->shouldReceive('saveProperties')->with(typeOf('array'))->once();
+        $storage->shouldReceive('saveProperties')->once();
 
-        self::loadedProperties()->save($storage);
+        self::loadedProperties()->putIn($storage);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ class PropertiesTest extends \PHPUnit_Framework_TestCase
     private static function loadedProperties()
     {
         $properties = new Properties();
-        $properties->load(self::container());
+        $properties->loadFrom(self::container());
         return $properties;
     }
 
