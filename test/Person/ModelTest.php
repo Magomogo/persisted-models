@@ -1,7 +1,8 @@
 <?php
+namespace Person;
 use Person\DataSource\Form;
 
-class PersonTest extends PHPUnit_Framework_TestCase
+class ModelTest extends \PHPUnit_Framework_TestCase
 {
     public function testReadItsPropertiesToImplementSomeBusinessLogic()
     {
@@ -23,7 +24,7 @@ class PersonTest extends PHPUnit_Framework_TestCase
 
     private static function person()
     {
-        $properties = new \Person\Properties();
+        $properties = new Properties();
         $properties->load(
             new Form(
                 array(
@@ -35,6 +36,6 @@ class PersonTest extends PHPUnit_Framework_TestCase
                 )
             )
         );
-        return new Person($properties);
+        return new Model($properties);
     }
 }

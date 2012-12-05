@@ -1,13 +1,14 @@
 <?php
+namespace Person;
 
-class Person
+class Model
 {
     /**
-     * @var Person\Properties
+     * @var Properties
      */
     private $properties;
 
-    public function __construct(Person\Properties $properties)
+    public function __construct(Properties $properties)
     {
         $this->properties = $properties;
     }
