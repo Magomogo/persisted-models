@@ -1,31 +1,17 @@
 <?php
 namespace Model;
-use Model\DataType\DataTypeInterface;
 
 interface ContainerInterface
 {
     /**
-     * @param string $uniqueKey
+     * @param array $properties name to Model\DataType\DataTypeInterface map
      * @return self
      */
-    public function begin($uniqueKey = null);
+    public function loadProperties(array $properties);
 
     /**
-     * @param $name
-     * @param DataTypeInterface $property
-     * @return self
+     * @param array $properties name to Model\DataType\DataTypeInterface map
+     * @return array unique key
      */
-    public function loadProperty($name, DataTypeInterface $property);
-
-    /**
-     * @param $name
-     * @param DataTypeInterface $property
-     * @return self
-     */
-    public function saveProperty($name, DataTypeInterface $property);
-
-    /**
-     * @return string unique key
-     */
-    public function commit();
+    public function saveProperties(array $properties);
 }

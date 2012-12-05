@@ -11,49 +11,45 @@ use Model\DataType\Text;
  */
 class Properties
 {
-    /**
-     * @var string
-     */
-    private $uniqueKey;
-
     private $properties;
 
-    public function __construct($uniqueKey = null)
+    public function __construct()
     {
-        $this->uniqueKey = $uniqueKey;
         $this->properties = self::properties();
     }
 
     public function load(\Model\ContainerInterface $container)
     {
-        $container->begin($this->uniqueKey);
-        foreach ($this->properties as $name => $property) {
-            $container->loadProperty($name, $property);
-        }
+        $container->loadProperties($this->properties);
         return $this;
     }
 
     public function save(\Model\ContainerInterface $container)
     {
-        $container->begin($this->uniqueKey);
-        foreach ($this->properties as $name => $property) {
-            $container->saveProperty($name, $property);
-        }
-        $this->uniqueKey = $container->commit();
+        $container->saveProperties($this->properties);
         return $this;
     }
 
     public function __get($name)
     {
-        return $this->properties[$name]->value();
+        return $this->prop($name)->value();
     }
 
     public function __set($name, $value)
     {
-        $this->properties[$name]->setValue($value);
+        $this->prop($name)->setValue($value);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @param $name
+     * @return \Model\DataType\DataTypeInterface
+     */
+    private function prop($name)
+    {
+        return $this->properties[$name];
+    }
 
     private static function properties()
     {

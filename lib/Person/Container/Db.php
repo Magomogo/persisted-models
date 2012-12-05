@@ -11,57 +11,61 @@ class Db implements \Model\ContainerInterface
     private $db;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $uniqueKey;
-
-    /**
-     * @var array
-     */
-    private $row = array();
+    private $id;
 
     /**
      * @param Connection $db
+     * @param $id
      */
-    public function __construct($db)
+    public function __construct($db, $id = null)
     {
+        $this->id = $id;
         $this->db = $db;
     }
 
-    /**
-     * @param string $uniqueKey
-     * @return self
-     */
-    public function begin($uniqueKey = null)
+    public function loadProperties(array $properties)
     {
-        if (!is_null($uniqueKey)) {
-            $this->row = $this->db->fetchAssoc('SELECT * FROM person WHERE id=?', array($uniqueKey));
+        $row = $this->begin();
+
+        /** @var DataTypeInterface $property */
+        foreach ($properties as $name => $property) {
+            $property->setValue($row[$name]);
+        }
+        return $this;
+    }
+
+    public function saveProperties(array $properties)
+    {
+        $row = array();
+        /** @var DataTypeInterface $property */
+        foreach ($properties as $name => $property) {
+            $row[$name] = $property->value();
+        }
+
+        return $this->commit($row);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+    private function begin()
+    {
+        if (!is_null($this->id)) {
+            return $this->db->fetchAssoc('SELECT * FROM person WHERE id=?', array($this->id));
+        }
+        return array();
+    }
+
+    private function commit(array $row)
+    {
+        if (is_null($this->id)) {
+            $this->db->insert('person', $row);
+            $this->id = $this->db->lastInsertId();
         } else {
-            $this->row = array();
+            $this->db->update('person', $row, array('id' => $this->id));
         }
-        $this->uniqueKey = $uniqueKey;
-        return $this;
+        return $this->id;
     }
 
-    public function loadProperty($name, DataTypeInterface $property)
-    {
-        $property->setValue($this->row[$name]);
-        return $this;
-    }
-
-    public function saveProperty($name, DataTypeInterface $property)
-    {
-        $this->row[$name] = $property->value();
-        return $this;
-    }
-
-    public function commit()
-    {
-        if (is_null($this->uniqueKey)) {
-            $this->db->insert('person', $this->row);
-            $this->uniqueKey = $this->db->lastInsertId();
-        }
-        $this->db->update('person', $this->row, array('id' => $this->uniqueKey));
-        return $this->uniqueKey;
-    }
 }

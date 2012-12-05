@@ -17,7 +17,7 @@ class PropertiesTest extends \PHPUnit_Framework_TestCase
     {
         $storage = m::mock('Model\\ContainerInterface');
         $storage->shouldIgnoreMissing();
-        $storage->shouldReceive('saveProperty')->atLeast(5);
+        $storage->shouldReceive('saveProperties')->with(typeOf('array'))->once();
 
         self::loadedProperties()->save($storage);
     }

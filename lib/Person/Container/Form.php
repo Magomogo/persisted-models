@@ -17,42 +17,23 @@ class Form implements \Model\ContainerInterface
         $this->nameToValueMap = $nameToValueMap;
     }
 
-    /**
-     * @param string $uniqueKey
-     * @return self
-     */
-    public function begin($uniqueKey = null)
+    public function loadProperties(array $properties)
     {
+        /** @var DataTypeInterface $property */
+        foreach ($properties as $name => $property) {
+            $property->setValue($this->nameToValueMap[$name]);
+        }
+
         return $this;
     }
 
-    /**
-     * @param $name
-     * @param DataTypeInterface $property
-     * @return self
-     */
-    public function loadProperty($name, DataTypeInterface $property)
+    public function saveProperties(array $properties)
     {
-        $property->setValue($this->nameToValueMap[$name]);
-        return $this;
-    }
+        /** @var DataTypeInterface $property */
+        foreach ($properties as $name => $property) {
+            $this->nameToValueMap[$name] = $property->value();
+        }
 
-    /**
-     * @param $name
-     * @param DataTypeInterface $property
-     * @return self
-     */
-    public function saveProperty($name, DataTypeInterface $property)
-    {
-        $this->nameToValueMap[$name] = $property->value();
-        return $this;
-    }
-
-    /**
-     * @return string unique key
-     */
-    public function commit()
-    {
         return null;
     }
 }
