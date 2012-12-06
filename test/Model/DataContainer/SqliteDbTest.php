@@ -21,8 +21,8 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testFixtureHasCorrectTablesCreated()
     {
-        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM person_model"));
-        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM creditCard_model"));
+        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM person_properties"));
+        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM creditCard_properties"));
     }
 
     public function testSavesCreditCardIntoDatabase()
@@ -40,7 +40,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'ccv' => '234',
                 'cardholderName' => 'Maxim Gnatenko'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM creditCard_model")
+            $this->fixture->db->fetchAssoc("SELECT * FROM creditCard_properties")
         );
     }
 
@@ -59,7 +59,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM person_model")
+            $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
         );
 
         $this->assertEquals(
@@ -72,7 +72,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'ccv' => '234',
                 'cardholderName' => 'Maxim Gnatenko'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM creditCard_model")
+            $this->fixture->db->fetchAssoc("SELECT * FROM creditCard_properties")
         );
 
     }
@@ -99,7 +99,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private function containerFor(ContainerReadyInterface $model)
     {
-        return new Db(get_class($model), $this->fixture->db);
+        return new Db($this->fixture->db);
     }
 
     private function putMaximUntoContainer()
@@ -110,7 +110,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private function loadPersonFromContainer($id)
     {
-        $container = new Db('Person\\Model', $this->fixture->db);
+        $container = new Db($this->fixture->db);
         return new \Person\Model(
             $container->loadProperties(new \Person\Properties($id))
         );

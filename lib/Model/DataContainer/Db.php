@@ -7,28 +7,21 @@ use Model\ContainerReadyInterface;
 class Db implements ContainerInterface
 {
     /**
-     * @var string
-     */
-    private $table;
-
-    /**
      * @var Connection
      */
     private $db;
 
     /**
-     * @param string $modelClassName
      * @param Connection $db
      */
-    public function __construct($modelClassName, $db)
+    public function __construct($db)
     {
-        $this->table = self::convertToTableName($modelClassName);
         $this->db = $db;
     }
 
     public function loadProperties(PropertyBag $propertyBag)
     {
-        $row = $this->begin($propertyBag->id);
+        $row = $this->begin($propertyBag->id, self::propertiesDbTable($propertyBag));
 
         foreach ($propertyBag as $name => &$property) {
             $property = $this->fromDbValue($property, $row[$name]);
@@ -43,7 +36,7 @@ class Db implements ContainerInterface
         foreach ($propertyBag as $name => $property) {
             $row[$name] = $this->toDbValue($property);
         }
-        $id = $this->commit($row, $propertyBag->id);
+        $id = $this->commit($row, $propertyBag->id, self::propertiesDbTable($propertyBag));
         $propertyBag->persisted($id);
 
         return $propertyBag;
@@ -54,7 +47,7 @@ class Db implements ContainerInterface
     private function fromDbValue($property, $column)
     {
         if ($property instanceof ContainerReadyInterface) {
-            return $property->loadFrom($this->dataContainer($property), $column);
+            return $property->loadFrom($this, $column);
         }
         return $column;
     }
@@ -64,38 +57,33 @@ class Db implements ContainerInterface
         if (is_scalar($property)) {
             return $property;
         } elseif ($property instanceof ContainerReadyInterface) {
-            return $property->putIn($this->dataContainer($property));
+            return $property->putIn($this);
         } else {
             return null;
         }
     }
 
-    private function begin($id)
+    private function begin($id, $table)
     {
         if (!is_null($id)) {
-            return $this->db->fetchAssoc("SELECT * FROM {$this->table} WHERE id=?", array($id));
+            return $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($id));
         }
         return array();
     }
 
-    private function commit(array $row, $id)
+    private function commit(array $row, $id, $table)
     {
         if (is_null($id)) {
-            $this->db->insert($this->table, $row);
+            $this->db->insert($table, $row);
             $id = $this->db->lastInsertId();
         } else {
-            $this->db->update($this->table, $row, array('id' => $id));
+            $this->db->update($table, $row, array('id' => $id));
         }
         return $id;
     }
 
-    private static function convertToTableName($modelClassName)
+    private static function propertiesDbTable(PropertyBag $propertyBag)
     {
-        return strtolower(str_replace('\\', '_', $modelClassName));
-    }
-
-    private function dataContainer(ContainerReadyInterface $model)
-    {
-        return new self(get_class($model), $this->db);
+        return strtolower(str_replace('\\', '_', get_class($propertyBag)));
     }
 }

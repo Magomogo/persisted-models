@@ -35,7 +35,7 @@ class DbFixture
     {
         $db->exec(<<<SQL
 
-CREATE table creditcard_model (
+CREATE table creditcard_properties (
   id INTEGER CONSTRAINT pk_creditcard PRIMARY KEY AUTOINCREMENT,
   system TEXT,
   pan TEXT,
@@ -45,7 +45,7 @@ CREATE table creditcard_model (
   cardholderName TEXT
 );
 
-CREATE table person_model (
+CREATE table person_properties (
   id INTEGER CONSTRAINT pk_person PRIMARY KEY AUTOINCREMENT,
   title TEXT,
   firstName TEXT,
