@@ -32,7 +32,7 @@ class Model implements ContainerReadyInterface
 
     /**
      * @param \Model\DataContainer\ContainerInterface $container
-     * @return string
+     * @return string unique identifier
      */
     public function putIn(ContainerInterface $container)
     {

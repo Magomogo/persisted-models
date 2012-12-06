@@ -6,12 +6,12 @@ use Company\Model;
 
 class Company
 {
-    public static function xiag()
+    public static function xiag($id = null)
     {
         $container = new ArrayMap(array(
             'name' => 'XIAG',
         ));
 
-        return new Model($container->loadProperties(new Properties()));
+        return new Model($container->loadProperties(new Properties($id)));
     }
 }

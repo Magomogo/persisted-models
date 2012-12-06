@@ -35,6 +35,11 @@ class DbFixture
     {
         $db->exec(<<<SQL
 
+CREATE table company_properties (
+  id INTEGER CONSTRAINT pk_company PRIMARY KEY AUTOINCREMENT,
+  name TEXT
+);
+
 CREATE table creditcard_properties (
   id INTEGER CONSTRAINT pk_creditcard PRIMARY KEY AUTOINCREMENT,
   system TEXT,
@@ -52,7 +57,8 @@ CREATE table person_properties (
   lastName TEXT,
   email TEXT,
   phone TEXT,
-  creditCard INTEGER CONSTRAINT fk_person_to_cc REFERENCES creditcard_model (id) ON DELETE SET NULL ON UPDATE CASCADE
+  creditCard INTEGER CONSTRAINT fk_person_to_cc REFERENCES creditcard_properties (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  company INTEGER CONSTRAINT fk_person_to_company REFERENCES company_properties (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 SQL
