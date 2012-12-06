@@ -24,7 +24,7 @@ class Db implements ContainerInterface
         $row = $this->begin($propertyBag->id, self::propertiesDbTable($propertyBag));
 
         foreach ($propertyBag as $name => &$property) {
-            $property = $this->fromDbValue($property, $row[$name]);
+            $property = $this->fromDbValue($property, array_key_exists($name, $row) ? $row[$name] : null);
         }
 
         return $propertyBag;

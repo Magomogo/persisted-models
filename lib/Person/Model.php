@@ -2,6 +2,9 @@
 namespace Person;
 use Model\DataContainer\ContainerInterface;
 use Model\ContainerReadyInterface;
+use Company;
+use Employee;
+use Doctrine\DBAL\Connection;
 
 class Model implements ContainerReadyInterface
 {
@@ -39,6 +42,28 @@ class Model implements ContainerReadyInterface
     public function ableToPay()
     {
         return !is_null($this->properties->creditCard);
+    }
+
+    /**
+     * @param \Company\Model $company
+     * @param \Doctrine\DBAL\Connection $db
+     * @return \Employee\Model|null
+     */
+    public function hiredBy(Company\Model $company, Connection $db)
+    {
+        $count = $db->executeUpdate(
+            'UPDATE person_properties SET company_id = :companyId WHERE id = :employeeId',
+            array('employeeId' => $this->id(), 'companyId' => $company->id())
+        );
+        if ($count) {
+            return new Employee\Model($company, $this->properties);
+        }
+        return null;
+    }
+
+    public function id()
+    {
+        return $this->properties->id;
     }
 
     public function putIn(ContainerInterface $container)

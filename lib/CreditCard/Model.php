@@ -30,10 +30,11 @@ class Model implements ContainerReadyInterface
 
     }
 
-    /**
-     * @param \Model\DataContainer\ContainerInterface $container
-     * @return string unique identifier
-     */
+    public function id()
+    {
+        return $this->properties->id;
+    }
+
     public function putIn(ContainerInterface $container)
     {
         return $container->saveProperties($this->properties)->id;

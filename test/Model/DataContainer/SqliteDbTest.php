@@ -57,7 +57,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company' => null
+                'company_id' => null
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
         );
@@ -96,13 +96,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testWritesEmployeePropertiesIntoPersonPropertiesTable()
     {
-        $this->markTestIncomplete();
-        
-        $company = Company::xiag();
-        $company->putIn($this->sqliteContainer());
-
-        $employee = new \Employee\Model($company, Person::maximProperties());
-        $employee->putIn($this->sqliteContainer());
+        $this->putEmployeeIn($this->sqliteContainer());
 
         $this->assertEquals(
             array(
@@ -113,13 +107,37 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company' => '1'
+                'company_id' => '1'
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
         );
     }
 
+    public function testReadsEmployeeModel()
+    {
+        /** @var \Company\Model $company */
+        /** @var \Employee\Model $employee */
+        list($company, $employee) = $this->putEmployeeIn($this->sqliteContainer());
+
+        $loadedEmployee = $company->getEmployeeById($employee->id(), $this->fixture->db);
+
+        $this->assertEquals($employee, $loadedEmployee);
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
+
+    private function putEmployeeIn($container)
+    {
+        $company = Company::xiag();
+        $company->putIn($container);
+
+        $person = Person::maxim();
+        $person->putIn($container);
+
+        $employee = $person->hiredBy($company, $this->fixture->db);
+
+        return array($company, $employee);
+    }
 
     private function sqliteContainer()
     {

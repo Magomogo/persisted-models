@@ -5,6 +5,11 @@ use Model\DataContainer\ContainerInterface;
 interface ContainerReadyInterface
 {
     /**
+     * @return string unique identifier
+     */
+    public function id();
+
+    /**
      * @param DataContainer\ContainerInterface $container
      * @param string $id
      * @return self
