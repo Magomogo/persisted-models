@@ -12,7 +12,7 @@ interface ContainerInterface
 
     /**
      * @param \Model\PropertyBag $propertyBag
-     * @return array unique key
+     * @return \Model\PropertyBag
      */
     public function saveProperties(PropertyBag $propertyBag);
 }

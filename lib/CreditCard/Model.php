@@ -1,8 +1,9 @@
 <?php
 namespace CreditCard;
 use Model\DataContainer\ContainerInterface;
+use Model\ContainerReadyInterface;
 
-class Model
+class Model implements ContainerReadyInterface
 {
     /**
      * @var Properties
@@ -29,8 +30,13 @@ class Model
 
     }
 
-    public function putInto(ContainerInterface $container)
+    /**
+     * @param \Model\DataContainer\ContainerInterface $container
+     * @return string
+     */
+    public function putIn(ContainerInterface $container)
     {
-        return $container->saveProperties($this->properties);
+        return $container->saveProperties($this->properties)->id;
     }
+
 }

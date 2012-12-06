@@ -3,6 +3,7 @@ namespace Model\DataContainer;
 use Model\DataType\DataTypeInterface;
 use Doctrine\DBAL\Connection;
 use Model\PropertyBag;
+use Model\ContainerReadyInterface;
 
 class Db implements ContainerInterface
 {
@@ -17,30 +18,24 @@ class Db implements ContainerInterface
     private $db;
 
     /**
-     * @var string|null
-     */
-    private $id;
-
-    /**
      * @param string $modelClassName
      * @param Connection $db
-     * @param $id
      */
-    public function __construct($modelClassName, $db, $id = null)
+    public function __construct($modelClassName, $db)
     {
         $this->table = self::convertToTableName($modelClassName);
-        $this->id = $id;
         $this->db = $db;
     }
 
     public function loadProperties(PropertyBag $propertyBag)
     {
-        $row = $this->begin();
+        $row = $this->begin($propertyBag->id);
 
         /** @var DataTypeInterface $property */
         foreach ($propertyBag as $name => $property) {
             $property->setValue($row[$name]);
         }
+
         return $propertyBag;
     }
 
@@ -51,8 +46,10 @@ class Db implements ContainerInterface
         foreach ($propertyBag as $name => $property) {
             $row[$name] = $this->dbValue($property);
         }
+        $id = $this->commit($row, $propertyBag->id);
+        $propertyBag->persisted($id);
 
-        return $this->commit($row);
+        return $propertyBag;
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -61,35 +58,40 @@ class Db implements ContainerInterface
     {
         if (is_scalar($property->value())) {
             return $property->value();
-        } elseif (method_exists($property->value(), 'putInto')) {
-            $container = new self(get_class($property->value()), $this->db, null);
-            return $property->value()->putInto($container);
+        } elseif ($property->value() instanceof ContainerReadyInterface) {
+            return $this->putIntoItsDataContainer($property->value());
         } else {
             return null;
         }
     }
 
-    private function begin()
+    private function begin($id)
     {
-        if (!is_null($this->id)) {
-            return $this->db->fetchAssoc("SELECT * FROM {$this->table} WHERE id=?", array($this->id));
+        if (!is_null($id)) {
+            return $this->db->fetchAssoc("SELECT * FROM {$this->table} WHERE id=?", array($id));
         }
         return array();
     }
 
-    private function commit(array $row)
+    private function commit(array $row, $id)
     {
-        if (is_null($this->id)) {
+        if (is_null($id)) {
             $this->db->insert($this->table, $row);
-            $this->id = $this->db->lastInsertId();
+            $id = $this->db->lastInsertId();
         } else {
-            $this->db->update($this->table, $row, array('id' => $this->id));
+            $this->db->update($this->table, $row, array('id' => $id));
         }
-        return $this->id;
+        return $id;
     }
 
     private static function convertToTableName($modelClassName)
     {
         return strtolower(str_replace('\\', '_', $modelClassName));
+    }
+
+    private function putIntoItsDataContainer(ContainerReadyInterface $model)
+    {
+        $container = new self(get_class($model), $this->db);
+        return $model->putIn($container);
     }
 }

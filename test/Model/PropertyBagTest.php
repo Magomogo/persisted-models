@@ -6,14 +6,9 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 {
     public function testIsIterable()
     {
-        $bag = new PropertyBag(array(
-            'title' => new Text('default title'),
-            'description' => new Text('default descr'),
-        ));
-
         $names = array();
         $properties = array();
-        foreach ($bag as $name => $property) {
+        foreach (self::bag() as $name => $property) {
             $names[] = $name;
             $properties[] = $property;
         }
@@ -21,6 +16,29 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('title', 'description'), $names);
         $this->assertEquals(array(new Text('default title'), new Text('default descr')), $properties);
 
+    }
+
+    public function testIdIsNullInitially()
+    {
+        $this->assertNull(self::bag()->id);
+    }
+
+    public function testPersistedMessageSetsId()
+    {
+        $bag = self::bag();
+        $bag->persisted('888');
+        $this->assertEquals('888', $bag->id);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+    private static function bag()
+    {
+        $bag = new PropertyBag(array(
+            'title' => new Text('default title'),
+            'description' => new Text('default descr'),
+        ));
+        return $bag;
     }
 
 }

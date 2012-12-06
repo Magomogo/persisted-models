@@ -1,8 +1,9 @@
 <?php
 namespace Person;
 use Model\DataContainer\ContainerInterface;
+use Model\ContainerReadyInterface;
 
-class Model
+class Model implements ContainerReadyInterface
 {
     /**
      * @var Properties
@@ -40,8 +41,8 @@ class Model
         return !is_null($this->properties->creditCard);
     }
 
-    public function putInto(ContainerInterface $container)
+    public function putIn(ContainerInterface $container)
     {
-        return $container->saveProperties($this->properties);
+        return $container->saveProperties($this->properties)->id;
     }
 }

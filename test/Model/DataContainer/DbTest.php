@@ -16,7 +16,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shouldReceive('insert')->with('person_model', typeOf('array'))->once();
         $db->shouldReceive('insert')->with('creditcard_model', typeOf('array'))->once();
         $db->shouldIgnoreMissing();
-        Person::maxim()->putInto(self::container($db));
+        Person::maxim()->putIn(self::container($db));
     }
 
     private static function container($db = null)

@@ -3,6 +3,7 @@ namespace Person;
 use Model\DataContainer\ArrayMap;
 use Mockery as m;
 use Test\ObjectMother\CreditCard;
+use Model\PropertyBag;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,9 +42,10 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     public function testCanBeSavedIntoADataContainer()
     {
         $container = m::mock('Model\\DataContainer\\ContainerInterface');
-        $container->shouldReceive('saveProperties')->once();
+        $container->shouldReceive('saveProperties')->andReturn(new PropertyBag(array(), 15))->once();
 
-        self::person()->putInto($container);
+        $id = self::person()->putIn($container);
+        $this->assertEquals(15, $id);
     }
 
 //----------------------------------------------------------------------------------------------------------------------

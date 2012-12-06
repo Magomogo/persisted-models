@@ -37,6 +37,6 @@ class ArrayMap implements ContainerInterface
             $this->nameToValueMap[$name] = $property->value();
         }
 
-        return null;
+        return $propertyBag;
     }
 }
