@@ -9,6 +9,15 @@ class Person
 {
     public static function maxim($id = null)
     {
+        return new Model(self::maximProperties($id));
+    }
+
+    /**
+     * @param null $id
+     * @return Properties
+     */
+    public static function maximProperties($id = null)
+    {
         $container = new ArrayMap(array(
             'title' => 'Mr.',
             'firstName' => 'Maxim',
@@ -17,8 +26,6 @@ class Person
             'phone' => '+7923-117-2801',
             'creditCard' => CreditCard::datatransTesting($id)
         ));
-
-        return new Model($container->loadProperties(new Properties($id)));
+        return $container->loadProperties(new Properties($id));
     }
-
 }
