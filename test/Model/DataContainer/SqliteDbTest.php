@@ -81,11 +81,18 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     {
         $maximId = $this->putMaximUntoContainer();
 
-        $maxim = new \Person\Model(
-            $this->personContainer()->loadProperties(new \Person\Properties($maximId))
-        );
+        $this->assertEquals(Person::maxim($maximId), $this->loadPersonFromContainer($maximId));
+    }
 
-        $this->assertEquals(Person::maxim('1'), $maxim);
+    public function testCanUpdateModelInTheDatabase()
+    {
+        $maximId = $this->putMaximUntoContainer();
+        $maxim = $this->loadPersonFromContainer($maximId);
+
+        $maxim->phoneNumberIsChanged('903-903');
+        $maxim->putIn($this->containerFor($maxim));
+
+        $this->assertContains('903-903', $this->loadPersonFromContainer($maximId)->contactInfo());
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -95,14 +102,18 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         return new Db(get_class($model), $this->fixture->db);
     }
 
-    private function personContainer()
-    {
-        return new Db('Person\\Model', $this->fixture->db);
-    }
-
     private function putMaximUntoContainer()
     {
         $person = Person::maxim();
         return $person->putIn($this->containerFor($person));
     }
+
+    private function loadPersonFromContainer($id)
+    {
+        $container = new Db('Person\\Model', $this->fixture->db);
+        return new \Person\Model(
+            $container->loadProperties(new \Person\Properties($id))
+        );
+    }
+
 }
