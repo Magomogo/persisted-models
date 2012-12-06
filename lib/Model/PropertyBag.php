@@ -20,12 +20,12 @@ class PropertyBag implements \IteratorAggregate
         if ($name == 'id') {
             return $this->id;
         }
-        return $this->prop($name)->value();
+        return $this->nameToDataMap[$name];
     }
 
     public function __set($name, $value)
     {
-        $this->prop($name)->setValue($value);
+        $this->nameToDataMap[$name] = $value;
     }
 
     public function persisted($id)
@@ -35,18 +35,6 @@ class PropertyBag implements \IteratorAggregate
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->nameToDataMap);
+        return new \ArrayIterator(&$this->nameToDataMap);
     }
-
-//----------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * @param $name
-     * @return \Model\DataType\DataTypeInterface
-     */
-    private function prop($name)
-    {
-        return $this->nameToDataMap[$name];
-    }
-
 }

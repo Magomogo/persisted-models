@@ -1,6 +1,5 @@
 <?php
 namespace Model;
-use Model\DataType\Text;
 
 class PropertyBagTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,9 +12,8 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
             $properties[] = $property;
         }
 
-        $this->assertEquals(array('title', 'description'), $names);
-        $this->assertEquals(array(new Text('default title'), new Text('default descr')), $properties);
-
+        $this->assertEquals(array('title', 'description', 'object'), $names);
+        $this->assertEquals(array('default title', 'default descr', new \stdClass()), $properties);
     }
 
     public function testIdIsNullInitially()
@@ -35,8 +33,9 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
     private static function bag()
     {
         $bag = new PropertyBag(array(
-            'title' => new Text('default title'),
-            'description' => new Text('default descr'),
+            'title' => 'default title',
+            'description' => 'default descr',
+            'object' => new \stdClass()
         ));
         return $bag;
     }

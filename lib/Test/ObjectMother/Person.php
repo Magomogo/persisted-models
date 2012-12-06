@@ -7,7 +7,7 @@ use Person\Model;
 
 class Person
 {
-    public static function maxim()
+    public static function maxim($id = null)
     {
         $container = new ArrayMap(array(
             'title' => 'Mr.',
@@ -15,10 +15,10 @@ class Person
             'lastName' => 'Gnatenko',
             'email' => 'maxim@xiag.ch',
             'phone' => '+7923-117-2801',
-            'creditCard' => CreditCard::datatransTesting()
+            'creditCard' => CreditCard::datatransTesting($id)
         ));
 
-        return new Model($container->loadProperties(new Properties()));
+        return new Model($container->loadProperties(new Properties($id)));
     }
 
 }

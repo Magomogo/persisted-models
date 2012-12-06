@@ -77,19 +77,15 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testUpdatesAPersonPropertiesInTheDatabase()
+    public function testReadsModelFromTheDatabase()
     {
-        $this->markTestIncomplete();
-
         $maximId = $this->putMaximUntoContainer();
 
         $maxim = new \Person\Model(
             $this->personContainer()->loadProperties(new \Person\Properties($maximId))
         );
 
-        $this->assertEquals('123', $maxim->paymentInfo());
-        //print_r($maxim);
-
+        $this->assertEquals(Person::maxim('1'), $maxim);
     }
 
 //----------------------------------------------------------------------------------------------------------------------

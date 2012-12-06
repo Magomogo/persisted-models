@@ -7,7 +7,7 @@ use CreditCard\Model;
 
 class CreditCard
 {
-    public static function datatransTesting()
+    public static function datatransTesting($id = null)
     {
         $container = new ArrayMap(array(
             'system' => 'VISA',
@@ -18,7 +18,7 @@ class CreditCard
             'cardholderName' => 'Maxim Gnatenko'
         ));
 
-        return new Model($container->loadProperties(new Properties()));
+        return new Model($container->loadProperties(new Properties($id)));
     }
 
 }

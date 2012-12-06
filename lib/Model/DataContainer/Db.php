@@ -1,6 +1,5 @@
 <?php
 namespace Model\DataContainer;
-use Model\DataType\DataTypeInterface;
 use Doctrine\DBAL\Connection;
 use Model\PropertyBag;
 use Model\ContainerReadyInterface;
@@ -31,9 +30,8 @@ class Db implements ContainerInterface
     {
         $row = $this->begin($propertyBag->id);
 
-        /** @var DataTypeInterface $property */
-        foreach ($propertyBag as $name => $property) {
-            $property->setValue($row[$name]);
+        foreach ($propertyBag as $name => &$property) {
+            $property = $this->fromDbValue($property, $row[$name]);
         }
 
         return $propertyBag;
@@ -42,7 +40,6 @@ class Db implements ContainerInterface
     public function saveProperties(PropertyBag $propertyBag)
     {
         $row = array();
-        /** @var DataTypeInterface $property */
         foreach ($propertyBag as $name => $property) {
             $row[$name] = $this->toDbValue($property);
         }
@@ -54,12 +51,20 @@ class Db implements ContainerInterface
 
 //----------------------------------------------------------------------------------------------------------------------
 
-    private function toDbValue(DataTypeInterface $property)
+    private function fromDbValue($property, $column)
     {
-        if (is_scalar($property->value())) {
-            return $property->value();
-        } elseif ($property->value() instanceof ContainerReadyInterface) {
-            return $property->value()->putIn($this->dataContainer($property->value()));
+        if ($property instanceof ContainerReadyInterface) {
+            return $property->loadFrom($this->dataContainer($property), $column);
+        }
+        return $column;
+    }
+
+    private function toDbValue($property)
+    {
+        if (is_scalar($property)) {
+            return $property;
+        } elseif ($property instanceof ContainerReadyInterface) {
+            return $property->putIn($this->dataContainer($property));
         } else {
             return null;
         }

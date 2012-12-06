@@ -1,7 +1,6 @@
 <?php
 namespace Person;
 use Model\PropertyBag;
-use Model\DataType\Text;
 
 /**
  * @property string $title
@@ -16,12 +15,12 @@ class Properties extends PropertyBag
     private static function properties()
     {
         return array(
-            'title' => new Text(),
-            'firstName' => new Text(),
-            'lastName' => new Text(),
-            'phone' => new Text(),
-            'email' => new Text(),
-            'creditCard' => new Text(),
+            'title' => '',
+            'firstName' => '',
+            'lastName' => '',
+            'phone' => '',
+            'email' => '',
+            'creditCard' => new \CreditCard\Model(new \CreditCard\Properties()),
         );
     }
 
