@@ -44,7 +44,7 @@ class Db implements ContainerInterface
         $row = array();
         /** @var DataTypeInterface $property */
         foreach ($propertyBag as $name => $property) {
-            $row[$name] = $this->dbValue($property);
+            $row[$name] = $this->toDbValue($property);
         }
         $id = $this->commit($row, $propertyBag->id);
         $propertyBag->persisted($id);
@@ -54,12 +54,12 @@ class Db implements ContainerInterface
 
 //----------------------------------------------------------------------------------------------------------------------
 
-    private function dbValue(DataTypeInterface $property)
+    private function toDbValue(DataTypeInterface $property)
     {
         if (is_scalar($property->value())) {
             return $property->value();
         } elseif ($property->value() instanceof ContainerReadyInterface) {
-            return $this->putIntoItsDataContainer($property->value());
+            return $property->value()->putIn($this->dataContainer($property->value()));
         } else {
             return null;
         }
@@ -89,9 +89,8 @@ class Db implements ContainerInterface
         return strtolower(str_replace('\\', '_', $modelClassName));
     }
 
-    private function putIntoItsDataContainer(ContainerReadyInterface $model)
+    private function dataContainer(ContainerReadyInterface $model)
     {
-        $container = new self(get_class($model), $this->db);
-        return $model->putIn($container);
+        return new self(get_class($model), $this->db);
     }
 }

@@ -25,8 +25,8 @@ class Properties extends PropertyBag
         );
     }
 
-    public function __construct()
+    public function __construct($id = null)
     {
-        parent::__construct(self::properties());
+        parent::__construct(self::properties(), $id);
     }
 }
