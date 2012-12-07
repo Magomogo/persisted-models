@@ -13,7 +13,7 @@ class PropertyBag implements \IteratorAggregate
 
     public function __construct(array $nameToDataMap, $id = null)
     {
-        $this->nameToDataMap = $nameToDataMap;
+        $this->nameToDataMap = (object)$nameToDataMap;
         $this->id = $id;
     }
 
@@ -22,12 +22,12 @@ class PropertyBag implements \IteratorAggregate
         if ($name == 'id') {
             return $this->id;
         }
-        return $this->nameToDataMap[$name];
+        return $this->nameToDataMap->$name;
     }
 
     public function __set($name, $value)
     {
-        $this->nameToDataMap[$name] = $value;
+        $this->nameToDataMap->$name = $value;
     }
 
     public function persisted($id, ContainerInterface $container)
@@ -38,7 +38,7 @@ class PropertyBag implements \IteratorAggregate
 
     public function getIterator()
     {
-        return new \ArrayIterator(&$this->nameToDataMap);
+        return new \ArrayIterator($this->nameToDataMap);
     }
 
     public function confirmOrigin(ContainerInterface $container)
