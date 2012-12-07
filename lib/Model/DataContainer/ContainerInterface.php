@@ -6,7 +6,7 @@ interface ContainerInterface
 {
     /**
      * @param \Model\PropertyBag $propertyBag
-     * @return \Model\PropertyBag
+     * @return array of references
      */
     public function loadProperties(PropertyBag $propertyBag);
 

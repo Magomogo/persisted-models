@@ -57,7 +57,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company_id' => null
+                'company_properties' => null
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
         );
@@ -107,7 +107,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company_id' => '1'
+                'company_properties' => '1'
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
         );
@@ -115,13 +115,9 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testReadsEmployeeModel()
     {
-        /** @var \Company\Model $company */
-        /** @var \Employee\Model $employee */
-        list($company, $employee) = $this->putEmployeeIn($this->sqliteContainer());
-
-        $loadedEmployee = $company->getEmployeeById($employee->id(), $this->fixture->db);
-
-        $this->assertEquals($employee, $loadedEmployee);
+        $employee = $this->putEmployeeIn($this->sqliteContainer());
+        $newEmployee = \Employee\Model::loadFrom($this->sqliteContainer(), 1);
+        $this->assertEquals($employee, $newEmployee);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -129,14 +125,18 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     private function putEmployeeIn($container)
     {
         $company = Company::xiag();
-        $company->putIn($container);
+        $companyId = $company->putIn($container);
 
         $person = Person::maxim();
-        $person->putIn($container);
+        $personId = $person->putIn($container);
 
-        $employee = $person->hiredBy($company, $this->fixture->db);
+        // Not clear yet
+        $this->fixture->db->executeUpdate(
+            'UPDATE person_properties SET company_properties = :companyId WHERE id = :employeeId',
+            array('employeeId' => $personId, 'companyId' => $companyId)
+        );
 
-        return array($company, $employee);
+        return new \Employee\Model($company, Person::maximProperties($personId));
     }
 
     private function sqliteContainer()
@@ -146,7 +146,6 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private function loadPersonFromContainer($id)
     {
-        return new \Person\Model(self::sqliteContainer()->loadProperties(new \Person\Properties($id)));
+        return \Person\Model::loadFrom(self::sqliteContainer(), $id);
     }
-
 }

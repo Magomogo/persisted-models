@@ -10,6 +10,13 @@ class Model implements ContainerReadyInterface
      */
     private $properties;
 
+    public static function loadFrom(ContainerInterface $container, $id)
+    {
+        $properties = new Properties($id);
+        $container->loadProperties($properties);
+        return new self($properties);
+    }
+
     public function __construct(Properties $properties)
     {
         $this->properties = $properties;
@@ -30,19 +37,8 @@ class Model implements ContainerReadyInterface
 
     }
 
-    public function id()
-    {
-        return $this->properties->id;
-    }
-
     public function putIn(ContainerInterface $container)
     {
         return $container->saveProperties($this->properties)->id;
-    }
-
-    public function loadFrom(ContainerInterface $container, $id)
-    {
-        $this->properties = $container->loadProperties(new Properties($id));
-        return $this;
     }
 }

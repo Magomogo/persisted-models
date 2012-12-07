@@ -27,7 +27,7 @@ class Db implements ContainerInterface
             $property = $this->fromDbValue($property, array_key_exists($name, $row) ? $row[$name] : null);
         }
 
-        return $propertyBag;
+        return $this->collectReferences($row);
     }
 
     public function saveProperties(PropertyBag $propertyBag)
@@ -47,7 +47,7 @@ class Db implements ContainerInterface
     private function fromDbValue($property, $column)
     {
         if ($property instanceof ContainerReadyInterface) {
-            return $property->loadFrom($this, $column);
+            return $property::loadFrom($this, $column);
         }
         return $column;
     }
@@ -85,5 +85,20 @@ class Db implements ContainerInterface
     private static function propertiesDbTable(PropertyBag $propertyBag)
     {
         return strtolower(str_replace('\\', '_', get_class($propertyBag)));
+    }
+
+    private function collectReferences(array $row)
+    {
+        $references = array();
+        if (array_key_exists('company_properties', $row)) {
+            $companyProperties = new \Company\Properties($row['company_properties']);
+            $subReferences = $this->loadProperties($companyProperties);
+            $references = array_merge(
+                $references,
+                $subReferences,
+                array('company_properties' => $companyProperties)
+            );
+        }
+        return $references;
     }
 }
