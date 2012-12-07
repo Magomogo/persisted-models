@@ -26,6 +26,7 @@ class Db implements ContainerInterface
         foreach ($propertyBag as $name => &$property) {
             $property = $this->fromDbValue($property, array_key_exists($name, $row) ? $row[$name] : null);
         }
+        $propertyBag->persisted($propertyBag->id, $this);
 
         return $this->collectReferences($row);
     }
@@ -37,7 +38,7 @@ class Db implements ContainerInterface
             $row[$name] = $this->toDbValue($property);
         }
         $id = $this->commit($row, $propertyBag->id, self::classToName($propertyBag));
-        $propertyBag->persisted($id);
+        $propertyBag->persisted($id, $this);
 
         return $propertyBag;
     }
@@ -87,17 +88,30 @@ class Db implements ContainerInterface
         return strtolower(str_replace('\\', '_', get_class($object)));
     }
 
+    private static function relatedClassName($columnName)
+    {
+        foreach (array($columnName, str_replace('_', '\\', $columnName)) as $className) {
+            if (class_exists($className)) {
+                return $className;
+            }
+        }
+        return null;
+    }
+
     private function collectReferences(array $row)
     {
         $references = array();
-        if (array_key_exists('company_properties', $row)) {
-            $companyProperties = new \Company\Properties($row['company_properties']);
-            $subReferences = $this->loadProperties($companyProperties);
-            $references = array_merge(
-                $references,
-                $subReferences,
-                array('company_properties' => $companyProperties)
-            );
+
+        foreach ($row as $columnName => $value) {
+            if ($className = self::relatedClassName($columnName)) {
+                $properties = new $className($value);
+                $subReferences = $this->loadProperties($properties);
+                $references = array_merge(
+                    $references,
+                    $subReferences,
+                    array($columnName => $properties)
+                );
+            }
         }
         return $references;
     }

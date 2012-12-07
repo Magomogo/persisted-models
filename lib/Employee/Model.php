@@ -31,11 +31,11 @@ class Model extends Person\Model
 
     public function putIn(ContainerInterface $container)
     {
-        return $container->saveProperties($this->properties, array($this->company->confirmProperties($container)))->id;
+        return $container->saveProperties($this->properties, array($this->company->confirmOrigin($container)))->id;
     }
 
-    public function confirmProperties(ContainerInterface $container)
+    public function confirmOrigin(ContainerInterface $container)
     {
-        return $this->properties;
+        return $this->properties->confirmOrigin($container);
     }
 }

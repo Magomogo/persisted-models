@@ -79,8 +79,10 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     public function testReadsModelFromTheDatabase()
     {
         $maximId = Person::maxim()->putIn($this->sqliteContainer());
-
-        $this->assertEquals(Person::maxim($maximId), $this->loadPersonFromContainer($maximId));
+        $this->assertEquals(
+            Person::maxim($maximId)->politeTitle(),
+            $this->loadPersonFromContainer($maximId)->politeTitle()
+        );
     }
 
     public function testCanUpdateModelInTheDatabase()

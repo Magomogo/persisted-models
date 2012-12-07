@@ -22,7 +22,7 @@ class ArrayMap implements ContainerInterface
         foreach ($propertyBag as $name => &$property) {
             $property = array_key_exists($name, $this->nameToValueMap) ? $this->nameToValueMap[$name] : null;
         }
-
+        $propertyBag->persisted(null, $this);
         return $propertyBag;
     }
 
@@ -38,7 +38,7 @@ class ArrayMap implements ContainerInterface
         foreach ($propertyBag as $name => $property) {
             $this->nameToValueMap[$name] = $property;
         }
-
+        $propertyBag->persisted(null, $this);
         return $propertyBag;
     }
 }

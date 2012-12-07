@@ -23,5 +23,5 @@ interface ContainerReadyInterface
      * @param DataContainer\ContainerInterface $container
      * @return PropertyBag
      */
-    public function confirmProperties(ContainerInterface $container);
+    public function confirmOrigin(ContainerInterface $container);
 }
