@@ -12,7 +12,8 @@ interface ContainerInterface
 
     /**
      * @param \Model\PropertyBag $propertyBag
+     * @param array $references
      * @return \Model\PropertyBag
      */
-    public function saveProperties(PropertyBag $propertyBag);
+    public function saveProperties(PropertyBag $propertyBag, array $references = array());
 }

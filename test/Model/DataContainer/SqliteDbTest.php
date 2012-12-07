@@ -125,18 +125,11 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     private function putEmployeeIn($container)
     {
         $company = Company::xiag();
-        $companyId = $company->putIn($container);
+        $company->putIn($container);
 
-        $person = Person::maxim();
-        $personId = $person->putIn($container);
-
-        // Not clear yet
-        $this->fixture->db->executeUpdate(
-            'UPDATE person_properties SET company_properties = :companyId WHERE id = :employeeId',
-            array('employeeId' => $personId, 'companyId' => $companyId)
-        );
-
-        return new \Employee\Model($company, Person::maximProperties($personId));
+        $employee = new \Employee\Model($company, Person::maximProperties());
+        $employee->putIn($container);
+        return $employee;
     }
 
     private function sqliteContainer()

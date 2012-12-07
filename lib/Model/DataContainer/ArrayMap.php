@@ -26,7 +26,12 @@ class ArrayMap implements ContainerInterface
         return $propertyBag;
     }
 
-    public function saveProperties(PropertyBag $propertyBag)
+    /**
+     * @param \Model\PropertyBag $propertyBag
+     * @param array $references
+     * @return \Model\PropertyBag
+     */
+    public function saveProperties(PropertyBag $propertyBag, array $references = array())
     {
         $this->nameToValueMap = array();
 

@@ -16,4 +16,12 @@ interface ContainerReadyInterface
      * @return string unique identifier
      */
     public function putIn(ContainerInterface $container);
+
+    /**
+     * Confirms that properties has correct origin
+     *
+     * @param DataContainer\ContainerInterface $container
+     * @return PropertyBag
+     */
+    public function confirmProperties(ContainerInterface $container);
 }

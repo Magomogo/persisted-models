@@ -21,7 +21,7 @@ class Db implements ContainerInterface
 
     public function loadProperties(PropertyBag $propertyBag)
     {
-        $row = $this->begin($propertyBag->id, self::propertiesDbTable($propertyBag));
+        $row = $this->begin($propertyBag->id, self::classToName($propertyBag));
 
         foreach ($propertyBag as $name => &$property) {
             $property = $this->fromDbValue($property, array_key_exists($name, $row) ? $row[$name] : null);
@@ -30,13 +30,13 @@ class Db implements ContainerInterface
         return $this->collectReferences($row);
     }
 
-    public function saveProperties(PropertyBag $propertyBag)
+    public function saveProperties(PropertyBag $propertyBag, array $references = array())
     {
-        $row = array();
+        $row = $this->foreignKeys($references);
         foreach ($propertyBag as $name => $property) {
             $row[$name] = $this->toDbValue($property);
         }
-        $id = $this->commit($row, $propertyBag->id, self::propertiesDbTable($propertyBag));
+        $id = $this->commit($row, $propertyBag->id, self::classToName($propertyBag));
         $propertyBag->persisted($id);
 
         return $propertyBag;
@@ -82,9 +82,9 @@ class Db implements ContainerInterface
         return $id;
     }
 
-    private static function propertiesDbTable(PropertyBag $propertyBag)
+    private static function classToName($object)
     {
-        return strtolower(str_replace('\\', '_', get_class($propertyBag)));
+        return strtolower(str_replace('\\', '_', get_class($object)));
     }
 
     private function collectReferences(array $row)
@@ -100,5 +100,16 @@ class Db implements ContainerInterface
             );
         }
         return $references;
+    }
+
+    private function foreignKeys(array $references = array())
+    {
+        $keys = array();
+        /* @var PropertyBag $property */
+        foreach ($references as $property) {
+            $keys[self::classToName($property)] = $property->id;
+        }
+
+        return $keys;
     }
 }

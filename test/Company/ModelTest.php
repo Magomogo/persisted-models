@@ -14,17 +14,4 @@ class CompanyTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('XIAG', Company::xiag()->name());
     }
-
-    public function testGetsEmployeeByItsId()
-    {
-        $this->markTestSkipped();
-
-        $db = m::mock('Doctrine\\DBAL\\Connection', array('executeQuery' => m::mock(array('fetchAll' => array(1)))));
-        $db->shouldReceive('fetchAssoc')->andReturn(array());
-
-        $this->assertInstanceOf(
-            'Employee\\Model',
-            Company::xiag()->getEmployeeById(34, $db)
-        );
-    }
 }

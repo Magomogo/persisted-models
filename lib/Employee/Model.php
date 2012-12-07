@@ -28,4 +28,14 @@ class Model extends Person\Model
     {
         return $this->politeTitle() . ' from ' . $this->company->name();
     }
+
+    public function putIn(ContainerInterface $container)
+    {
+        return $container->saveProperties($this->properties, array($this->company->confirmProperties($container)))->id;
+    }
+
+    public function confirmProperties(ContainerInterface $container)
+    {
+        return $this->properties;
+    }
 }
