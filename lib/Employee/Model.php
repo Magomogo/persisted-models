@@ -6,6 +6,8 @@ use Model\DataContainer\ContainerInterface;
 
 class Model extends Person\Model
 {
+    use \Model\ContainerUtils;
+
     /**
      * @var Company\Model
      */
@@ -32,10 +34,5 @@ class Model extends Person\Model
     public function putIn(ContainerInterface $container)
     {
         return $container->saveProperties($this->properties, array($this->company->confirmOrigin($container)))->id;
-    }
-
-    public function confirmOrigin(ContainerInterface $container)
-    {
-        return $this->properties->confirmOrigin($container);
     }
 }

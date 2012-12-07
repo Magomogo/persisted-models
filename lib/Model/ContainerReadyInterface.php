@@ -25,3 +25,16 @@ interface ContainerReadyInterface
      */
     public function confirmOrigin(ContainerInterface $container);
 }
+
+trait ContainerUtils
+{
+    public function putIn(ContainerInterface $container)
+    {
+        return $container->saveProperties($this->properties)->id;
+    }
+
+    public function confirmOrigin(ContainerInterface $container)
+    {
+        return $this->properties->confirmOrigin($container);
+    }
+}

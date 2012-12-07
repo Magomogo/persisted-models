@@ -8,6 +8,8 @@ use Person;
 
 class Model implements ContainerReadyInterface
 {
+    use \Model\ContainerUtils;
+
     /**
      * @var Properties
      */
@@ -28,15 +30,5 @@ class Model implements ContainerReadyInterface
     public function name()
     {
         return $this->properties->name;
-    }
-
-    public function putIn(ContainerInterface $container)
-    {
-        return $container->saveProperties($this->properties)->id;
-    }
-
-    public function confirmOrigin(ContainerInterface $container)
-    {
-        return $this->properties->confirmOrigin($container);
     }
 }
