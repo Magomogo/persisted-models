@@ -18,6 +18,8 @@ instance that have no sence from the business logic point of view.
 
     $person = new Person\Model($propertiesBag);
     $employee = new Employee\Model($company, $propertiesBag);
+    
+source: [Person\Model](//github.com/Magomogo/best-domain-model/blob/master/lib/Person/Model.php "Person model") | [Employee\Model](//github.com/Magomogo/best-domain-model/blob/master/lib/Employee/Model.php "Employee model")
 
 ### Obvious responsibilities
 
@@ -29,6 +31,9 @@ To achieve persistency we not need to store **A model**, it is necessary to stor
 
     // load
     $persistedPerson = Person\Model::loadFrom($dbContainer, $id);
+
+source: [Model\DataContainer\Db](//github.com/Magomogo/best-domain-model/blob/master/lib/Model/DataContainer/Db.php "Database container")
+
 
 Handling user input with **'Forms'**, **'A Form'** is kind of a DataContainer.
 
