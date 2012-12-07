@@ -18,6 +18,8 @@ instance that have no sence from the business logic point of view.
 
     $person = new Person\Model($propertiesBag);
     $employee = new Employee\Model($company, $propertiesBag);
+    
+source: [Person\Model](blob/master/lib/Person/Model.php "Person model") | [Employee\Model](blob/master/lib/Employee/Model.php "Employee model")
 
 ### Obvious responsibilities
 
