@@ -57,7 +57,8 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company_properties' => null
+                'company_properties' => null,
+                'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
         );
@@ -109,7 +110,8 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company_properties' => '1'
+                'company_properties' => '1',
+                'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
         );

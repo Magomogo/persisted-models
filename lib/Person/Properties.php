@@ -21,6 +21,7 @@ class Properties extends PropertyBag
             'phone' => '',
             'email' => '',
             'creditCard' => new \CreditCard\Model(new \CreditCard\Properties()),
+            'birthDay' => new \DateTime('1970-01-01')
         );
     }
 

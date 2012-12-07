@@ -3,6 +3,7 @@ namespace Model\DataContainer;
 use Doctrine\DBAL\Connection;
 use Model\PropertyBag;
 use Model\ContainerReadyInterface;
+use Model\Exception;
 
 class Db implements ContainerInterface
 {
@@ -49,6 +50,8 @@ class Db implements ContainerInterface
     {
         if ($property instanceof ContainerReadyInterface) {
             return $property::loadFrom($this, $column);
+        } elseif($property instanceof \DateTime) {
+            return new \DateTime($column);
         }
         return $column;
     }
@@ -59,8 +62,10 @@ class Db implements ContainerInterface
             return $property;
         } elseif ($property instanceof ContainerReadyInterface) {
             return $property->putIn($this);
+        } elseif ($property instanceof \DateTime) {
+            return $property->format('c');
         } else {
-            return null;
+            throw new Exception\Type;
         }
     }
 

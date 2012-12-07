@@ -57,6 +57,7 @@ CREATE table person_properties (
   lastName TEXT,
   email TEXT,
   phone TEXT,
+  birthDay DATE,
   creditCard INTEGER CONSTRAINT fk_person_to_cc REFERENCES creditcard_properties (id) ON DELETE SET NULL ON UPDATE CASCADE,
   company_properties INTEGER CONSTRAINT fk_person_to_company REFERENCES company_properties (id) ON DELETE SET NULL ON UPDATE CASCADE
 );

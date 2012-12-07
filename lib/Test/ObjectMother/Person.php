@@ -24,7 +24,8 @@ class Person
             'lastName' => 'Gnatenko',
             'email' => 'maxim@xiag.ch',
             'phone' => '+7923-117-2801',
-            'creditCard' => CreditCard::datatransTesting($id)
+            'creditCard' => CreditCard::datatransTesting($id),
+            'birthDay' => new \DateTime('1975-07-07T00:00:00+07:00')
         ));
         return $container->loadProperties(new Properties($id));
     }
