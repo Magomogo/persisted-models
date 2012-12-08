@@ -40,6 +40,12 @@ CREATE table company_properties (
   name TEXT
 );
 
+CREATE table keymarker_properties (
+  id INTEGER CONSTRAINT pk_keymarker PRIMARY KEY AUTOINCREMENT,
+  title TEXT,
+  created DATE
+);
+
 CREATE table creditcard_properties (
   id INTEGER CONSTRAINT pk_creditcard PRIMARY KEY AUTOINCREMENT,
   system TEXT,
