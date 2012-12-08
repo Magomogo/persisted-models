@@ -4,6 +4,7 @@ use Model\DataContainer\ArrayMap;
 use Mockery as m;
 use Test\ObjectMother\CreditCard;
 use Model\PropertyBag;
+use Test\ObjectMother\Keymarker;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,6 +47,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
         $id = self::person()->putIn($container);
         $this->assertEquals(15, $id);
+    }
+
+    public function testCanBeTaggedWithAKeymarker()
+    {
+        $person = self::person();
+        $person->tag(Keymarker::friend());
+        $person->tag(Keymarker::IT());
+
+        $this->assertEquals('Friend, IT', $person->taggedAs());
     }
 
 //----------------------------------------------------------------------------------------------------------------------

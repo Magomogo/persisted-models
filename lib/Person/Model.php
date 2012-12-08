@@ -4,6 +4,7 @@ use Model\DataContainer\ContainerInterface;
 use Model\ContainerReadyInterface;
 use Company;
 use Employee;
+use Keymarker;
 
 class Model implements ContainerReadyInterface
 {
@@ -11,6 +12,11 @@ class Model implements ContainerReadyInterface
      * @var Properties
      */
     protected $properties;
+
+    /**
+     * @var array
+     */
+    private $tags = array();
 
     public static function loadFrom(ContainerInterface $container, $id)
     {
@@ -48,6 +54,16 @@ class Model implements ContainerReadyInterface
     public function ableToPay()
     {
         return !is_null($this->properties->creditCard);
+    }
+
+    public function tag(Keymarker\Model $keymarker)
+    {
+        $this->tags[] = $keymarker;
+    }
+
+    public function taggedAs()
+    {
+        return join(', ', $this->tags);
     }
 
     public function putIn(ContainerInterface $container)
