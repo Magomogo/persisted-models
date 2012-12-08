@@ -5,6 +5,7 @@ use Test\ObjectMother\CreditCard;
 use Test\ObjectMother\Person;
 use Test\ObjectMother\Company;
 use Model\DataContainer\Db;
+use \Test\ObjectMother\Keymarker;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -122,6 +123,25 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $employee = $this->putEmployeeIn($this->sqliteContainer());
         $newEmployee = \Employee\Model::loadFrom($this->sqliteContainer(), 1);
         $this->assertEquals($employee, $newEmployee);
+    }
+
+    public function testStoresPersonKeymarkers()
+    {
+        $persistedKeymarker1 = Keymarker::friend();
+        $persistedKeymarker1->putIn($this->sqliteContainer());
+        $persistedKeymarker2 = Keymarker::IT();
+        $persistedKeymarker2->putIn($this->sqliteContainer());
+
+        $person = Person::maxim();
+        $person->tag($persistedKeymarker1);
+        $person->tag($persistedKeymarker2);
+
+        $id = $person->putIn($this->sqliteContainer());
+
+        $this->assertEquals(
+            $person,
+            $person::loadFrom($this->sqliteContainer(), $id)
+        );
     }
 
 //----------------------------------------------------------------------------------------------------------------------
