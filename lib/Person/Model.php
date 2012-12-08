@@ -22,7 +22,12 @@ class Model implements ContainerReadyInterface
     {
         $properties = new Properties($id);
         $container->loadProperties($properties);
-        return new self($properties);
+
+        $person = new self($properties);
+        foreach ($container->listConnections($properties, new Keymarker\Properties()) as $keymarkerProperties) {
+            $person->tag(new Keymarker\Model($keymarkerProperties));
+        }
+        return $person;
     }
 
     public function __construct(Properties $properties)
@@ -68,7 +73,16 @@ class Model implements ContainerReadyInterface
 
     public function putIn(ContainerInterface $container)
     {
-        return $container->saveProperties($this->properties)->id;
+        $container->saveProperties($this->properties);
+
+        $connectedProperties = array();
+        /** @var ContainerReadyInterface $keymarker */
+        foreach ($this->tags as $keymarker) {
+            $connectedProperties[] = $keymarker->confirmOrigin($container);
+        }
+
+        $container->connectToMany($this->properties, $connectedProperties);
+        return $this->properties->id;
     }
 
     public function confirmOrigin(ContainerInterface $container)

@@ -43,7 +43,10 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     public function testCanBeSavedIntoADataContainer()
     {
         $container = m::mock('Model\\DataContainer\\ContainerInterface');
-        $container->shouldReceive('saveProperties')->andReturn(new PropertyBag(array(), 15))->once();
+        $container->shouldReceive('saveProperties')
+            ->with(m::on(function($p) use ($container) {$p->persisted(15, $container); return true;}))
+            ->once();
+        $container->shouldIgnoreMissing();
 
         $id = self::person()->putIn($container);
         $this->assertEquals(15, $id);
