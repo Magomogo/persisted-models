@@ -26,6 +26,7 @@ class Db implements ContainerInterface
 
         foreach ($propertyBag as $name => &$property) {
             $property = $this->fromDbValue($property, array_key_exists($name, $row) ? $row[$name] : null);
+            unset($row[$name]);
         }
         $propertyBag->persisted($propertyBag->id, $this);
 
