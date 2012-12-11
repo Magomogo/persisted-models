@@ -1,10 +1,10 @@
 <?php
-namespace Model\DataContainer;
+namespace Model\PropertyContainer;
 use Test\DbFixture;
 use Test\ObjectMother\CreditCard;
 use Test\ObjectMother\Person;
 use Test\ObjectMother\Company;
-use Model\DataContainer\Db;
+use Model\PropertyContainer\Db;
 use JobRecord;
 use \Test\ObjectMother\Keymarker;
 

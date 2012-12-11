@@ -1,5 +1,5 @@
 <?php
-namespace Model\DataContainer;
+namespace Model\PropertyContainer;
 use Model\PropertyBag;
 
 interface ContainerInterface

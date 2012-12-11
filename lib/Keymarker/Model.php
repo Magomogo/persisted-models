@@ -1,6 +1,6 @@
 <?php
 namespace Keymarker;
-use Model\DataContainer\ContainerInterface;
+use Model\PropertyContainer\ContainerInterface;
 use Model\ContainerReadyInterface;
 
 class Model implements ContainerReadyInterface

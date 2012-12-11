@@ -2,7 +2,7 @@
 namespace Employee;
 use Person;
 use Company;
-use Model\DataContainer\ContainerInterface;
+use Model\PropertyContainer\ContainerInterface;
 
 class Model extends Person\Model
 {

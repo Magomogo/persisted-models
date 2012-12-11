@@ -26,16 +26,16 @@ source: [Person\Model](//github.com/Magomogo/best-domain-model/blob/master/lib/P
 To achieve persistency we not need to store **A model**, it is necessary to store its properties.
 
     // save/update
-    $dbContainer = new Model\DataContainer\Db($connection);
+    $dbContainer = new Model\PropertyContainer\Db($connection);
     $person->putIn($dbContainer);
 
     // load
     $persistedPerson = Person\Model::loadFrom($dbContainer, $id);
 
-source: [Model\DataContainer\Db](//github.com/Magomogo/best-domain-model/blob/master/lib/Model/DataContainer/Db.php "Database container")
+source: [Model\PropertyContainer\Db](//github.com/Magomogo/best-domain-model/blob/master/lib/Model/PropertyContainer/Db.php "Database container")
 
 
-Handling user input with **'Forms'**, **'A Form'** is kind of a DataContainer.
+Handling user input with **'Forms'**, **'A Form'** is kind of a PropertyContainer.
 
     $form = new ProfileForm;
     $person->putIn($form);

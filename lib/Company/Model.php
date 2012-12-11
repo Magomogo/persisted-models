@@ -1,8 +1,8 @@
 <?php
 namespace Company;
 use Model\ContainerReadyInterface;
-use Model\DataContainer\ContainerInterface;
-use Model\DataContainer\Db;
+use Model\PropertyContainer\ContainerInterface;
+use Model\PropertyContainer\Db;
 use Employee;
 use Person;
 

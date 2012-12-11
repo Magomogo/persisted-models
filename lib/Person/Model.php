@@ -1,6 +1,6 @@
 <?php
 namespace Person;
-use Model\DataContainer\ContainerInterface;
+use Model\PropertyContainer\ContainerInterface;
 use Model\ContainerReadyInterface;
 use Company;
 use Employee;

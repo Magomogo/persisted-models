@@ -1,7 +1,7 @@
 <?php
 namespace JobRecord;
 use Model\ContainerReadyInterface;
-use Model\DataContainer\ContainerInterface;
+use Model\PropertyContainer\ContainerInterface;
 use Company;
 
 class Model implements ContainerReadyInterface
@@ -22,7 +22,7 @@ class Model implements ContainerReadyInterface
     private $currentCompany;
 
     /**
-     * @param \Model\DataContainer\ContainerInterface $container
+     * @param \Model\PropertyContainer\ContainerInterface $container
      * @param string $id
      * @return self
      */
@@ -50,7 +50,7 @@ class Model implements ContainerReadyInterface
     }
 
     /**
-     * @param \Model\DataContainer\ContainerInterface $container
+     * @param \Model\PropertyContainer\ContainerInterface $container
      * @return string unique identifier
      */
     public function putIn(ContainerInterface $container)

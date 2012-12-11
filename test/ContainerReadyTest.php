@@ -1,6 +1,6 @@
 <?php
 use Test\DbFixture;
-use Model\DataContainer\Db;
+use Model\PropertyContainer\Db;
 use Model\ContainerReadyInterface;
 use Test\ObjectMother;
 

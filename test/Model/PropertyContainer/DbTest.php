@@ -1,5 +1,5 @@
 <?php
-namespace Model\DataContainer;
+namespace Model\PropertyContainer;
 use Mockery as m;
 use Test\ObjectMother\Person;
 use Model\PropertyBag;
@@ -8,7 +8,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 {
     public function testImplementsContainerInterface()
     {
-        $this->assertInstanceOf('Model\\DataContainer\\ContainerInterface', self::container());
+        $this->assertInstanceOf('Model\\PropertyContainer\\ContainerInterface', self::container());
     }
 
     public function testFollowsTableNamingConvention()
@@ -43,13 +43,19 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db = m::mock();
         $db->shouldReceive('insert')->with('model_propertybag',
             array(
-                'model_datacontainer_testtype1' => 4,
-                'model_datacontainer_testtype2' => 5,
+                'ref1' => 4,
+                'ref2' => 5,
             )
         )->once();
         $db->shouldIgnoreMissing();
 
-        self::container($db)->saveProperties(new PropertyBag(array()), array(new TestType1(4), new TestType2(5)));
+        self::container($db)->saveProperties(
+            new PropertyBag(array()),
+            array(
+                'ref1' => new TestType1(4),
+                'ref2' => new TestType2(5)
+            )
+        );
     }
 
 //----------------------------------------------------------------------------------------------------------------------

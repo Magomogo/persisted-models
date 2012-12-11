@@ -1,5 +1,5 @@
 <?php
-namespace Model\DataContainer;
+namespace Model\PropertyContainer;
 use Doctrine\DBAL\Connection;
 use Model\PropertyBag;
 use Model\ContainerReadyInterface;
@@ -158,8 +158,7 @@ class Db implements ContainerInterface
         $keys = array();
         /* @var PropertyBag $properties */
         foreach ($references as $referenceName => $properties) {
-            $columnName = is_numeric($referenceName) ? self::classToName($properties) : $referenceName;
-            $keys[$columnName] = $properties->id;
+            $keys[$referenceName] = $properties->id;
         }
 
         return $keys;

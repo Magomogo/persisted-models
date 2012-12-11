@@ -1,7 +1,7 @@
 <?php
 namespace Test\ObjectMother;
 
-use Model\DataContainer\ArrayMap;
+use Model\PropertyContainer\ArrayMap;
 use Keymarker\Properties;
 use Keymarker\Model;
 
