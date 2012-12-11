@@ -41,4 +41,25 @@ class ArrayMap implements ContainerInterface
         $propertyBag->persisted(null, $this);
         return $propertyBag;
     }
+
+    /**
+     * @param \Model\PropertyBag $leftProperties
+     * @param array $connections array of \Model\PropertyBag
+     * @return void
+     */
+    public function connectToMany(PropertyBag $leftProperties, array $connections)
+    {
+        // TODO: Implement connectToMany() method.
+    }
+
+    /**
+     * @param \Model\PropertyBag $leftProperties
+     * @return array of \Model\PropertyBag
+     */
+    public function listConnections(PropertyBag $leftProperties, PropertyBag $rightPropertiesType)
+    {
+        // TODO: Implement listConnections() method.
+    }
+
+
 }

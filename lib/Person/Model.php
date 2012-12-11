@@ -4,6 +4,7 @@ use Model\DataContainer\ContainerInterface;
 use Model\ContainerReadyInterface;
 use Company;
 use Employee;
+use Keymarker;
 
 class Model implements ContainerReadyInterface
 {
@@ -12,9 +13,21 @@ class Model implements ContainerReadyInterface
      */
     protected $properties;
 
+    /**
+     * @var array
+     */
+    private $tags = array();
+
     public static function loadFrom(ContainerInterface $container, $id)
     {
-        return new self($container->loadProperties(new Properties($id)));
+        $properties = new Properties($id);
+        $container->loadProperties($properties);
+
+        $person = new self($properties);
+        foreach ($container->listConnections($properties, new Keymarker\Properties()) as $keymarkerProperties) {
+            $person->tag(new Keymarker\Model($keymarkerProperties));
+        }
+        return $person;
     }
 
     public function __construct(Properties $properties)
@@ -48,9 +61,28 @@ class Model implements ContainerReadyInterface
         return !is_null($this->properties->creditCard);
     }
 
+    public function tag(Keymarker\Model $keymarker)
+    {
+        $this->tags[] = $keymarker;
+    }
+
+    public function taggedAs()
+    {
+        return join(', ', $this->tags);
+    }
+
     public function putIn(ContainerInterface $container)
     {
-        return $container->saveProperties($this->properties)->id;
+        $container->saveProperties($this->properties);
+
+        $connectedProperties = array();
+        /** @var ContainerReadyInterface $keymarker */
+        foreach ($this->tags as $keymarker) {
+            $connectedProperties[] = $keymarker->confirmOrigin($container);
+        }
+
+        $container->connectToMany($this->properties, $connectedProperties);
+        return $this->properties->id;
     }
 
     public function confirmOrigin(ContainerInterface $container)

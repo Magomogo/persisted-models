@@ -45,6 +45,45 @@ class Db implements ContainerInterface
         return $propertyBag;
     }
 
+    public function connectToMany(PropertyBag $leftProperties, array $connections)
+    {
+        $cleanedTables = array();
+
+        /** @var PropertyBag $propertyBag */
+        foreach ($connections as $rightProperties) {
+            $tableName = self::many2ManyTable($leftProperties, $rightProperties);
+            if (!array_key_exists($tableName, $cleanedTables)) {
+                $this->db->delete($tableName, array(self::classToName($leftProperties) => $leftProperties->id));
+                $cleanedTables[$tableName] = 1;
+            }
+            $this->db->insert($tableName, array(
+                self::classToName($leftProperties) => $leftProperties->id,
+                self::classToName($rightProperties) => $rightProperties->id,
+            ));
+        }
+    }
+
+    public function listConnections(PropertyBag $leftProperties, PropertyBag $rightPropertiesType)
+    {
+        $rightPropertiesName = self::classToName($rightPropertiesType);
+        $tableName = self::many2ManyTable($leftProperties, $rightPropertiesType);
+
+        $statement = $this->db->executeQuery(
+            "SELECT $rightPropertiesName FROM $tableName WHERE " . self::classToName($leftProperties) . '=?',
+            array($leftProperties->id)
+        );
+
+        $connections = array();
+        while ($id = $statement->fetchColumn()) {
+            $className = get_class($rightPropertiesType);
+            $properties = new $className($id);
+            $this->loadProperties($properties);
+            $connections[] = $properties;
+        }
+
+        return $connections;
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private function fromDbValue($property, $column)
@@ -125,4 +164,10 @@ class Db implements ContainerInterface
 
         return $keys;
     }
+
+    private static function many2ManyTable(PropertyBag $leftProperties, PropertyBag $rightProperties)
+    {
+        return self::classToName($leftProperties) . '_2_' . self::classToName($rightProperties);
+    }
+
 }

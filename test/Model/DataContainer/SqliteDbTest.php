@@ -6,6 +6,7 @@ use Test\ObjectMother\Person;
 use Test\ObjectMother\Company;
 use Model\DataContainer\Db;
 use JobRecord;
+use \Test\ObjectMother\Keymarker;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -136,6 +137,25 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $id = $record->putIn(self::sqliteContainer());
 
         $this->assertEquals($record, $record::loadFrom(self::sqliteContainer(), $id));
+    }
+
+    public function testStoresPersonKeymarkers()
+    {
+        $persistedKeymarker1 = Keymarker::friend();
+        $persistedKeymarker1->putIn($this->sqliteContainer());
+        $persistedKeymarker2 = Keymarker::IT();
+        $persistedKeymarker2->putIn($this->sqliteContainer());
+
+        $person = Person::maxim();
+        $person->tag($persistedKeymarker1);
+        $person->tag($persistedKeymarker2);
+
+        $id = $person->putIn($this->sqliteContainer());
+
+        $this->assertEquals(
+            $person,
+            $person::loadFrom($this->sqliteContainer(), $id)
+        );
     }
 
 //----------------------------------------------------------------------------------------------------------------------
