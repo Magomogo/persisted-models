@@ -6,10 +6,7 @@ use Company;
 
 class Model implements ContainerReadyInterface
 {
-    /**
-     * @var Properties
-     */
-    private $properties;
+    use \Model\ContainerUtils;
 
     /**
      * @var \Company\Model
@@ -63,16 +60,5 @@ class Model implements ContainerReadyInterface
             )
         )->id;
 
-    }
-
-    /**
-     * Confirms that properties has correct origin
-     *
-     * @param \Model\DataContainer\ContainerInterface $container
-     * @return \Model\PropertyBag
-     */
-    public function confirmOrigin(ContainerInterface $container)
-    {
-        return $this->properties->confirmOrigin($container);
     }
 }

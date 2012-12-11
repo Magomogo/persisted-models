@@ -7,19 +7,14 @@ class Model implements ContainerReadyInterface
 {
     use \Model\ContainerUtils;
 
-    /**
-     * @var Properties
-     */
-    private $properties;
-
     public static function loadFrom(ContainerInterface $container, $id)
     {
         return new self($container->loadProperties(new Properties($id)));
     }
 
-    public function __construct(Properties $properties)
+    public function __construct(Properties $props)
     {
-        $this->properties = $properties;
+        $this->properties = $props;
     }
 
     public function maskedPan()

@@ -28,6 +28,11 @@ interface ContainerReadyInterface
 
 trait ContainerUtils
 {
+    /**
+     * @var PropertyBag
+     */
+    protected $properties;
+
     public function putIn(ContainerInterface $container)
     {
         return $container->saveProperties($this->properties)->id;

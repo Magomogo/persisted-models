@@ -6,8 +6,6 @@ use Model\PropertyContainer\ContainerInterface;
 
 class Model extends Person\Model
 {
-    use \Model\ContainerUtils;
-
     /**
      * @var Company\Model
      */

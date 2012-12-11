@@ -11,11 +11,6 @@ class Model implements ContainerReadyInterface
     use \Model\ContainerUtils;
 
     /**
-     * @var Properties
-     */
-    protected $properties;
-
-    /**
      * @var array
      */
     private $tags = array();
@@ -32,9 +27,9 @@ class Model implements ContainerReadyInterface
         return $person;
     }
 
-    public function __construct(Properties $properties)
+    public function __construct(Properties $props)
     {
-        $this->properties = $properties;
+        $this->properties = $props;
     }
 
     public function politeTitle()

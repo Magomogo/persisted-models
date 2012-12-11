@@ -5,35 +5,20 @@ use Model\ContainerReadyInterface;
 
 class Model implements ContainerReadyInterface
 {
-    /**
-     * @var Properties
-     */
-    private $props;
+    use \Model\ContainerUtils;
 
     public static function loadFrom(ContainerInterface $container, $id)
     {
-        $props = new Properties($id);
-        $container->loadProperties($props);
-        return new self($props);
+        return new self($container->loadProperties(new Properties($id)));
     }
 
     public function __construct(Properties $props)
     {
-        $this->props = $props;
+        $this->properties = $props;
     }
 
     public function __toString()
     {
-        return $this->props->title;
-    }
-
-    public function putIn(ContainerInterface $container)
-    {
-        return $container->saveProperties($this->props)->id;
-    }
-
-    public function confirmOrigin(ContainerInterface $container)
-    {
-        return $this->props->confirmOrigin($container);
+        return $this->properties->title;
     }
 }
