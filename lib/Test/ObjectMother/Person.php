@@ -1,7 +1,7 @@
 <?php
 namespace Test\ObjectMother;
 
-use Model\DataContainer\ArrayMap;
+use Model\PropertyContainer\ArrayMap;
 use Person\Properties;
 use Person\Model;
 

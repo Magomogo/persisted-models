@@ -1,5 +1,5 @@
 <?php
-namespace Model\DataContainer;
+namespace Model\PropertyContainer;
 use Model\PropertyBag;
 
 class ArrayMap implements ContainerInterface
@@ -17,7 +17,7 @@ class ArrayMap implements ContainerInterface
         $this->nameToValueMap = $nameToValueMap;
     }
 
-    public function loadProperties(PropertyBag $propertyBag)
+    public function loadProperties(PropertyBag $propertyBag, array $references = array())
     {
         foreach ($propertyBag as $name => &$property) {
             $property = array_key_exists($name, $this->nameToValueMap) ? $this->nameToValueMap[$name] : null;
@@ -41,4 +41,25 @@ class ArrayMap implements ContainerInterface
         $propertyBag->persisted(null, $this);
         return $propertyBag;
     }
+
+    /**
+     * @param \Model\PropertyBag $leftProperties
+     * @param array $connections array of \Model\PropertyBag
+     * @return void
+     */
+    public function connectToMany(PropertyBag $leftProperties, array $connections)
+    {
+        // TODO: Implement connectToMany() method.
+    }
+
+    /**
+     * @param \Model\PropertyBag $leftProperties
+     * @return array of \Model\PropertyBag
+     */
+    public function listConnections(PropertyBag $leftProperties, PropertyBag $rightPropertiesType)
+    {
+        // TODO: Implement listConnections() method.
+    }
+
+
 }

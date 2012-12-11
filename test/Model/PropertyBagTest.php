@@ -25,14 +25,14 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
     public function testPersistedMessageSetsId()
     {
         $bag = self::bag();
-        $bag->persisted('888', m::mock('Model\\DataContainer\\ContainerInterface'));
+        $bag->persisted('888', m::mock('Model\\PropertyContainer\\ContainerInterface'));
         $this->assertEquals('888', $bag->id);
     }
 
     public function testKnowsItsOrigin()
     {
         $properties = self::bag();
-        $container = new \Model\DataContainer\ArrayMap(array());
+        $container = new \Model\PropertyContainer\ArrayMap(array());
         $container->loadProperties($properties);
 
         $this->assertSame($properties, $properties->confirmOrigin($container));

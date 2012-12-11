@@ -1,9 +1,9 @@
 <?php
 namespace Person;
-use Model\DataContainer\ArrayMap;
+use Model\PropertyContainer\ArrayMap;
 use Mockery as m;
 use Test\ObjectMother\CreditCard;
-use Model\PropertyBag;
+use Test\ObjectMother\Keymarker;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -39,13 +39,25 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(self::personWithoutCreditCard()->ableToPay());
     }
 
-    public function testCanBeSavedIntoADataContainer()
+    public function testCanBeSavedIntoAPropertyContainer()
     {
-        $container = m::mock('Model\\DataContainer\\ContainerInterface');
-        $container->shouldReceive('saveProperties')->andReturn(new PropertyBag(array(), 15))->once();
+        $container = m::mock('Model\\PropertyContainer\\ContainerInterface');
+        $container->shouldReceive('saveProperties')
+            ->with(m::on(function($p) use ($container) {$p->persisted(15, $container); return true;}))
+            ->once();
+        $container->shouldIgnoreMissing();
 
         $id = self::person()->putIn($container);
         $this->assertEquals(15, $id);
+    }
+
+    public function testCanBeTaggedWithAKeymarker()
+    {
+        $person = self::person();
+        $person->tag(Keymarker::friend());
+        $person->tag(Keymarker::IT());
+
+        $this->assertEquals('Friend, IT', $person->taggedAs());
     }
 
 //----------------------------------------------------------------------------------------------------------------------

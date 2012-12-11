@@ -1,6 +1,6 @@
 <?php
 namespace Model;
-use Model\DataContainer\ContainerInterface;
+use Model\PropertyContainer\ContainerInterface;
 
 /**
  * @property string $id

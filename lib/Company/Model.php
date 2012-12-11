@@ -1,8 +1,8 @@
 <?php
 namespace Company;
 use Model\ContainerReadyInterface;
-use Model\DataContainer\ContainerInterface;
-use Model\DataContainer\Db;
+use Model\PropertyContainer\ContainerInterface;
+use Model\PropertyContainer\Db;
 use Employee;
 use Person;
 
@@ -17,9 +17,7 @@ class Model implements ContainerReadyInterface
 
     public static function loadFrom(ContainerInterface $container, $id)
     {
-        $properties = new Properties($id);
-        $container->loadProperties($properties);
-        return new self($properties);
+        return new self($container->loadProperties(new Properties($id)));
     }
 
     public function __construct(Properties $properties)

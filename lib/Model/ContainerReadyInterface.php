@@ -1,18 +1,18 @@
 <?php
 namespace Model;
-use Model\DataContainer\ContainerInterface;
+use Model\PropertyContainer\ContainerInterface;
 
 interface ContainerReadyInterface
 {
     /**
-     * @param DataContainer\ContainerInterface $container
+     * @param \Model\PropertyContainer\ContainerInterface $container
      * @param string $id
      * @return self
      */
     public static function loadFrom(ContainerInterface $container, $id);
 
     /**
-     * @param DataContainer\ContainerInterface $container
+     * @param \Model\PropertyContainer\ContainerInterface $container
      * @return string unique identifier
      */
     public function putIn(ContainerInterface $container);
@@ -20,8 +20,8 @@ interface ContainerReadyInterface
     /**
      * Confirms that properties has correct origin
      *
-     * @param DataContainer\ContainerInterface $container
-     * @return PropertyBag
+     * @param \Model\PropertyContainer\ContainerInterface $container
+     * @return \Model\PropertyBag
      */
     public function confirmOrigin(ContainerInterface $container);
 }

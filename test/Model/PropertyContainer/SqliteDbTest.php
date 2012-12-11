@@ -1,10 +1,12 @@
 <?php
-namespace Model\DataContainer;
+namespace Model\PropertyContainer;
 use Test\DbFixture;
 use Test\ObjectMother\CreditCard;
 use Test\ObjectMother\Person;
 use Test\ObjectMother\Company;
-use Model\DataContainer\Db;
+use Model\PropertyContainer\Db;
+use JobRecord;
+use \Test\ObjectMother\Keymarker;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -57,7 +59,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company_properties' => null,
+                'company' => null,
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
@@ -110,7 +112,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company_properties' => '1',
+                'company' => '1',
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
@@ -122,6 +124,38 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $employee = $this->putEmployeeIn($this->sqliteContainer());
         $newEmployee = \Employee\Model::loadFrom($this->sqliteContainer(), 1);
         $this->assertEquals($employee, $newEmployee);
+    }
+
+    public function testCanSaveAndLoadAJobRecord()
+    {
+        $currentCompany = Company::xiag();
+        $currentCompany->putIn(self::sqliteContainer());
+        $previousCompany = Company::nstu();
+        $previousCompany->putIn(self::sqliteContainer());
+
+        $record = new JobRecord\Model($currentCompany, $previousCompany, new \JobRecord\Properties());
+        $id = $record->putIn(self::sqliteContainer());
+
+        $this->assertEquals($record, $record::loadFrom(self::sqliteContainer(), $id));
+    }
+
+    public function testStoresPersonKeymarkers()
+    {
+        $persistedKeymarker1 = Keymarker::friend();
+        $persistedKeymarker1->putIn($this->sqliteContainer());
+        $persistedKeymarker2 = Keymarker::IT();
+        $persistedKeymarker2->putIn($this->sqliteContainer());
+
+        $person = Person::maxim();
+        $person->tag($persistedKeymarker1);
+        $person->tag($persistedKeymarker2);
+
+        $id = $person->putIn($this->sqliteContainer());
+
+        $this->assertEquals(
+            $person,
+            $person::loadFrom($this->sqliteContainer(), $id)
+        );
     }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 <?php
 namespace CreditCard;
-use Model\DataContainer\ContainerInterface;
+use Model\PropertyContainer\ContainerInterface;
 use Model\ContainerReadyInterface;
 
 class Model implements ContainerReadyInterface
@@ -14,9 +14,7 @@ class Model implements ContainerReadyInterface
 
     public static function loadFrom(ContainerInterface $container, $id)
     {
-        $properties = new Properties($id);
-        $container->loadProperties($properties);
-        return new self($properties);
+        return new self($container->loadProperties(new Properties($id)));
     }
 
     public function __construct(Properties $properties)

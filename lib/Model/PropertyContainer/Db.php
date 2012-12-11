@@ -1,5 +1,5 @@
 <?php
-namespace Model\DataContainer;
+namespace Model\PropertyContainer;
 use Doctrine\DBAL\Connection;
 use Model\PropertyBag;
 use Model\ContainerReadyInterface;
@@ -20,16 +20,17 @@ class Db implements ContainerInterface
         $this->db = $db;
     }
 
-    public function loadProperties(PropertyBag $propertyBag)
+    public function loadProperties(PropertyBag $propertyBag, array $references = array())
     {
         $row = $this->begin($propertyBag->id, self::classToName($propertyBag));
 
         foreach ($propertyBag as $name => &$property) {
             $property = $this->fromDbValue($property, array_key_exists($name, $row) ? $row[$name] : null);
+            unset($row[$name]);
         }
         $propertyBag->persisted($propertyBag->id, $this);
-
-        return $this->collectReferences($row);
+        $this->collectReferences($row, $references);
+        return $propertyBag;
     }
 
     public function saveProperties(PropertyBag $propertyBag, array $references = array())
@@ -42,6 +43,45 @@ class Db implements ContainerInterface
         $propertyBag->persisted($id, $this);
 
         return $propertyBag;
+    }
+
+    public function connectToMany(PropertyBag $leftProperties, array $connections)
+    {
+        $cleanedTables = array();
+
+        /** @var PropertyBag $propertyBag */
+        foreach ($connections as $rightProperties) {
+            $tableName = self::many2ManyTable($leftProperties, $rightProperties);
+            if (!array_key_exists($tableName, $cleanedTables)) {
+                $this->db->delete($tableName, array(self::classToName($leftProperties) => $leftProperties->id));
+                $cleanedTables[$tableName] = 1;
+            }
+            $this->db->insert($tableName, array(
+                self::classToName($leftProperties) => $leftProperties->id,
+                self::classToName($rightProperties) => $rightProperties->id,
+            ));
+        }
+    }
+
+    public function listConnections(PropertyBag $leftProperties, PropertyBag $rightPropertiesType)
+    {
+        $rightPropertiesName = self::classToName($rightPropertiesType);
+        $tableName = self::many2ManyTable($leftProperties, $rightPropertiesType);
+
+        $statement = $this->db->executeQuery(
+            "SELECT $rightPropertiesName FROM $tableName WHERE " . self::classToName($leftProperties) . '=?',
+            array($leftProperties->id)
+        );
+
+        $connections = array();
+        while ($id = $statement->fetchColumn()) {
+            $className = get_class($rightPropertiesType);
+            $properties = new $className($id);
+            $this->loadProperties($properties);
+            $connections[] = $properties;
+        }
+
+        return $connections;
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -103,20 +143,12 @@ class Db implements ContainerInterface
         return null;
     }
 
-    private function collectReferences(array $row)
+    private function collectReferences(array $row, array $references)
     {
-        $references = array();
-
-        foreach ($row as $columnName => $value) {
-            if ($className = self::relatedClassName($columnName)) {
-                $properties = new $className($value);
-                $subReferences = $this->loadProperties($properties);
-                $references = array_merge(
-                    $references,
-                    $subReferences,
-                    array($columnName => $properties)
-                );
-            }
+        /* @var PropertyBag $properties */
+        foreach ($references as $referenceName => $properties) {
+            $properties->persisted($row[$referenceName], $this);
+            $this->loadProperties($properties);
         }
         return $references;
     }
@@ -124,11 +156,17 @@ class Db implements ContainerInterface
     private function foreignKeys(array $references = array())
     {
         $keys = array();
-        /* @var PropertyBag $property */
-        foreach ($references as $property) {
-            $keys[self::classToName($property)] = $property->id;
+        /* @var PropertyBag $properties */
+        foreach ($references as $referenceName => $properties) {
+            $keys[$referenceName] = $properties->id;
         }
 
         return $keys;
     }
+
+    private static function many2ManyTable(PropertyBag $leftProperties, PropertyBag $rightProperties)
+    {
+        return self::classToName($leftProperties) . '_2_' . self::classToName($rightProperties);
+    }
+
 }

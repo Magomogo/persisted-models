@@ -2,7 +2,7 @@
 namespace Employee;
 use Person;
 use Company;
-use Model\DataContainer\ContainerInterface;
+use Model\PropertyContainer\ContainerInterface;
 
 class Model extends Person\Model
 {
@@ -16,8 +16,9 @@ class Model extends Person\Model
     public static function loadFrom(ContainerInterface $container, $id)
     {
         $properties = new \Person\Properties($id);
-        $references = $container->loadProperties($properties);
-        return new self(new Company\Model($references['company_properties']), $properties);
+        $references = array('company' => new \Company\Properties());
+        $container->loadProperties($properties, $references);
+        return new self(new Company\Model($references['company']), $properties);
     }
 
     public function __construct(Company\Model $company, Person\Properties $properties)
@@ -33,6 +34,9 @@ class Model extends Person\Model
 
     public function putIn(ContainerInterface $container)
     {
-        return $container->saveProperties($this->properties, array($this->company->confirmOrigin($container)))->id;
+        return $container->saveProperties(
+            $this->properties,
+            array('company' => $this->company->confirmOrigin($container))
+        )->id;
     }
 }

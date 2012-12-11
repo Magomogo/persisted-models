@@ -1,26 +1,30 @@
 <?php
 namespace Test\ObjectMother;
+
 use Model\PropertyContainer\ArrayMap;
-use Company\Properties;
-use Company\Model;
+use Keymarker\Properties;
+use Keymarker\Model;
 
-class Company
+class Keymarker
 {
-    public static function xiag($id = null)
+    public static function friend($id = null)
     {
         $container = new ArrayMap(array(
-            'name' => 'XIAG',
+            'title' => 'Friend',
+            'created' => new \DateTime('2012-12-08T10:16+07:00'),
         ));
 
         return new Model($container->loadProperties(new Properties($id)));
     }
 
-    public static function nstu($id = null)
+    public static function IT($id = null)
     {
         $container = new ArrayMap(array(
-            'name' => 'NSTU',
+            'title' => 'IT',
+            'created' => new \DateTime('2012-12-08T10:36+07:00'),
         ));
 
         return new Model($container->loadProperties(new Properties($id)));
     }
+
 }
