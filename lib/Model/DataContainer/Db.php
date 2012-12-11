@@ -20,7 +20,7 @@ class Db implements ContainerInterface
         $this->db = $db;
     }
 
-    public function loadProperties(PropertyBag $propertyBag)
+    public function loadProperties(PropertyBag $propertyBag, array $references = array())
     {
         $row = $this->begin($propertyBag->id, self::classToName($propertyBag));
 
@@ -29,8 +29,8 @@ class Db implements ContainerInterface
             unset($row[$name]);
         }
         $propertyBag->persisted($propertyBag->id, $this);
-
-        return $this->collectReferences($row);
+        $this->collectReferences($row, $references);
+        return $propertyBag;
     }
 
     public function saveProperties(PropertyBag $propertyBag, array $references = array())
@@ -104,20 +104,12 @@ class Db implements ContainerInterface
         return null;
     }
 
-    private function collectReferences(array $row)
+    private function collectReferences(array $row, array $references)
     {
-        $references = array();
-
-        foreach ($row as $columnName => $value) {
-            if ($className = self::relatedClassName($columnName)) {
-                $properties = new $className($value);
-                $subReferences = $this->loadProperties($properties);
-                $references = array_merge(
-                    $references,
-                    $subReferences,
-                    array($columnName => $properties)
-                );
-            }
+        /* @var PropertyBag $properties */
+        foreach ($references as $referenceName => $properties) {
+            $properties->persisted($row[$referenceName], $this);
+            $this->loadProperties($properties);
         }
         return $references;
     }
@@ -125,9 +117,10 @@ class Db implements ContainerInterface
     private function foreignKeys(array $references = array())
     {
         $keys = array();
-        /* @var PropertyBag $property */
-        foreach ($references as $property) {
-            $keys[self::classToName($property)] = $property->id;
+        /* @var PropertyBag $properties */
+        foreach ($references as $referenceName => $properties) {
+            $columnName = is_numeric($referenceName) ? self::classToName($properties) : $referenceName;
+            $keys[$columnName] = $properties->id;
         }
 
         return $keys;

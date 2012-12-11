@@ -17,7 +17,7 @@ class ArrayMap implements ContainerInterface
         $this->nameToValueMap = $nameToValueMap;
     }
 
-    public function loadProperties(PropertyBag $propertyBag)
+    public function loadProperties(PropertyBag $propertyBag, array $references = array())
     {
         foreach ($propertyBag as $name => &$property) {
             $property = array_key_exists($name, $this->nameToValueMap) ? $this->nameToValueMap[$name] : null;

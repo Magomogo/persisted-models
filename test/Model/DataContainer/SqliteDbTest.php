@@ -5,6 +5,7 @@ use Test\ObjectMother\CreditCard;
 use Test\ObjectMother\Person;
 use Test\ObjectMother\Company;
 use Model\DataContainer\Db;
+use JobRecord;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -57,7 +58,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company_properties' => null,
+                'company' => null,
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
@@ -110,7 +111,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company_properties' => '1',
+                'company' => '1',
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
@@ -122,6 +123,19 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $employee = $this->putEmployeeIn($this->sqliteContainer());
         $newEmployee = \Employee\Model::loadFrom($this->sqliteContainer(), 1);
         $this->assertEquals($employee, $newEmployee);
+    }
+
+    public function testCanSaveAndLoadAJobRecord()
+    {
+        $currentCompany = Company::xiag();
+        $currentCompany->putIn(self::sqliteContainer());
+        $previousCompany = Company::nstu();
+        $previousCompany->putIn(self::sqliteContainer());
+
+        $record = new JobRecord\Model($currentCompany, $previousCompany, new \JobRecord\Properties());
+        $id = $record->putIn(self::sqliteContainer());
+
+        $this->assertEquals($record, $record::loadFrom(self::sqliteContainer(), $id));
     }
 
 //----------------------------------------------------------------------------------------------------------------------

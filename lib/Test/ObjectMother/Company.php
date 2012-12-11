@@ -14,4 +14,13 @@ class Company
 
         return new Model($container->loadProperties(new Properties($id)));
     }
+
+    public static function nstu($id = null)
+    {
+        $container = new ArrayMap(array(
+            'name' => 'NSTU',
+        ));
+
+        return new Model($container->loadProperties(new Properties($id)));
+    }
 }
