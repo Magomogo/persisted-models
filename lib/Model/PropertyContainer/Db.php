@@ -39,8 +39,7 @@ class Db implements ContainerInterface
         foreach ($propertyBag as $name => $property) {
             $row[$name] = $this->toDbValue($property);
         }
-        $id = $this->commit($row, $propertyBag->id, self::classToName($propertyBag));
-        $propertyBag->persisted($id, $this);
+        $id = $this->commit($row, $propertyBag);
 
         return $propertyBag;
     }
@@ -111,15 +110,15 @@ class Db implements ContainerInterface
         return array();
     }
 
-    private function commit(array $row, $id, $table)
+    private function commit(array $row, PropertyBag $properties)
     {
-        if (is_null($id)) {
-            $this->db->insert($table, $row);
-            $id = $this->db->lastInsertId();
+        if (is_null($properties->id)) {
+            $this->db->insert(self::classToName($properties), $row);
+            $properties->persisted($this->db->lastInsertId(), $this);
         } else {
-            $this->db->update($table, $row, array('id' => $id));
+            $this->db->update(self::classToName($properties), $row, array('id' => $properties->id));
         }
-        return $id;
+        return $properties->id;
     }
 
     private static function classToName($object)
