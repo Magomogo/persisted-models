@@ -1,7 +1,7 @@
 <?php
 use Test\DbFixture;
-use Model\PropertyContainer\Db;
-use Model\ContainerReadyInterface;
+use Magomogo\Model\PropertyContainer\Db;
+use Magomogo\Model\ContainerReadyInterface;
 use Test\ObjectMother;
 
 class ContainerReadyTest extends PHPUnit_Framework_TestCase

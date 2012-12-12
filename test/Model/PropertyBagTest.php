@@ -1,6 +1,7 @@
 <?php
-namespace Model;
+namespace Magomogo\Model;
 use Mockery as m;
+use Magomogo\Model\PropertyContainer\ArrayMap;
 
 class PropertyBagTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,14 +26,14 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
     public function testPersistedMessageSetsId()
     {
         $bag = self::bag();
-        $bag->persisted('888', m::mock('Model\\PropertyContainer\\ContainerInterface'));
+        $bag->persisted('888', m::mock('Magomogo\\Model\\PropertyContainer\\ContainerInterface'));
         $this->assertEquals('888', $bag->id);
     }
 
     public function testKnowsItsOrigin()
     {
         $properties = self::bag();
-        $container = new \Model\PropertyContainer\ArrayMap(array());
+        $container = new ArrayMap(array());
         $container->loadProperties($properties);
 
         $this->assertSame($properties, $properties->assertOriginIs($container));

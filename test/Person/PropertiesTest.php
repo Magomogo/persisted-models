@@ -1,7 +1,7 @@
 <?php
 namespace Person;
 use Person\Properties;
-use Model\PropertyContainer\ArrayMap;
+use Magomogo\Model\PropertyContainer\ArrayMap;
 use Mockery as m;
 
 class PropertiesTest extends \PHPUnit_Framework_TestCase

@@ -1,6 +1,6 @@
 <?php
 namespace Keymarker;
-use Model\PropertyContainer\ArrayMap;
+use Magomogo\Model\PropertyContainer\ArrayMap;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
