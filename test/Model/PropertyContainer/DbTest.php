@@ -1,14 +1,14 @@
 <?php
-namespace Model\PropertyContainer;
+namespace Magomogo\Model\PropertyContainer;
 use Mockery as m;
 use Test\ObjectMother\Person;
-use Model\PropertyBag;
+use Magomogo\Model\PropertyBag;
 
 class DbTest extends \PHPUnit_Framework_TestCase
 {
     public function testImplementsContainerInterface()
     {
-        $this->assertInstanceOf('Model\\PropertyContainer\\ContainerInterface', self::container());
+        $this->assertInstanceOf('Magomogo\\Model\\PropertyContainer\\ContainerInterface', self::container());
     }
 
     public function testFollowsTableNamingConvention()
@@ -41,7 +41,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testSavesReferencesAsForeignKeys()
     {
         $db = m::mock();
-        $db->shouldReceive('insert')->with('model_propertybag',
+        $db->shouldReceive('insert')->with('propertybag',
             array(
                 'ref1' => 4,
                 'ref2' => 5,
@@ -58,11 +58,17 @@ class DbTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testExceptionOnLoadingWhenPropertiesAreNotFound()
+    {
+        $this->setExpectedException('Magomogo\\Model\\Exception\\Origin');
+        self::container(m::mock(array('fetchAssoc' => false)))->loadProperties(new PropertyBag(array(), 1));
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function container($db = null)
     {
-        return new Db($db ?: m::mock());
+        return new Db($db ?: m::mock(array('fetchAssoc' => array())), 'Magomogo\\Model\\');
     }
 }
 

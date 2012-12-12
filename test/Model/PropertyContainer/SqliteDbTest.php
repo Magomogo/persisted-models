@@ -1,12 +1,12 @@
 <?php
-namespace Model\PropertyContainer;
+namespace Magomogo\Model\PropertyContainer;
 use Test\DbFixture;
 use Test\ObjectMother\CreditCard;
 use Test\ObjectMother\Person;
 use Test\ObjectMother\Company;
-use Model\PropertyContainer\Db;
+use Magomogo\Model\PropertyContainer\Db;
 use JobRecord;
-use \Test\ObjectMother\Keymarker;
+use Test\ObjectMother\Keymarker;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {

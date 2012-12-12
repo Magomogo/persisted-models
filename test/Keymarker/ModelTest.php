@@ -1,6 +1,6 @@
 <?php
 namespace Keymarker;
-use Model\PropertyContainer\ArrayMap;
+use Magomogo\Model\PropertyContainer\ArrayMap;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,9 +11,8 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function keymarker()
     {
-        $properties = new Properties;
+        $properties = new Properties('Friend');
         $container = new ArrayMap(array(
-            'title' => 'Friend',
             'created' => new \DateTime('2012-12-08 09:50')
         ));
         return new Model($container->loadProperties($properties));
