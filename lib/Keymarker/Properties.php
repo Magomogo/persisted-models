@@ -3,7 +3,7 @@ namespace Keymarker;
 use Model\PropertyBag;
 
 /**
- * @property string $title
+ * @property string $id
  * @property \DateTime $created
  */
 class Properties extends PropertyBag
@@ -11,12 +11,11 @@ class Properties extends PropertyBag
     private static function props()
     {
         return array(
-            'title' => '',
             'created' => new \DateTime
         );
     }
 
-    public function __construct($id = null)
+    public function __construct($id)
     {
         parent::__construct(self::props(), $id);
     }

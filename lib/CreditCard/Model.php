@@ -40,8 +40,8 @@ class Model implements ContainerReadyInterface
         return $container->saveProperties($this->properties)->id;
     }
 
-    public function confirmOrigin(ContainerInterface $container)
+    public function propertiesFrom(ContainerInterface $container)
     {
-        return $this->properties->confirmOrigin($container);
+        return $this->properties->assertOriginIs($container);
     }
 }

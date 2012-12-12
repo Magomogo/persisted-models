@@ -34,12 +34,12 @@ class Model extends Person\Model
     {
         return $container->saveProperties(
             $this->properties,
-            array('company' => $this->company->confirmOrigin($container))
+            array('company' => $this->company->propertiesFrom($container))
         )->id;
     }
 
-    public function confirmOrigin(ContainerInterface $container)
+    public function propertiesFrom(ContainerInterface $container)
     {
-        return $this->properties->confirmOrigin($container);
+        return $this->properties->assertOriginIs($container);
     }
 }

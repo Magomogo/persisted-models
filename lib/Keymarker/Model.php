@@ -24,7 +24,7 @@ class Model implements ContainerReadyInterface
 
     public function __toString()
     {
-        return $this->props->title;
+        return $this->props->id;
     }
 
     public function putIn(ContainerInterface $container)
@@ -32,8 +32,8 @@ class Model implements ContainerReadyInterface
         return $container->saveProperties($this->props)->id;
     }
 
-    public function confirmOrigin(ContainerInterface $container)
+    public function propertiesFrom(ContainerInterface $container)
     {
-        return $this->props->confirmOrigin($container);
+        return $this->props->assertOriginIs($container);
     }
 }

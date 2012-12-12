@@ -22,7 +22,7 @@ class ArrayMap implements ContainerInterface
         foreach ($propertyBag as $name => &$property) {
             $property = array_key_exists($name, $this->nameToValueMap) ? $this->nameToValueMap[$name] : null;
         }
-        $propertyBag->persisted(null, $this);
+        $propertyBag->persisted($propertyBag->id, $this);
         return $propertyBag;
     }
 
@@ -38,7 +38,7 @@ class ArrayMap implements ContainerInterface
         foreach ($propertyBag as $name => $property) {
             $this->nameToValueMap[$name] = $property;
         }
-        $propertyBag->persisted(null, $this);
+        $propertyBag->persisted($propertyBag->id, $this);
         return $propertyBag;
     }
 
@@ -47,7 +47,7 @@ class ArrayMap implements ContainerInterface
         // TODO: Implement connectToMany() method.
     }
 
-    public function listReferences($referenceName, PropertyBag $leftProperties, PropertyBag $rightPropertiesType)
+    public function listReferences($referenceName, PropertyBag $leftProperties, $rightPropertiesClassName)
     {
         // TODO: Implement listConnections() method.
     }

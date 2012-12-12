@@ -49,8 +49,7 @@ CREATE TABLE jobrecord_properties (
 );
 
 CREATE table keymarker_properties (
-  id INTEGER CONSTRAINT pk_keymarker PRIMARY KEY AUTOINCREMENT,
-  title TEXT,
+  id TEXT CONSTRAINT pk_keymarker PRIMARY KEY,
   created DATE
 );
 

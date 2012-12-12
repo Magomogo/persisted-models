@@ -24,7 +24,7 @@ class Model implements ContainerReadyInterface
         $container->loadProperties($properties);
 
         $person = new self($properties);
-        foreach ($container->listReferences('person2keymarker', $properties, new Keymarker\Properties())
+        foreach ($container->listReferences('person2keymarker', $properties, 'Keymarker\Properties')
                  as $keymarkerProperties) {
             $person->tag(new Keymarker\Model($keymarkerProperties));
         }
@@ -79,15 +79,15 @@ class Model implements ContainerReadyInterface
         $connectedProperties = array();
         /** @var ContainerReadyInterface $keymarker */
         foreach ($this->tags as $keymarker) {
-            $connectedProperties[] = $keymarker->confirmOrigin($container);
+            $connectedProperties[] = $keymarker->propertiesFrom($container);
         }
 
         $container->referToMany('person2keymarker', $this->properties, $connectedProperties);
         return $this->properties->id;
     }
 
-    public function confirmOrigin(ContainerInterface $container)
+    public function propertiesFrom(ContainerInterface $container)
     {
-        return $this->properties->confirmOrigin($container);
+        return $this->properties->assertOriginIs($container);
     }
 }

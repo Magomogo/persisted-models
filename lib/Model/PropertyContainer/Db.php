@@ -22,26 +22,27 @@ class Db implements ContainerInterface
 
     public function loadProperties(PropertyBag $propertyBag, array $references = array())
     {
-        $row = $this->begin($propertyBag->id, self::classToName($propertyBag));
+        $row = $this->begin($propertyBag);
+        $propertyBag->assertOriginIs($this);
 
         foreach ($propertyBag as $name => &$property) {
-            $property = $this->fromDbValue($property, array_key_exists($name, $row) ? $row[$name] : null);
-            unset($row[$name]);
+            $property = $this->fromDbValue($property, $row[$name]);
         }
-        $propertyBag->persisted($propertyBag->id, $this);
         $this->collectReferences($row, $references);
+
         return $propertyBag;
     }
 
     public function saveProperties(PropertyBag $propertyBag, array $references = array())
     {
         $row = $this->foreignKeys($references);
+        if (!is_null($propertyBag->id)) {
+            $row['id'] = $propertyBag->id;
+        }
         foreach ($propertyBag as $name => $property) {
             $row[$name] = $this->toDbValue($property);
         }
-        $id = $this->commit($row, $propertyBag);
-
-        return $propertyBag;
+        return $this->commit($row, $propertyBag);
     }
 
     public function referToMany($referenceName, PropertyBag $leftProperties, array $connections)
@@ -57,9 +58,9 @@ class Db implements ContainerInterface
         }
     }
 
-    public function listReferences($referenceName, PropertyBag $leftProperties, PropertyBag $rightPropertiesType)
+    public function listReferences($referenceName, PropertyBag $leftProperties, $rightPropertiesClassName)
     {
-        $rightPropertiesName = self::classToName($rightPropertiesType);
+        $rightPropertiesName = self::classToName($rightPropertiesClassName);
 
         $statement = $this->db->executeQuery(
             "SELECT $rightPropertiesName FROM $referenceName WHERE " . self::classToName($leftProperties) . '=?',
@@ -68,8 +69,7 @@ class Db implements ContainerInterface
 
         $connections = array();
         while ($id = $statement->fetchColumn()) {
-            $className = get_class($rightPropertiesType);
-            $properties = new $className($id);
+            $properties = new $rightPropertiesClassName($id);
             $this->loadProperties($properties);
             $connections[] = $properties;
         }
@@ -102,28 +102,51 @@ class Db implements ContainerInterface
         }
     }
 
-    private function begin($id, $table)
+    private function begin(PropertyBag $propertyBag)
     {
-        if (!is_null($id)) {
-            return $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($id));
+        if (!is_null($propertyBag->id)) {
+            $table = self::classToName($propertyBag);
+            $row = $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($propertyBag->id));
+
+            if (is_array($row)) {
+                $propertyBag->persisted($propertyBag->id, $this);
+                return $row;
+            }
         }
         return array();
     }
 
     private function commit(array $row, PropertyBag $properties)
     {
-        if (is_null($properties->id)) {
+        $this->confirmPersistency($properties);
+
+        if (!$properties->isPersistedIn($this)) {
             $this->db->insert(self::classToName($properties), $row);
-            $properties->persisted($this->db->lastInsertId(), $this);
+            $properties->persisted($properties->id ?: $this->db->lastInsertId(), $this);
         } else {
             $this->db->update(self::classToName($properties), $row, array('id' => $properties->id));
         }
-        return $properties->id;
+
+        return $properties;
     }
 
-    private static function classToName($object)
+    private function confirmPersistency(PropertyBag $properties)
     {
-        return strtolower(str_replace('\\', '_', get_class($object)));
+        try {
+            $properties->assertOriginIs($this);
+        } catch (Exception\Origin $e) {
+            if ($properties->id && $this->db->executeQuery(
+                'SELECT count(1) FROM ' . self::classToName($properties) . ' WHERE id=?',
+                array($properties->id)
+            )->rowCount()) {
+                $properties->persisted($properties->id, $this);
+            }
+        }
+    }
+
+    private static function classToName($class)
+    {
+        return strtolower(str_replace('\\', '_', is_object($class) ? get_class($class) : $class));
     }
 
     private function collectReferences(array $row, array $references)

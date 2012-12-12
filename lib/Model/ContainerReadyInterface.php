@@ -23,5 +23,5 @@ interface ContainerReadyInterface
      * @param \Model\PropertyContainer\ContainerInterface $container
      * @return \Model\PropertyBag
      */
-    public function confirmOrigin(ContainerInterface $container);
+    public function propertiesFrom(ContainerInterface $container);
 }

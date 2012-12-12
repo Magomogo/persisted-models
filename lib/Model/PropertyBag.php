@@ -36,12 +36,17 @@ class PropertyBag implements \IteratorAggregate
         $this->origin = get_class($container);
     }
 
+    public function isPersistedIn(ContainerInterface $container)
+    {
+        return $this->origin === get_class($container);
+    }
+
     public function getIterator()
     {
         return new \ArrayIterator($this->nameToDataMap);
     }
 
-    public function confirmOrigin(ContainerInterface $container)
+    public function assertOriginIs(ContainerInterface $container)
     {
         if ($this->origin === get_class($container)) {
             return $this;

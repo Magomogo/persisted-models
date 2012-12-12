@@ -58,8 +58,8 @@ class Model implements ContainerReadyInterface
         return $container->saveProperties(
             $this->properties,
             array(
-                'currentCompany' => $this->currentCompany->confirmOrigin($container),
-                'previousCompany' => $this->previousCompany->confirmOrigin($container)
+                'currentCompany' => $this->currentCompany->propertiesFrom($container),
+                'previousCompany' => $this->previousCompany->propertiesFrom($container)
             )
         )->id;
 
@@ -68,11 +68,11 @@ class Model implements ContainerReadyInterface
     /**
      * Confirms that properties has correct origin
      *
-     * @param \Model\DataContainer\ContainerInterface $container
+     * @param \Model\PropertyContainer\ContainerInterface $container
      * @return \Model\PropertyBag
      */
-    public function confirmOrigin(ContainerInterface $container)
+    public function propertiesFrom(ContainerInterface $container)
     {
-        return $this->properties->confirmOrigin($container);
+        return $this->properties->assertOriginIs($container);
     }
 }

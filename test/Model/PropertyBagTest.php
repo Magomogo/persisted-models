@@ -35,7 +35,7 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         $container = new \Model\PropertyContainer\ArrayMap(array());
         $container->loadProperties($properties);
 
-        $this->assertSame($properties, $properties->confirmOrigin($container));
+        $this->assertSame($properties, $properties->assertOriginIs($container));
     }
 
 //----------------------------------------------------------------------------------------------------------------------

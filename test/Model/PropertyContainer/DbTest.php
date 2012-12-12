@@ -58,11 +58,17 @@ class DbTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testExceptionOnLoadingWhenPropertiesAreNotFound()
+    {
+        $this->setExpectedException('\\Model\\Exception\\Origin');
+        self::container(m::mock(array('fetchAssoc' => false)))->loadProperties(new PropertyBag(array(), 1));
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function container($db = null)
     {
-        return new Db($db ?: m::mock());
+        return new Db($db ?: m::mock(array('fetchAssoc' => array())));
     }
 }
 

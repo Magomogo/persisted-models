@@ -29,8 +29,8 @@ interface ContainerInterface
     /**
      * @param string $referenceName
      * @param \Model\PropertyBag $leftProperties
-     * @param \Model\PropertyBag $rightPropertiesType
+     * @param string $rightPropertiesClassName
      * @return array of \Model\PropertyBag
      */
-    public function listReferences($referenceName, PropertyBag $leftProperties, PropertyBag $rightPropertiesType);
+    public function listReferences($referenceName, PropertyBag $leftProperties, $rightPropertiesClassName);
 }
