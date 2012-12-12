@@ -127,16 +127,6 @@ class Db implements ContainerInterface
         return strtolower(str_replace('\\', '_', get_class($object)));
     }
 
-    private static function relatedClassName($columnName)
-    {
-        foreach (array($columnName, str_replace('_', '\\', $columnName)) as $className) {
-            if (class_exists($className)) {
-                return $className;
-            }
-        }
-        return null;
-    }
-
     private function collectReferences(array $row, array $references)
     {
         /* @var PropertyBag $properties */
@@ -157,10 +147,4 @@ class Db implements ContainerInterface
 
         return $keys;
     }
-
-    private static function many2ManyTable(PropertyBag $leftProperties, PropertyBag $rightProperties)
-    {
-        return self::classToName($leftProperties) . '_2_' . self::classToName($rightProperties);
-    }
-
 }
