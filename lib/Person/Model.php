@@ -24,7 +24,8 @@ class Model implements ContainerReadyInterface
         $container->loadProperties($properties);
 
         $person = new self($properties);
-        foreach ($container->listConnections($properties, new Keymarker\Properties()) as $keymarkerProperties) {
+        foreach ($container->listConnections('person2keymarker', $properties, new Keymarker\Properties())
+                 as $keymarkerProperties) {
             $person->tag(new Keymarker\Model($keymarkerProperties));
         }
         return $person;
@@ -81,7 +82,7 @@ class Model implements ContainerReadyInterface
             $connectedProperties[] = $keymarker->confirmOrigin($container);
         }
 
-        $container->connectToMany($this->properties, $connectedProperties);
+        $container->connectToMany('person2keymarker', $this->properties, $connectedProperties);
         return $this->properties->id;
     }
 

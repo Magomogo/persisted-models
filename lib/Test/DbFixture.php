@@ -76,9 +76,9 @@ CREATE TABLE person_properties (
   company INTEGER CONSTRAINT fk_person_to_company REFERENCES company_properties (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-CREATE TABLE person_properties_2_keymarker_properties (
-  person_properties INTEGER CONSTRAINT fk_person_properties_2_keymarker_properties1 REFERENCES person_properties (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  keymarker_properties INTEGER CONSTRAINT fk_person_properties_2_keymarker_properties2 REFERENCES keymarker_properties (id) ON DELETE CASCADE ON UPDATE CASCADE,
+CREATE TABLE person2keymarker (
+  person_properties INTEGER CONSTRAINT fk_person2keymarker1 REFERENCES person_properties (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  keymarker_properties INTEGER CONSTRAINT fk_person2keymarker2 REFERENCES keymarker_properties (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT pk_person_properties_2_keymarker_properties PRIMARY KEY (person_properties, keymarker_properties)
 );
 SQL
