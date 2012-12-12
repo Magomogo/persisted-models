@@ -42,12 +42,12 @@ class ArrayMap implements ContainerInterface
         return $propertyBag;
     }
 
-    public function connectToMany($connectionName, PropertyBag $leftProperties, array $connections)
+    public function referToMany($referenceName, PropertyBag $leftProperties, array $connections)
     {
         // TODO: Implement connectToMany() method.
     }
 
-    public function listConnections($connectionName, PropertyBag $leftProperties, PropertyBag $rightPropertiesType)
+    public function listReferences($referenceName, PropertyBag $leftProperties, PropertyBag $rightPropertiesType)
     {
         // TODO: Implement listConnections() method.
     }

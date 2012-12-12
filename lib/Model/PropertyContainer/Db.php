@@ -45,25 +45,25 @@ class Db implements ContainerInterface
         return $propertyBag;
     }
 
-    public function connectToMany($connectionName, PropertyBag $leftProperties, array $connections)
+    public function referToMany($referenceName, PropertyBag $leftProperties, array $connections)
     {
-        $this->db->delete($connectionName, array(self::classToName($leftProperties) => $leftProperties->id));
+        $this->db->delete($referenceName, array(self::classToName($leftProperties) => $leftProperties->id));
 
         /** @var PropertyBag $propertyBag */
         foreach ($connections as $rightProperties) {
-            $this->db->insert($connectionName, array(
+            $this->db->insert($referenceName, array(
                 self::classToName($leftProperties) => $leftProperties->id,
                 self::classToName($rightProperties) => $rightProperties->id,
             ));
         }
     }
 
-    public function listConnections($connectionName, PropertyBag $leftProperties, PropertyBag $rightPropertiesType)
+    public function listReferences($referenceName, PropertyBag $leftProperties, PropertyBag $rightPropertiesType)
     {
         $rightPropertiesName = self::classToName($rightPropertiesType);
 
         $statement = $this->db->executeQuery(
-            "SELECT $rightPropertiesName FROM $connectionName WHERE " . self::classToName($leftProperties) . '=?',
+            "SELECT $rightPropertiesName FROM $referenceName WHERE " . self::classToName($leftProperties) . '=?',
             array($leftProperties->id)
         );
 
