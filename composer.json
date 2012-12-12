@@ -23,14 +23,14 @@
         }
     ],
     "require": {
-        "php":">=5.3.0"
+        "php":">=5.3.0",
+        "doctrine/dbal": "2.3.0"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
         "mockery/mockery": "0.7.2",
         "phpunit/phpunit": "3.7.1",
-        "hamcrest/hamcrest": "1.1.0",
-        "doctrine/dbal": "2.3.0"
+        "hamcrest/hamcrest": "1.1.0"
     },
     "authors": [
         {
