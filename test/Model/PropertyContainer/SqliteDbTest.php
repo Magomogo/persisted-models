@@ -139,12 +139,24 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($record, $record::loadFrom(self::sqliteContainer(), $id));
     }
 
-    public function testStoresPersonKeymarkers()
+    public function testCreatesTwoRecordsOfSameType()
+    {
+        $this->persistTwoKeymarkers();
+        $this->assertEquals('2', $this->fixture->db->fetchColumn('select count(1) from keymarker_properties'));
+    }
+
+    private function persistTwoKeymarkers()
     {
         $persistedKeymarker1 = Keymarker::friend();
         $persistedKeymarker1->putIn($this->sqliteContainer());
         $persistedKeymarker2 = Keymarker::IT();
         $persistedKeymarker2->putIn($this->sqliteContainer());
+        return array($persistedKeymarker1, $persistedKeymarker2);
+    }
+
+    public function testStoresPersonKeymarkers()
+    {
+        list ($persistedKeymarker1, $persistedKeymarker2) = $this->persistTwoKeymarkers();
 
         $person = Person::maxim();
         $person->tag($persistedKeymarker1);

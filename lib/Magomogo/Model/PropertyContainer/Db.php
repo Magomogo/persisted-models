@@ -142,10 +142,9 @@ class Db implements ContainerInterface
         try {
             $properties->assertOriginIs($this);
         } catch (Exception\Origin $e) {
-            if ($properties->id && $this->db->executeQuery(
-                'SELECT count(1) FROM ' . $this->classToName($properties) . ' WHERE id=?',
-                array($properties->id)
-            )->rowCount()) {
+            if ($properties->id && $this->db->fetchColumn(
+                'SELECT 1 FROM ' . $this->classToName($properties) . ' WHERE id=?', array($properties->id)
+            )) {
                 $properties->persisted($properties->id, $this);
             }
         }
