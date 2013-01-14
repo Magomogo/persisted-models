@@ -12,7 +12,7 @@ use Magomogo\Model\PropertyBag;
  */
 class Properties extends PropertyBag
 {
-    private static function properties()
+    protected static function properties()
     {
         return array(
             'title' => '',
@@ -23,10 +23,5 @@ class Properties extends PropertyBag
             'creditCard' => new \CreditCard\Model(new \CreditCard\Properties()),
             'birthDay' => new \DateTime('1970-01-01')
         );
-    }
-
-    public function __construct($id = null)
-    {
-        parent::__construct(self::properties(), $id);
     }
 }

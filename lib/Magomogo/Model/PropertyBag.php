@@ -5,16 +5,18 @@ use Magomogo\Model\PropertyContainer\ContainerInterface;
 /**
  * @property string $id
  */
-class PropertyBag implements \IteratorAggregate
+abstract class PropertyBag implements \IteratorAggregate
 {
     private $id;
     private $origin;
     private $nameToDataMap;
 
-    public function __construct(array $nameToDataMap, $id = null)
+    abstract protected static function properties();
+
+    public function __construct($id = null)
     {
-        $this->nameToDataMap = (object)$nameToDataMap;
         $this->id = $id;
+        $this->nameToDataMap = (object)static::properties();
     }
 
     public function __get($name)

@@ -8,15 +8,10 @@ use Magomogo\Model\PropertyBag;
  */
 class Properties extends PropertyBag
 {
-    private static function props()
+    protected static function properties()
     {
         return array(
             'created' => new \DateTime
         );
-    }
-
-    public function __construct($id)
-    {
-        parent::__construct(self::props(), $id);
     }
 }

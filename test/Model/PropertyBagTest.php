@@ -43,12 +43,20 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
     private static function bag()
     {
-        $bag = new PropertyBag(array(
+        return new TestProperties();
+    }
+
+}
+
+
+class TestProperties extends PropertyBag
+{
+    protected static function properties()
+    {
+        return array(
             'title' => 'default title',
             'description' => 'default descr',
             'object' => new \stdClass()
-        ));
-        return $bag;
+        );
     }
-
 }

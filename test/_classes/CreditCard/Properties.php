@@ -12,7 +12,7 @@ use Magomogo\Model\PropertyBag;
  */
 class Properties extends PropertyBag
 {
-    private static function properties()
+    protected static function properties()
     {
         return array(
             'system' => '',
@@ -22,10 +22,5 @@ class Properties extends PropertyBag
             'ccv' => '',
             'cardholderName' => '',
         );
-    }
-
-    public function __construct($id = null)
-    {
-        parent::__construct(self::properties(), $id);
     }
 }

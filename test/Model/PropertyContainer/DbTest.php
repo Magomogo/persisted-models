@@ -32,7 +32,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
             'ref1' => new TestType1(null),
             'ref2' => new TestType2(null),
         );
-        self::container($db)->loadProperties(new PropertyBag(array(), 1), $refs);
+        self::container($db)->loadProperties(new TestType1(1), $refs);
 
         $this->assertEquals(4, $refs['ref1']->id);
         $this->assertEquals(5, $refs['ref2']->id);
@@ -41,7 +41,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testSavesReferencesAsForeignKeys()
     {
         $db = m::mock();
-        $db->shouldReceive('insert')->with('propertybag',
+        $db->shouldReceive('insert')->with('propertycontainer_testtype1',
             array(
                 'ref1' => 4,
                 'ref2' => 5,
@@ -50,7 +50,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shouldIgnoreMissing();
 
         self::container($db)->saveProperties(
-            new PropertyBag(array()),
+            new TestType1(),
             array(
                 'ref1' => new TestType1(4),
                 'ref2' => new TestType2(5)
@@ -61,7 +61,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testExceptionOnLoadingWhenPropertiesAreNotFound()
     {
         $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
-        self::container(m::mock(array('fetchAssoc' => false)))->loadProperties(new PropertyBag(array(), 1));
+        self::container(m::mock(array('fetchAssoc' => false)))->loadProperties(new TestType1(1));
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -75,17 +75,17 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
 class TestType1 extends PropertyBag
 {
-    public function __construct($id)
+    protected static function properties()
     {
-        parent::__construct(array(), $id);
+        return array();
     }
 }
 
 class TestType2 extends PropertyBag
 {
-    public function __construct($id)
+    protected static function properties()
     {
-        parent::__construct(array(), $id);
+        return array();
     }
 }
 

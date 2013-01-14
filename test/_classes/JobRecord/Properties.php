@@ -7,13 +7,8 @@ use Magomogo\Model\PropertyBag;
  */
 class Properties extends PropertyBag
 {
-    private static function properties()
+    protected static function properties()
     {
         return array();
-    }
-
-    public function __construct($id = null)
-    {
-        parent::__construct(self::properties(), $id);
     }
 }
