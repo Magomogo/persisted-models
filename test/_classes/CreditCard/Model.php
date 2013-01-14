@@ -1,15 +1,10 @@
 <?php
 namespace CreditCard;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
-use Magomogo\Model\ContainerReadyInterface;
+use Magomogo\Model\ContainerReadyAbstract;
 
-class Model implements ContainerReadyInterface
+class Model extends ContainerReadyAbstract
 {
-    /**
-     * @var Properties
-     */
-    private $properties;
-
     public static function loadFrom(ContainerInterface $container, $id)
     {
         return new self($container->loadProperties(new Properties($id)));
@@ -33,15 +28,5 @@ class Model implements ContainerReadyInterface
     public function payFor($something)
     {
 
-    }
-
-    public function putIn(ContainerInterface $container)
-    {
-        return $container->saveProperties($this->properties)->id;
-    }
-
-    public function propertiesFrom(ContainerInterface $container)
-    {
-        return $this->properties->assertOriginIs($container);
     }
 }

@@ -37,9 +37,4 @@ class Model extends Person\Model
             array('company' => $this->company->propertiesFrom($container))
         )->id;
     }
-
-    public function propertiesFrom(ContainerInterface $container)
-    {
-        return $this->properties->assertOriginIs($container);
-    }
 }

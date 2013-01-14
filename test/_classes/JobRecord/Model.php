@@ -1,16 +1,11 @@
 <?php
 namespace JobRecord;
-use Magomogo\Model\ContainerReadyInterface;
+use Magomogo\Model\ContainerReadyAbstract;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
 use Company;
 
-class Model implements ContainerReadyInterface
+class Model extends ContainerReadyAbstract
 {
-    /**
-     * @var Properties
-     */
-    private $properties;
-
     /**
      * @var \Company\Model
      */
@@ -63,16 +58,5 @@ class Model implements ContainerReadyInterface
             )
         )->id;
 
-    }
-
-    /**
-     * Confirms that properties has correct origin
-     *
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
-     * @return \Magomogo\Model\PropertyBag
-     */
-    public function propertiesFrom(ContainerInterface $container)
-    {
-        return $this->properties->assertOriginIs($container);
     }
 }

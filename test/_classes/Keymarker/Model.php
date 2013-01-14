@@ -1,15 +1,10 @@
 <?php
 namespace Keymarker;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
-use Magomogo\Model\ContainerReadyInterface;
+use Magomogo\Model\ContainerReadyAbstract;
 
-class Model implements ContainerReadyInterface
+class Model extends ContainerReadyAbstract
 {
-    /**
-     * @var Properties
-     */
-    private $props;
-
     public static function loadFrom(ContainerInterface $container, $id)
     {
         $props = new Properties($id);
@@ -19,21 +14,11 @@ class Model implements ContainerReadyInterface
 
     public function __construct(Properties $props)
     {
-        $this->props = $props;
+        $this->properties = $props;
     }
 
     public function __toString()
     {
-        return $this->props->id;
-    }
-
-    public function putIn(ContainerInterface $container)
-    {
-        return $container->saveProperties($this->props)->id;
-    }
-
-    public function propertiesFrom(ContainerInterface $container)
-    {
-        return $this->props->assertOriginIs($container);
+        return $this->properties->id;
     }
 }

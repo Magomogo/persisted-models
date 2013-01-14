@@ -1,18 +1,13 @@
 <?php
 namespace Person;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
-use Magomogo\Model\ContainerReadyInterface;
+use Magomogo\Model\ContainerReadyAbstract;
 use Company;
 use Employee;
 use Keymarker;
 
-class Model implements ContainerReadyInterface
+class Model extends ContainerReadyAbstract
 {
-    /**
-     * @var Properties
-     */
-    protected $properties;
-
     /**
      * @var array
      */
@@ -77,7 +72,7 @@ class Model implements ContainerReadyInterface
         $container->saveProperties($this->properties);
 
         $connectedProperties = array();
-        /** @var ContainerReadyInterface $keymarker */
+        /** @var \Magomogo\Model\ContainerReadyInterface $keymarker */
         foreach ($this->tags as $keymarker) {
             $connectedProperties[] = $keymarker->propertiesFrom($container);
         }
@@ -86,8 +81,4 @@ class Model implements ContainerReadyInterface
         return $this->properties->id;
     }
 
-    public function propertiesFrom(ContainerInterface $container)
-    {
-        return $this->properties->assertOriginIs($container);
-    }
 }
