@@ -60,7 +60,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     public function testExceptionOnLoadingWhenPropertiesAreNotFound()
     {
-        $this->setExpectedException('Magomogo\\Model\\Exception\\Origin');
+        $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
         self::container(m::mock(array('fetchAssoc' => false)))->loadProperties(new PropertyBag(array(), 1));
     }
 

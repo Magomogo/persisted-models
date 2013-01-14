@@ -118,6 +118,8 @@ class Db implements ContainerInterface
             if (is_array($row)) {
                 $propertyBag->persisted($propertyBag->id, $this);
                 return $row;
+            } else {
+                throw new Exception\NotFound;
             }
         }
         return array();
