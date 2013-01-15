@@ -7,7 +7,7 @@ use Magomogo\Model\PropertyBag;
  */
 class Properties extends PropertyBag
 {
-    protected static function properties()
+    protected function properties()
     {
         return array(
             'name' => '',

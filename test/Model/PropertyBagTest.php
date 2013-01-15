@@ -51,7 +51,7 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
 class TestProperties extends PropertyBag
 {
-    protected static function properties()
+    protected function properties()
     {
         return array(
             'title' => 'default title',

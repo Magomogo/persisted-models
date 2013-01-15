@@ -75,7 +75,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
 class TestType1 extends PropertyBag
 {
-    protected static function properties()
+    protected function properties()
     {
         return array();
     }
@@ -83,7 +83,7 @@ class TestType1 extends PropertyBag
 
 class TestType2 extends PropertyBag
 {
-    protected static function properties()
+    protected function properties()
     {
         return array();
     }

@@ -11,12 +11,12 @@ abstract class PropertyBag implements \IteratorAggregate
     private $origin;
     private $nameToDataMap;
 
-    abstract protected static function properties();
+    abstract protected function properties();
 
     public function __construct($id = null)
     {
         $this->id = $id;
-        $this->nameToDataMap = (object)static::properties();
+        $this->nameToDataMap = (object)$this->properties();
     }
 
     public function __get($name)
