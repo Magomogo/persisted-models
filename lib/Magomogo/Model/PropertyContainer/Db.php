@@ -98,7 +98,7 @@ class Db implements ContainerInterface
 
     private function toDbValue($property)
     {
-        if (is_scalar($property)) {
+        if (is_scalar($property) || is_null($property)) {
             return $property;
         } elseif ($property instanceof ContainerReadyInterface) {
             return $property->putIn($this);

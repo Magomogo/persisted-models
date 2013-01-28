@@ -170,6 +170,23 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testWorksWithNulls()
+    {
+        $personProperties = new \Person\Properties();
+        $personProperties->firstName = 'Vova';
+        $personProperties->lastName = null;
+
+        $vova = new \Person\Model($personProperties);
+        $id = $vova->putIn(self::sqliteContainer());
+
+        $this->assertNull(
+            $this->fixture->db->fetchColumn('SELECT lastName FROM person_properties WHERE id = ?', array($id))
+        );
+
+        $properties = \Person\Model::loadFrom(self::sqliteContainer(), $id)->propertiesFrom(self::sqliteContainer());
+        $this->assertNull($properties->lastName);
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private function putEmployeeIn($container)
