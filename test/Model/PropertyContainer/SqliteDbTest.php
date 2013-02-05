@@ -7,6 +7,7 @@ use Test\ObjectMother\Company;
 use Magomogo\Model\PropertyContainer\Db;
 use JobRecord;
 use Test\ObjectMother\Keymarker;
+use Company\Model as CompanyModel;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -185,6 +186,17 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
         $properties = \Person\Model::loadFrom(self::sqliteContainer(), $id)->propertiesFrom(self::sqliteContainer());
         $this->assertNull($properties->lastName);
+    }
+
+    public function testACompanyCanBeDeletedFromContainer()
+    {
+        $company = Company::xiag();
+        $companyId = $company->putIn($this->sqliteContainer());
+
+        $company->deleteFrom($this->sqliteContainer());
+
+        $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
+        CompanyModel::loadFrom($this->sqliteContainer(), $companyId);
     }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -18,6 +18,12 @@ interface ContainerReadyInterface
     public function putIn(ContainerInterface $container);
 
     /**
+     * @param PropertyContainer\ContainerInterface $container
+     * @return void
+     */
+    public function deleteFrom(ContainerInterface $container);
+
+    /**
      * Confirms that properties has correct origin
      *
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container

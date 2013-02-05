@@ -1,6 +1,6 @@
 <?php
 namespace Test\ObjectMother;
-use Magomogo\Model\PropertyContainer\ArrayMap;
+
 use Company\Properties;
 use Company\Model;
 
@@ -8,19 +8,17 @@ class Company
 {
     public static function xiag($id = null)
     {
-        $container = new ArrayMap(array(
-            'name' => 'XIAG',
-        ));
+        $properties = new Properties($id);
+        $properties->name = 'XIAG';
 
-        return new Model($container->loadProperties(new Properties($id)));
+        return new Model($properties);
     }
 
     public static function nstu($id = null)
     {
-        $container = new ArrayMap(array(
-            'name' => 'NSTU',
-        ));
+        $properties = new Properties($id);
+        $properties->name = 'NSTU';
 
-        return new Model($container->loadProperties(new Properties($id)));
+        return new Model($properties);
     }
 }

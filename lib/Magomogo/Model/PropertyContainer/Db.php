@@ -52,6 +52,13 @@ class Db implements ContainerInterface
         return $this->commit($row, $propertyBag);
     }
 
+    public function deleteProperties(array $propertyBags)
+    {
+        foreach ($propertyBags as $bag) {
+            $this->db->delete($this->classToName($bag), array('id' => $bag->id));
+        }
+    }
+
     public function referToMany($referenceName, PropertyBag $leftProperties, array $connections)
     {
         $this->db->delete($referenceName, array($this->classToName($leftProperties) => $leftProperties->id));

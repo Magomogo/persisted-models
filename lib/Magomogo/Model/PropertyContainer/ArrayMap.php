@@ -51,4 +51,13 @@ class ArrayMap implements ContainerInterface
     {
         // TODO: Implement listConnections() method.
     }
+
+    /**
+     * @param array $propertyBags array of \Magomogo\Model\PropertyBag
+     * @return void
+     */
+    public function deleteProperties(array $propertyBags)
+    {
+        // TODO: Implement deleteProperties() method.
+    }
 }

@@ -19,6 +19,12 @@ interface ContainerInterface
     public function saveProperties(PropertyBag $propertyBag, array $references = array());
 
     /**
+     * @param array $propertyBags array of \Magomogo\Model\PropertyBag
+     * @return void
+     */
+    public function deleteProperties(array $propertyBags);
+
+    /**
      * @param string $referenceName
      * @param \Magomogo\Model\PropertyBag $leftProperties
      * @param array $connections array of \Magomogo\Model\PropertyBag

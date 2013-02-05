@@ -64,6 +64,20 @@ class DbTest extends \PHPUnit_Framework_TestCase
         self::container(m::mock(array('fetchAssoc' => false)))->loadProperties(new TestType1(1));
     }
 
+    public function testCanDeleteProperties()
+    {
+        $db = m::mock();
+        $db->shouldReceive('delete')->with('propertycontainer_testtype1', array('id' => 3))->once();
+        $db->shouldReceive('delete')->with('propertycontainer_testtype2', array('id' => 45))->once();
+
+        self::container($db)->deleteProperties(
+            array(
+                new TestType1(3),
+                new TestType2(45)
+            )
+        );
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function container($db = null)

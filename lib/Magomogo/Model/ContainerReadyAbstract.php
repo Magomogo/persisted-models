@@ -19,6 +19,15 @@ abstract class ContainerReadyAbstract implements ContainerReadyInterface
     }
 
     /**
+     * @param PropertyContainer\ContainerInterface $container
+     * @return void
+     */
+    public function deleteFrom(ContainerInterface $container)
+    {
+        $container->deleteProperties(array($this->properties));
+    }
+
+    /**
      * Confirms that properties has correct origin
      *
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container

@@ -13,10 +13,18 @@ abstract class PropertyBag implements \IteratorAggregate
 
     abstract protected function properties();
 
-    public function __construct($id = null)
+    public function __construct($id = null, $valuesMap = null)
     {
         $this->id = $id;
         $this->nameToDataMap = (object)$this->properties();
+
+        if (!is_null($valuesMap)) {
+            foreach ($valuesMap as $name => $value) {
+                if (isset($this->nameToDataMap->$name)) {
+                    $this->$name = $value;
+                }
+            }
+        }
     }
 
     public function __get($name)
@@ -29,7 +37,11 @@ abstract class PropertyBag implements \IteratorAggregate
 
     public function __set($name, $value)
     {
-        $this->nameToDataMap->$name = $value;
+        if (isset($this->nameToDataMap->$name)) {
+            $this->nameToDataMap->$name = $value;
+        } else {
+            trigger_error('Undefined property: ' . $name, E_USER_NOTICE);
+        }
     }
 
     public function persisted($id, ContainerInterface $container)
