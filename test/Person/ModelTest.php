@@ -1,6 +1,5 @@
 <?php
 namespace Person;
-use Magomogo\Model\PropertyContainer\ArrayMap;
 use Mockery as m;
 use Test\ObjectMother\CreditCard;
 use Test\ObjectMother\Keymarker;
@@ -69,7 +68,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function johnDoeProperties()
     {
-        return self::personProperties(
+        return new Properties(null,
             array(
                 'title' => 'Mr.',
                 'firstName' => 'John',
@@ -83,20 +82,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function personWithoutCreditCard()
     {
-        return new Model(self::personProperties(
+        return new Model(new Properties(null,
             array(
                 'title' => 'Mr.',
                 'firstName' => 'John',
                 'lastName' => 'Doe',
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
+                'creditCard' => null
             )
         ));
-    }
-
-    private static function personProperties(array $map)
-    {
-        $container = new ArrayMap($map);
-        return $container->loadProperties(new Properties());
     }
 }

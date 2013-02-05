@@ -33,7 +33,7 @@ class Db implements ContainerInterface
         $propertyBag->assertOriginIs($this);
 
         foreach ($propertyBag as $name => &$property) {
-            $property = $this->fromDbValue($property, $row[$name]);
+            $property = array_key_exists($name, $row) ? $this->fromDbValue($property, $row[$name]) : null;
         }
         $this->collectReferences($row, $references);
 

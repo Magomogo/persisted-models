@@ -1,7 +1,7 @@
 <?php
 namespace Magomogo\Model;
 use Mockery as m;
-use Magomogo\Model\PropertyContainer\ArrayMap;
+use Magomogo\Model\PropertyContainer\Db;
 
 class PropertyBagTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,8 +32,8 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
     public function testKnowsItsOrigin()
     {
-        $properties = self::bag();
-        $container = new ArrayMap(array());
+        $properties = self::bag(11);
+        $container = new Db(m::mock(array('fetchAssoc' => array('title' => 'hehe'))));
         $container->loadProperties($properties);
 
         $this->assertSame($properties, $properties->assertOriginIs($container));
@@ -65,9 +65,9 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
 //----------------------------------------------------------------------------------------------------------------------
 
-    private static function bag()
+    private static function bag($id = null)
     {
-        return new TestProperties();
+        return new TestProperties($id);
     }
 
 }
