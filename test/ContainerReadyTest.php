@@ -3,6 +3,7 @@ use Test\DbFixture;
 use Magomogo\Model\PropertyContainer\Db;
 use Magomogo\Model\ContainerReadyInterface;
 use Test\ObjectMother;
+use Employee\Model as Employee;
 
 class ContainerReadyTest extends PHPUnit_Framework_TestCase
 {
@@ -23,6 +24,19 @@ class ContainerReadyTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
             $model,
             $model::loadFrom($this->dbContainer(), $id)
+        );
+    }
+
+    public function testEmployeeModel()
+    {
+        $company = ObjectMother\Company::xiag();
+        $company->putIn($this->dbContainer());
+        $employee = new Employee($company, ObjectMother\Person::maximProperties());
+        $id = $employee->putIn($this->dbContainer());
+
+        $this->assertEquals(
+            $employee,
+            Employee::loadFrom($this->dbContainer(), $id)
         );
     }
 

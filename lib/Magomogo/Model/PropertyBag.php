@@ -1,6 +1,7 @@
 <?php
 namespace Magomogo\Model;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
+use Magomogo\Model\PropertyContainer\Memory;
 
 /**
  * @property string $id
@@ -52,7 +53,7 @@ abstract class PropertyBag implements \IteratorAggregate
 
     public function isPersistedIn(ContainerInterface $container)
     {
-        return $this->origin === get_class($container);
+        return ($container instanceof Memory) || ($this->origin === get_class($container));
     }
 
     public function getIterator()
@@ -62,7 +63,7 @@ abstract class PropertyBag implements \IteratorAggregate
 
     public function assertOriginIs(ContainerInterface $container)
     {
-        if ($this->origin === get_class($container)) {
+        if ($this->isPersistedIn($container)) {
             return $this;
         }
         throw new Exception\Origin();

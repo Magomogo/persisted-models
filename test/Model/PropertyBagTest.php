@@ -2,6 +2,7 @@
 namespace Magomogo\Model;
 use Mockery as m;
 use Magomogo\Model\PropertyContainer\Db;
+use Magomogo\Model\PropertyContainer\Memory;
 
 class PropertyBagTest extends \PHPUnit_Framework_TestCase
 {
@@ -61,6 +62,12 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
                 'to-be-ignored' => '13'
             ))
         );
+    }
+
+    public function testAssumedThatPropertiesArePersistedInMemory()
+    {
+        $this->assertTrue(self::bag()->isPersistedIn(new Memory));
+        self::bag()->assertOriginIs(new Memory());
     }
 
 //----------------------------------------------------------------------------------------------------------------------
