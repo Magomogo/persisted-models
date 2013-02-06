@@ -45,13 +45,21 @@ abstract class PropertyBag implements \IteratorAggregate
         }
     }
 
-    public function persisted($id, ContainerInterface $container)
+    /**
+     * @param $id
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     */
+    public function persisted($id, $container)
     {
         $this->id = $id;
         $this->origin = get_class($container);
     }
 
-    public function isPersistedIn(ContainerInterface $container)
+    /**
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @return bool
+     */
+    public function isPersistedIn($container)
     {
         return ($container instanceof Memory) || ($this->origin === get_class($container));
     }
@@ -61,7 +69,12 @@ abstract class PropertyBag implements \IteratorAggregate
         return new \ArrayIterator($this->nameToDataMap);
     }
 
-    public function assertOriginIs(ContainerInterface $container)
+    /**
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @return \Magomogo\Model\PropertyBag
+     * @throws Exception\Origin
+     */
+    public function assertOriginIs($container)
     {
         if ($this->isPersistedIn($container)) {
             return $this;

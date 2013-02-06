@@ -27,7 +27,12 @@ class Db implements ContainerInterface
         $this->modelsNamespace = $modelsNamespace;
     }
 
-    public function loadProperties(PropertyBag $propertyBag, array $references = array())
+    /**
+     * @param \Magomogo\Model\PropertyBag $propertyBag
+     * @param array $references
+     * @return \Magomogo\Model\PropertyBag
+     */
+    public function loadProperties($propertyBag, array $references = array())
     {
         $row = $this->begin($propertyBag);
         $propertyBag->assertOriginIs($this);
@@ -40,7 +45,12 @@ class Db implements ContainerInterface
         return $propertyBag;
     }
 
-    public function saveProperties(PropertyBag $propertyBag, array $references = array())
+    /**
+     * @param \Magomogo\Model\PropertyBag $propertyBag
+     * @param array $references
+     * @return \Magomogo\Model\PropertyBag
+     */
+    public function saveProperties($propertyBag, array $references = array())
     {
         $row = $this->foreignKeys($references);
         if (!is_null($propertyBag->id)) {
@@ -52,6 +62,9 @@ class Db implements ContainerInterface
         return $this->commit($row, $propertyBag);
     }
 
+    /**
+     * @param array $propertyBags
+     */
     public function deleteProperties(array $propertyBags)
     {
         foreach ($propertyBags as $bag) {
@@ -59,7 +72,12 @@ class Db implements ContainerInterface
         }
     }
 
-    public function referToMany($referenceName, PropertyBag $leftProperties, array $connections)
+    /**
+     * @param string $referenceName
+     * @param \Magomogo\Model\PropertyBag $leftProperties
+     * @param array $connections
+     */
+    public function referToMany($referenceName, $leftProperties, array $connections)
     {
         $this->db->delete($referenceName, array($this->classToName($leftProperties) => $leftProperties->id));
 
@@ -72,7 +90,13 @@ class Db implements ContainerInterface
         }
     }
 
-    public function listReferences($referenceName, PropertyBag $leftProperties, $rightPropertiesClassName)
+    /**
+     * @param string $referenceName
+     * @param \Magomogo\Model\PropertyBag $leftProperties
+     * @param string $rightPropertiesClassName
+     * @return array
+     */
+    public function listReferences($referenceName, $leftProperties, $rightPropertiesClassName)
     {
         $rightPropertiesName = $this->classToName($rightPropertiesClassName);
 
@@ -116,7 +140,12 @@ class Db implements ContainerInterface
         }
     }
 
-    private function begin(PropertyBag $propertyBag)
+    /**
+     * @param \Magomogo\Model\PropertyBag $propertyBag
+     * @return array
+     * @throws \Magomogo\Model\Exception\NotFound
+     */
+    private function begin($propertyBag)
     {
         if (!is_null($propertyBag->id)) {
             $table = $this->classToName($propertyBag);
@@ -132,7 +161,12 @@ class Db implements ContainerInterface
         return array();
     }
 
-    private function commit(array $row, PropertyBag $properties)
+    /**
+     * @param array $row
+     * @param \Magomogo\Model\PropertyBag $properties
+     * @return \Magomogo\Model\PropertyBag
+     */
+    private function commit(array $row, $properties)
     {
         $this->confirmPersistency($properties);
 
@@ -146,7 +180,10 @@ class Db implements ContainerInterface
         return $properties;
     }
 
-    private function confirmPersistency(PropertyBag $properties)
+    /**
+     * @param \Magomogo\Model\PropertyBag $properties
+     */
+    private function confirmPersistency($properties)
     {
         try {
             $properties->assertOriginIs($this);

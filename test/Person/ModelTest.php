@@ -40,7 +40,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     public function testCanBeSavedIntoAPropertyContainer()
     {
-        $container = m::mock('Magomogo\\Model\\PropertyContainer\\ContainerInterface');
+        $container = m::mock();
         $container->shouldReceive('saveProperties')
             ->with(m::on(function($p) use ($container) {$p->persisted(15, $container); return true;}))
             ->once();

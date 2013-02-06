@@ -21,7 +21,7 @@ class Model extends ContainerReadyAbstract
      * @param string $id
      * @return self
      */
-    public static function loadFrom(ContainerInterface $container, $id)
+    public static function loadFrom($container, $id)
     {
         $properties = new Properties($id);
         $references = array(
@@ -37,7 +37,12 @@ class Model extends ContainerReadyAbstract
         );
     }
 
-    public function __construct(Company\Model $currentCompany, \Company\Model $previousCompany, Properties $properties)
+    /**
+     * @param \Company\Model $currentCompany
+     * @param \Company\Model $previousCompany
+     * @param Properties $properties
+     */
+    public function __construct($currentCompany, $previousCompany, $properties)
     {
         $this->currentCompany = $currentCompany;
         $this->previousCompany = $previousCompany;
@@ -48,7 +53,7 @@ class Model extends ContainerReadyAbstract
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
      * @return string unique identifier
      */
-    public function putIn(ContainerInterface $container)
+    public function putIn($container)
     {
         return $container->saveProperties(
             $this->properties,

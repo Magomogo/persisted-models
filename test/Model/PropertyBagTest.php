@@ -27,7 +27,7 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
     public function testPersistedMessageSetsId()
     {
         $bag = self::bag();
-        $bag->persisted('888', m::mock('Magomogo\\Model\\PropertyContainer\\ContainerInterface'));
+        $bag->persisted('888', m::mock());
         $this->assertEquals('888', $bag->id);
     }
 

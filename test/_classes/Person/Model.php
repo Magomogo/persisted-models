@@ -13,7 +13,12 @@ class Model extends ContainerReadyAbstract
      */
     private $tags = array();
 
-    public static function loadFrom(ContainerInterface $container, $id)
+    /**
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param string $id
+     * @return \Person\Model
+     */
+    public static function loadFrom($container, $id)
     {
         $properties = new Properties($id);
         $container->loadProperties($properties);
@@ -67,7 +72,11 @@ class Model extends ContainerReadyAbstract
         return join(', ', $this->tags);
     }
 
-    public function putIn(ContainerInterface $container)
+    /**
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @return string
+     */
+    public function putIn($container)
     {
         $container->saveProperties($this->properties);
 

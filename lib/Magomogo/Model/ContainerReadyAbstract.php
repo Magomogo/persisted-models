@@ -13,16 +13,16 @@ abstract class ContainerReadyAbstract implements ContainerReadyInterface
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
      * @return string unique identifier
      */
-    public function putIn(ContainerInterface $container)
+    public function putIn($container)
     {
         return $container->saveProperties($this->properties)->id;
     }
 
     /**
-     * @param PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
      * @return void
      */
-    public function deleteFrom(ContainerInterface $container)
+    public function deleteFrom($container)
     {
         $container->deleteProperties(array($this->properties));
     }
@@ -33,7 +33,7 @@ abstract class ContainerReadyAbstract implements ContainerReadyInterface
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
      * @return \Magomogo\Model\PropertyBag
      */
-    public function propertiesFrom(ContainerInterface $container)
+    public function propertiesFrom($container)
     {
         return $this->properties->assertOriginIs($container);
     }

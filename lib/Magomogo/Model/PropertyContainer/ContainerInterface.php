@@ -9,14 +9,14 @@ interface ContainerInterface
      * @param array $references
      * @return \Magomogo\Model\PropertyBag $propertyBag loaded with data
      */
-    public function loadProperties(PropertyBag $propertyBag, array $references = array());
+    public function loadProperties($propertyBag, array $references = array());
 
     /**
      * @param \Magomogo\Model\PropertyBag $propertyBag
      * @param array $references array of PropertyBag
      * @return \Magomogo\Model\PropertyBag
      */
-    public function saveProperties(PropertyBag $propertyBag, array $references = array());
+    public function saveProperties($propertyBag, array $references = array());
 
     /**
      * @param array $propertyBags array of \Magomogo\Model\PropertyBag
@@ -30,7 +30,7 @@ interface ContainerInterface
      * @param array $connections array of \Magomogo\Model\PropertyBag
      * @return void
      */
-    public function referToMany($referenceName, PropertyBag $leftProperties, array $connections);
+    public function referToMany($referenceName, $leftProperties, array $connections);
 
     /**
      * @param string $referenceName
@@ -38,5 +38,5 @@ interface ContainerInterface
      * @param string $rightPropertiesClassName
      * @return array of \Magomogo\Model\PropertyBag
      */
-    public function listReferences($referenceName, PropertyBag $leftProperties, $rightPropertiesClassName);
+    public function listReferences($referenceName, $leftProperties, $rightPropertiesClassName);
 }

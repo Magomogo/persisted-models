@@ -5,7 +5,12 @@ use Magomogo\Model\ContainerReadyAbstract;
 
 class Model extends ContainerReadyAbstract
 {
-    public static function loadFrom(ContainerInterface $container, $id)
+    /**
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param string $id
+     * @return \CreditCard\Model
+     */
+    public static function loadFrom($container, $id)
     {
         return new self($container->loadProperties(new Properties($id)));
     }

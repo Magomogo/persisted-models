@@ -24,7 +24,13 @@ class Memory implements ContainerInterface
      */
     protected $manyToManyReferences = array();
 
-    public function loadProperties(PropertyBag $propertyBag, array $references = array())
+    /**
+     * @param \Magomogo\Model\PropertyBag $propertyBag
+     * @param array $references
+     * @return \Magomogo\Model\PropertyBag
+     * @throws \Magomogo\Model\Exception\NotFound
+     */
+    public function loadProperties($propertyBag, array $references = array())
     {
         if (is_null($this->properties)) {
             throw new NotFound;
@@ -48,14 +54,19 @@ class Memory implements ContainerInterface
      * @param array $references
      * @return \Magomogo\Model\PropertyBag
      */
-    public function saveProperties(PropertyBag $propertyBag, array $references = array())
+    public function saveProperties($propertyBag, array $references = array())
     {
         $this->properties = $propertyBag;
         $this->references = $references;
         return $propertyBag;
     }
 
-    public function referToMany($referenceName, PropertyBag $leftProperties, array $connections)
+    /**
+     * @param string $referenceName
+     * @param \Magomogo\Model\PropertyBag $leftProperties
+     * @param array $connections
+     */
+    public function referToMany($referenceName, $leftProperties, array $connections)
     {
         $this->manyToManyReferences[$referenceName] = array();
         foreach ($connections as $rightProperties) {
@@ -66,7 +77,13 @@ class Memory implements ContainerInterface
         }
     }
 
-    public function listReferences($referenceName, PropertyBag $leftProperties, $rightPropertiesClassName)
+    /**
+     * @param string $referenceName
+     * @param \Magomogo\Model\PropertyBag $leftProperties
+     * @param string $rightPropertiesClassName
+     * @return array
+     */
+    public function listReferences($referenceName, $leftProperties, $rightPropertiesClassName)
     {
         $connections = array();
         foreach ($this->manyToManyReferences[$referenceName] as $pair) {
@@ -85,5 +102,7 @@ class Memory implements ContainerInterface
     public function deleteProperties(array $propertyBags)
     {
         $this->properties = null;
+        $this->references = array();
+        $this->manyToManyReferences = array();
     }
 }

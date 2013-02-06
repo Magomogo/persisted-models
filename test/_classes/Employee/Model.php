@@ -11,7 +11,12 @@ class Model extends Person\Model
      */
     private $company;
 
-    public static function loadFrom(ContainerInterface $container, $id)
+    /**
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param string $id
+     * @return \Employee\Model
+     */
+    public static function loadFrom($container, $id)
     {
         $properties = new \Person\Properties($id);
         $references = array('company' => new \Company\Properties());
@@ -30,7 +35,11 @@ class Model extends Person\Model
         return $this->politeTitle() . ' from ' . $this->company->name();
     }
 
-    public function putIn(ContainerInterface $container)
+    /**
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @return string
+     */
+    public function putIn($container)
     {
         return $container->saveProperties(
             $this->properties,
