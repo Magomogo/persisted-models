@@ -12,17 +12,17 @@ class Memory implements ContainerInterface
     /**
      * @var PropertyBag
      */
-    private $properties;
+    protected $properties;
 
     /**
      * @var array
      */
-    private $references = array();
+    protected $references = array();
 
     /**
      * @var array
      */
-    private $manyToManyReferences = array();
+    protected $manyToManyReferences = array();
 
     public function loadProperties(PropertyBag $propertyBag, array $references = array())
     {
