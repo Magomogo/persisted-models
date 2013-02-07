@@ -49,7 +49,7 @@ class Model extends ContainerReadyAbstract
         $tags = array();
         foreach ($container->listReferences('person2keymarker', $properties, Keymarker::propertiesSample())
                  as $keymarkerProperties) {
-            $tags[] = new Keymarker($keymarkerProperties);
+            $tags[] = Keymarker::loadFrom($container, $keymarkerProperties->id);
         }
         return new self($properties, $tags);
     }
