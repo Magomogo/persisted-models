@@ -1,8 +1,8 @@
 <?php
 namespace Test\ObjectMother;
 
-use Employee\Properties;
-use Employee\Model;
+use Employee\Properties as EmployeeProperties;
+use Employee\Model as EmployeeModel;
 use Company\Model as CompanyModel;
 use Company\Properties as CompanyProperties;
 
@@ -11,16 +11,16 @@ class Employee
     public static function maxim($id = null)
     {
         $maxim = self::maximProperties($id);
-        return new Model(new CompanyModel($maxim->reference('company')), $maxim);
+        return new EmployeeModel(new CompanyModel($maxim->reference('company')), $maxim);
     }
 
     /**
      * @param null $id
-     * @return Properties
+     * @return EmployeeProperties
      */
     public static function maximProperties($id = null)
     {
-        $properties = new Properties(
+        $properties = new EmployeeProperties(
             $id,
             array(
                 'company' => new CompanyProperties(null, array(), array('name' => 'XIAG'))

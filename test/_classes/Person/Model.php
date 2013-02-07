@@ -2,9 +2,7 @@
 namespace Person;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
 use Magomogo\Model\ContainerReadyAbstract;
-use Company;
-use Employee;
-use Keymarker;
+use Keymarker\Model as Keymarker;
 
 class Model extends ContainerReadyAbstract
 {
@@ -23,17 +21,22 @@ class Model extends ContainerReadyAbstract
         $properties = new Properties($id);
         $container->loadProperties($properties);
 
-        $person = new self($properties);
+        $tags = array();
         foreach ($container->listReferences('person2keymarker', $properties, 'Keymarker\Properties')
                  as $keymarkerProperties) {
-            $person->tag(new Keymarker\Model($keymarkerProperties));
+            $tags[] = new Keymarker($keymarkerProperties);
         }
-        return $person;
+        return new self($properties, $tags);
     }
 
-    public function __construct(Properties $properties)
+    /**
+     * @param Properties $properties
+     * @param array $tags array of \Keymarker\Model
+     */
+    public function __construct(Properties $properties, array $tags = array())
     {
         $this->properties = $properties;
+        $this->tags = $tags;
     }
 
     public function politeTitle()
@@ -62,7 +65,7 @@ class Model extends ContainerReadyAbstract
         return !is_null($this->properties->creditCard);
     }
 
-    public function tag(Keymarker\Model $keymarker)
+    public function tag(Keymarker $keymarker)
     {
         $this->tags[] = $keymarker;
     }

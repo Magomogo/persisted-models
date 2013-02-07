@@ -1,7 +1,8 @@
 <?php
 namespace Magomogo\Model\PropertyContainer;
+
 use Mockery as m;
-use Test\ObjectMother\Person;
+use Test\ObjectMother\Person as TestPerson;
 use Magomogo\Model\PropertyBag;
 
 class DbTest extends \PHPUnit_Framework_TestCase
@@ -17,7 +18,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shouldReceive('insert')->with('person_properties', typeOf('array'))->once();
         $db->shouldReceive('insert')->with('creditcard_properties', typeOf('array'))->once();
         $db->shouldIgnoreMissing();
-        Person::maxim()->putIn(self::container($db));
+        TestPerson::maxim()->putIn(self::container($db));
     }
 
     public function testLoadsReferencesAccordingToReferenceName()

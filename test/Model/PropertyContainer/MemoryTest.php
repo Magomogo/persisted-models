@@ -2,10 +2,7 @@
 namespace Magomogo\Model\PropertyContainer;
 
 use Test\ObjectMother;
-use Magomogo\Model\PropertyContainer\Memory;
 use Magomogo\Model\ContainerReadyInterface;
-use Employee\Model as Employee;
-use CreditCard\Model as CreditCard;
 
 class MemoryTest extends \PHPUnit_Framework_TestCase
 {

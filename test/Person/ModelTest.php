@@ -1,8 +1,7 @@
 <?php
 namespace Person;
 use Mockery as m;
-use Test\ObjectMother\CreditCard;
-use Test\ObjectMother\Keymarker;
+use Test\ObjectMother;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -53,8 +52,8 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     public function testCanBeTaggedWithAKeymarker()
     {
         $person = self::person();
-        $person->tag(Keymarker::friend());
-        $person->tag(Keymarker::IT());
+        $person->tag(ObjectMother\Keymarker::friend());
+        $person->tag(ObjectMother\Keymarker::IT());
 
         $this->assertEquals('Friend, IT', $person->taggedAs());
     }
@@ -77,7 +76,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                 'lastName' => 'Doe',
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
-                'creditCard' => CreditCard::datatransTesting()
+                'creditCard' => ObjectMother\CreditCard::datatransTesting()
             )
         );
     }

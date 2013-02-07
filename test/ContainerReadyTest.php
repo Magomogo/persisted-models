@@ -32,10 +32,11 @@ class ContainerReadyTest extends PHPUnit_Framework_TestCase
     public function testEmployeeModel()
     {
         $properties = ObjectMother\Employee::maximProperties();
-        $company = new Company($properties->reference('company'));
-        $company->putIn($this->dbContainer());
 
-        $employee = new Employee($company, $properties);
+        $persistedCompany = new Company($properties->reference('company'));
+        $persistedCompany->putIn($this->dbContainer());
+
+        $employee = new Employee($persistedCompany, $properties);
         $id = $employee->putIn($this->dbContainer());
 
         $loadedProperties = EmployeeProperties::loadFrom($this->dbContainer(), $id);

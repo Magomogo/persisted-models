@@ -1,15 +1,15 @@
 <?php
 namespace Magomogo\Model\PropertyContainer;
+
 use Test\DbFixture;
-use Test\ObjectMother\CreditCard;
-use Test\ObjectMother\Person;
-use Test\ObjectMother\Company;
+use Test\ObjectMother;
 use Magomogo\Model\PropertyContainer\Db;
-use JobRecord;
-use Test\ObjectMother\Keymarker;
-use Test\ObjectMother\Employee;
-use Company\Model as CompanyModel;
-use Employee\Model as EmployeeModel;
+use Company\Model as Company;
+use Employee\Model as Employee;
+use Person\Model as Person;
+use JobRecord\Model as JobRecord;
+use Person\Properties as PersonProperties;
+use JobRecord\Properties as JobRecordProperties;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,7 +33,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testSavesCreditCardIntoDatabase()
     {
-        CreditCard::datatransTesting()->putIn($this->sqliteContainer());
+        ObjectMother\CreditCard::datatransTesting()->putIn($this->sqliteContainer());
 
         $this->assertEquals(
             array(
@@ -51,7 +51,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testSavesAPersonHavingCreditCardIntoDatabase()
     {
-        Person::maxim()->putIn($this->sqliteContainer());
+        ObjectMother\Person::maxim()->putIn($this->sqliteContainer());
 
         $this->assertEquals(
             array(
@@ -83,16 +83,16 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testReadsModelFromTheDatabase()
     {
-        $maximId = Person::maxim()->putIn($this->sqliteContainer());
+        $maximId = ObjectMother\Person::maxim()->putIn($this->sqliteContainer());
         $this->assertEquals(
-            Person::maxim($maximId)->politeTitle(),
+            ObjectMother\Person::maxim($maximId)->politeTitle(),
             $this->loadPersonFromContainer($maximId)->politeTitle()
         );
     }
 
     public function testCanUpdateModelInTheDatabase()
     {
-        $maximId = Person::maxim()->putIn($this->sqliteContainer());
+        $maximId = ObjectMother\Person::maxim()->putIn($this->sqliteContainer());
         $maxim = $this->loadPersonFromContainer($maximId);
 
         $maxim->phoneNumberIsChanged('903-903');
@@ -129,12 +129,12 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testCanSaveAndLoadAJobRecord()
     {
-        $currentCompany = Company::xiag();
+        $currentCompany = ObjectMother\Company::xiag();
         $currentCompany->putIn($this->sqliteContainer());
-        $previousCompany = Company::nstu();
+        $previousCompany = ObjectMother\Company::nstu();
         $previousCompany->putIn($this->sqliteContainer());
 
-        $jobRecordProps = new \JobRecord\Properties(
+        $jobRecordProps = new JobRecordProperties(
             null,
             array(
                 'currentCompany' => $currentCompany->propertiesFrom($this->sqliteContainer()),
@@ -142,7 +142,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $record = new JobRecord\Model(
+        $record = new JobRecord(
             $jobRecordProps->reference('currentCompany'),
             $jobRecordProps->reference('previousCompany'),
             $jobRecordProps
@@ -160,9 +160,9 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private function persistTwoKeymarkers()
     {
-        $persistedKeymarker1 = Keymarker::friend();
+        $persistedKeymarker1 = ObjectMother\Keymarker::friend();
         $persistedKeymarker1->putIn($this->sqliteContainer());
-        $persistedKeymarker2 = Keymarker::IT();
+        $persistedKeymarker2 = ObjectMother\Keymarker::IT();
         $persistedKeymarker2->putIn($this->sqliteContainer());
         return array($persistedKeymarker1, $persistedKeymarker2);
     }
@@ -171,7 +171,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     {
         list ($persistedKeymarker1, $persistedKeymarker2) = $this->persistTwoKeymarkers();
 
-        $person = Person::maxim();
+        $person = ObjectMother\Person::maxim();
         $person->tag($persistedKeymarker1);
         $person->tag($persistedKeymarker2);
 
@@ -185,24 +185,24 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testWorksWithNulls()
     {
-        $personProperties = new \Person\Properties();
+        $personProperties = new PersonProperties();
         $personProperties->firstName = 'Vova';
         $personProperties->lastName = null;
 
-        $vova = new \Person\Model($personProperties);
+        $vova = new Person($personProperties);
         $id = $vova->putIn(self::sqliteContainer());
 
         $this->assertNull(
             $this->fixture->db->fetchColumn('SELECT lastName FROM person_properties WHERE id = ?', array($id))
         );
 
-        $properties = \Person\Properties::loadFrom(self::sqliteContainer(), $id);
+        $properties = PersonProperties::loadFrom(self::sqliteContainer(), $id);
         $this->assertNull($properties->lastName);
     }
 
     public function testACompanyCanBeDeletedFromContainer()
     {
-        $company = Company::xiag();
+        $company = ObjectMother\Company::xiag();
         $companyId = $company->putIn($this->sqliteContainer());
 
         $company->deleteFrom($this->sqliteContainer());
@@ -215,11 +215,11 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private function putEmployeeIn($container)
     {
-        $properties = Employee::maximProperties();
-        $company = new CompanyModel($properties->reference('company'));
+        $properties = ObjectMother\Employee::maximProperties();
+        $company = new Company($properties->reference('company'));
         $company->putIn($container);
 
-        $employee = new EmployeeModel($company, $properties);
+        $employee = new Employee($company, $properties);
         $employee->putIn($container);
         return $employee;
     }
@@ -231,7 +231,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private function loadPersonFromContainer($id)
     {
-        $person = new \Person\Model(new \Person\Properties());
+        $person = new Person(new PersonProperties());
         return $person->newFrom($this->sqliteContainer(), $id);
     }
 }
