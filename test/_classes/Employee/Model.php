@@ -22,11 +22,11 @@ class Model extends Person
      * @param string $id
      * @return \Employee\Model
      */
-    public function newFrom($container, $id)
+    public static function loadFrom($container, $id)
     {
         $loadedProperties = Properties::loadFrom($container, $id);
         return new self(
-            new Company($loadedProperties->reference('company')),
+            Company::loadFrom($container, $loadedProperties->reference('company')->id),
             $loadedProperties
         );
     }

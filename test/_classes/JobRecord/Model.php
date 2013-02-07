@@ -21,7 +21,7 @@ class Model extends ContainerReadyAbstract
      * @param string $id
      * @return self
      */
-    public function newFrom($container, $id)
+    public static function loadFrom($container, $id)
     {
         $properties = new Properties(
             $id,

@@ -2,6 +2,8 @@
 namespace Magomogo\Model\PropertyContainer;
 
 use Test\ObjectMother;
+use Employee\Model as Employee;
+use CreditCard\Model as CreditCard;
 use Magomogo\Model\ContainerReadyInterface;
 
 class MemoryTest extends \PHPUnit_Framework_TestCase
@@ -18,7 +20,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $model,
-            $model->newFrom($container, $id)
+            $model::loadFrom($container, $id)
         );
     }
 
@@ -36,7 +38,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     public function testBehavesCorrectlyWhenEmpty()
     {
         $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
-        ObjectMother\Employee::maxim()->newFrom(new Memory, null);
+        Employee::loadFrom(new Memory, null);
     }
 
     public function testDelete()
@@ -47,7 +49,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $cc->deleteFrom($container);
 
         $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
-        $cc->newFrom($container, null);
+        CreditCard::loadFrom($container, null);
     }
 
 }

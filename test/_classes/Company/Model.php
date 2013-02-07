@@ -1,9 +1,6 @@
 <?php
 namespace Company;
 use Magomogo\Model\ContainerReadyAbstract;
-use Magomogo\Model\PropertyContainer\ContainerInterface;
-use Employee;
-use Person;
 
 class Model extends ContainerReadyAbstract
 {

@@ -3,6 +3,7 @@ namespace Person;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
 use Magomogo\Model\ContainerReadyAbstract;
 use Keymarker\Model as Keymarker;
+use Magomogo\Model\PropertyBag;
 
 class Model extends ContainerReadyAbstract
 {
@@ -16,7 +17,7 @@ class Model extends ContainerReadyAbstract
      * @param string $id
      * @return \Person\Model
      */
-    public function newFrom($container, $id)
+    public static function loadFrom($container, $id)
     {
         $properties = new Properties($id);
         $container->loadProperties($properties);

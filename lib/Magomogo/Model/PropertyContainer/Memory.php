@@ -10,9 +10,9 @@ use Magomogo\Model\Exception\NotFound;
 class Memory implements ContainerInterface
 {
     /**
-     * @var PropertyBag
+     * @var array of PropertyBag
      */
-    protected $properties;
+    protected $storage = array();
 
     /**
      * @var array
@@ -26,15 +26,18 @@ class Memory implements ContainerInterface
      */
     public function loadProperties($propertyBag)
     {
-        if (is_null($this->properties)) {
+        if (!array_key_exists(get_class($propertyBag), $this->storage)) {
             throw new NotFound;
         }
 
-        foreach ($this->properties as $name => $property) {
+        /** @var $properties PropertyBag */
+        $properties = $this->storage[get_class($propertyBag)][$propertyBag->id];
+
+        foreach ($properties as $name => $property) {
             $propertyBag->$name = $property;
         }
 
-        foreach($this->properties->exposeReferences() as $referenceName => $referenceProperties) {
+        foreach($properties->exposeReferences() as $referenceName => $referenceProperties) {
             foreach ($referenceProperties as $name => $property) {
                 $propertyBag->reference($referenceName)->$name = $property;
             }
@@ -49,7 +52,10 @@ class Memory implements ContainerInterface
      */
     public function saveProperties($propertyBag)
     {
-        $this->properties = $propertyBag;
+        $this->storage[get_class($propertyBag)][$propertyBag->id] = $propertyBag;
+        foreach ($propertyBag->exposeReferences() as $referenceProperties) {
+            $this->saveProperties($referenceProperties);
+        }
         return $propertyBag;
     }
 
@@ -66,7 +72,9 @@ class Memory implements ContainerInterface
                 'left' => $leftProperties,
                 'right' => $rightProperties,
             );
+            $this->saveProperties($rightProperties);
         }
+        $this->saveProperties($leftProperties);
     }
 
     /**
@@ -93,7 +101,7 @@ class Memory implements ContainerInterface
      */
     public function deleteProperties(array $propertyBags)
     {
-        $this->properties = null;
+        $this->storage = array();
         $this->manyToManyReferences = array();
     }
 }

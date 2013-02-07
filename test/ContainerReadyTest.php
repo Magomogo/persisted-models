@@ -25,7 +25,7 @@ class ContainerReadyTest extends PHPUnit_Framework_TestCase
         $id = $model->putIn($this->dbContainer());
         $this->assertEquals(
             $model,
-            $model->newFrom($this->dbContainer(), $id)
+            $model::loadFrom($this->dbContainer(), $id)
         );
     }
 

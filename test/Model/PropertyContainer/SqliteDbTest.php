@@ -124,7 +124,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     public function testReadsEmployeeModel()
     {
         $employee = $this->putEmployeeIn($this->sqliteContainer());
-        $this->assertEquals($employee, $employee->newFrom($this->sqliteContainer(), 1));
+        $this->assertEquals($employee, $employee->loadFrom($this->sqliteContainer(), 1));
     }
 
     public function testCanSaveAndLoadAJobRecord()
@@ -149,7 +149,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         );
         $id = $record->putIn($this->sqliteContainer());
 
-        $this->assertEquals($record, $record->newFrom(self::sqliteContainer(), $id));
+        $this->assertEquals($record, $record->loadFrom(self::sqliteContainer(), $id));
     }
 
     public function testCreatesTwoRecordsOfSameType()
@@ -179,7 +179,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $person,
-            $person->newFrom($this->sqliteContainer(), $id)
+            $person->loadFrom($this->sqliteContainer(), $id)
         );
     }
 
@@ -208,7 +208,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $company->deleteFrom($this->sqliteContainer());
 
         $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
-        $company->newFrom($this->sqliteContainer(), $companyId);
+        $company->loadFrom($this->sqliteContainer(), $companyId);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -232,6 +232,6 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     private function loadPersonFromContainer($id)
     {
         $person = new Person(new PersonProperties());
-        return $person->newFrom($this->sqliteContainer(), $id);
+        return $person->loadFrom($this->sqliteContainer(), $id);
     }
 }

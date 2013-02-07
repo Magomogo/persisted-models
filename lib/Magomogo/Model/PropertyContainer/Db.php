@@ -119,7 +119,7 @@ class Db implements ContainerInterface
     private function fromDbValue($property, $column)
     {
         if ($property instanceof ContainerReadyInterface) {
-            return $property->newFrom($this, $column);
+            return $property::loadFrom($this, $column);
         } elseif($property instanceof \DateTime) {
             return new \DateTime($column);
         }
