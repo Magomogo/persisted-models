@@ -7,7 +7,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreatingANewPerson()
     {
-        $person = new Model(new Properties());
+        $person = new Model(Model::propertiesSample());
     }
 
     public function testReadItsPropertiesToImplementSomeBusinessLogic()
@@ -67,9 +67,8 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function johnDoeProperties()
     {
-        return new Properties(
+        return Model::propertiesSample(
             null,
-            array(),
             array(
                 'title' => 'Mr.',
                 'firstName' => 'John',
@@ -83,9 +82,8 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function personWithoutCreditCard()
     {
-        return new Model(new Properties(
+        return new Model(Model::propertiesSample(
             null,
-            array(),
             array(
                 'title' => 'Mr.',
                 'firstName' => 'John',

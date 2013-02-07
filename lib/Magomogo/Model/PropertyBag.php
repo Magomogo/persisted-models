@@ -7,40 +7,31 @@ use Magomogo\Model\Exception\UnknownReference;
 /**
  * @property string $id
  */
-abstract class PropertyBag implements \IteratorAggregate
+class PropertyBag implements \IteratorAggregate
 {
+    private $type;
     private $id;
     private $origin;
     private $properties;
     private $references;
 
-    abstract protected function properties();
-
-    /**
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
-     * @param string $id
-     * @return self
-     */
-    public static function loadFrom($container, $id)
+    public function __construct($type, $id = null, array $valuesMap = array(), array $references = array(),
+                                $valuesToSet = null)
     {
-        $properties = new static($id);
-        $container->loadProperties($properties);
-        return $properties;
-    }
-
-    public function __construct($id = null, array $references = array(), $valuesMap = null)
-    {
+        $this->type = $type;
         $this->id = $id;
-        $this->properties = (object)$this->properties();
+        $this->properties = (object)$valuesMap;
         $this->references = (object)$references;
 
-        if (!is_null($valuesMap)) {
-            foreach ($valuesMap as $name => $value) {
-                if (isset($this->properties->$name)) {
-                    $this->$name = $value;
-                }
+        if (!is_null($valuesToSet)) {
+            foreach ($valuesToSet as $name => $value) {
+                $this->$name = $value;
             }
         }
+    }
+
+    public function type() {
+        return $this->type;
     }
 
     public function __get($name)
@@ -108,5 +99,19 @@ abstract class PropertyBag implements \IteratorAggregate
     public function exposeReferences()
     {
         return $this->references;
+    }
+
+    public function __clone()
+    {
+        $this->properties = clone $this->properties;
+        $this->references = clone $this->references;
+
+        foreach ($this->properties as $name => $value) {
+            $this->$name = clone $value;
+        }
+
+        foreach ($this->references as $name => $value) {
+            $this->$name = clone $value;
+        }
     }
 }

@@ -4,7 +4,6 @@ namespace Test\ObjectMother;
 use Employee\Properties as EmployeeProperties;
 use Employee\Model as EmployeeModel;
 use Company\Model as CompanyModel;
-use Company\Properties as CompanyProperties;
 
 class Employee
 {
@@ -20,11 +19,8 @@ class Employee
      */
     public static function maximProperties($id = null)
     {
-        $properties = new EmployeeProperties(
+        $properties = EmployeeModel::propertiesSample(
             $id,
-            array(
-                'company' => new CompanyProperties(null, array(), array('name' => 'XIAG'))
-            ),
             array(
                 'title' => 'Mr.',
                 'firstName' => 'Maxim',
@@ -35,6 +31,8 @@ class Employee
                 'birthDay' => new \DateTime('1975-07-07T00:00:00+07:00')
             )
         );
+        $properties->reference('company')->name = 'XIAG';
+
         return $properties;
     }
 }

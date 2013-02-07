@@ -7,7 +7,7 @@ class CompanyTest extends \PHPUnit_Framework_TestCase
 {
     public function testAnInstance()
     {
-        new Model(new Properties);
+        new Model(Model::propertiesSample());
     }
 
     public function testProperties()

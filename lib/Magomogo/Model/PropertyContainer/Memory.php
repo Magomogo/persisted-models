@@ -26,12 +26,12 @@ class Memory implements ContainerInterface
      */
     public function loadProperties($propertyBag)
     {
-        if (!array_key_exists(get_class($propertyBag), $this->storage)) {
+        if (!array_key_exists($propertyBag->type(), $this->storage)) {
             throw new NotFound;
         }
 
         /** @var $properties PropertyBag */
-        $properties = $this->storage[get_class($propertyBag)][$propertyBag->id];
+        $properties = $this->storage[$propertyBag->type()][$propertyBag->id];
 
         foreach ($properties as $name => $property) {
             $propertyBag->$name = $property;
@@ -52,7 +52,7 @@ class Memory implements ContainerInterface
      */
     public function saveProperties($propertyBag)
     {
-        $this->storage[get_class($propertyBag)][$propertyBag->id] = $propertyBag;
+        $this->storage[$propertyBag->type()][$propertyBag->id] = $propertyBag;
         foreach ($propertyBag->exposeReferences() as $referenceProperties) {
             $this->saveProperties($referenceProperties);
         }
@@ -80,10 +80,10 @@ class Memory implements ContainerInterface
     /**
      * @param string $referenceName
      * @param \Magomogo\Model\PropertyBag $leftProperties
-     * @param string $rightPropertiesClassName
+     * @param string $rightPropertiesSample
      * @return array
      */
-    public function listReferences($referenceName, $leftProperties, $rightPropertiesClassName)
+    public function listReferences($referenceName, $leftProperties, $rightPropertiesSample)
     {
         $connections = array();
         foreach ($this->manyToManyReferences[$referenceName] as $pair) {

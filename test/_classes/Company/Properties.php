@@ -3,7 +3,7 @@ namespace Company;
 use Magomogo\Model\PropertyBag;
 
 /**
- * @property string $name
+ * @property string $type
  */
 class Properties extends PropertyBag
 {

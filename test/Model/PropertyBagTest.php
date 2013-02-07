@@ -1,5 +1,6 @@
 <?php
 namespace Magomogo\Model;
+
 use Mockery as m;
 use Magomogo\Model\PropertyContainer\Db;
 use Magomogo\Model\PropertyContainer\Memory;
@@ -46,28 +47,6 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         self::bag()->not_configured = 12;
     }
 
-    public function testCanBeInitializedWithArray()
-    {
-        $expected = self::bag();
-        $expected->title = 'Rework';
-        $expected->description = 'A book';
-        $expected->object = new \DateTime('2013-02-05 12:31:00');
-
-        $this->assertEquals(
-            $expected,
-            new TestProperties(
-                null,
-                array('company' => new \Company\Properties()),
-                    array(
-                    'title' => 'Rework',
-                    'description' => 'A book',
-                    'object' => new \DateTime('2013-02-05 12:31:00'),
-                    'to-be-ignored' => '13'
-                )
-            )
-        );
-    }
-
     public function testAssumedThatPropertiesArePersistedInMemory()
     {
         $this->assertTrue(self::bag()->isPersistedIn(new Memory));
@@ -76,16 +55,25 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
     public function testReferencesCanBeExposed()
     {
-        $this->assertInstanceOf('Company\\Properties', self::bag()->exposeReferences()->company);
+        $this->assertInstanceOf('Magomogo\\Model\\PropertyBag', self::bag()->exposeReferences()->company);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function bag($id = null)
     {
-        return new TestProperties($id, array(
-            'company' => new \Company\Properties()
-        ));
+        return new PropertyBag(
+            __CLASS__,
+            $id,
+            array(
+                'title' => 'default title',
+                'description' => 'default descr',
+                'object' => new \stdClass()
+            ),
+            array(
+                'company' => \Company\Model::propertiesSample()
+            )
+        );
     }
 
 }

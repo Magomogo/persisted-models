@@ -13,21 +13,5 @@ use Company\Properties as CompanyProperties;
  */
 class Properties extends PersonProperties
 {
-    /**
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
-     * @param string $id
-     * @return self
-     */
-    public static function loadFrom($container, $id)
-    {
-        $properties = new self(
-            $id,
-            array(
-                'company' => new CompanyProperties
-            )
-        );
-        $container->loadProperties($properties);
-        return $properties;
-    }
 
 }

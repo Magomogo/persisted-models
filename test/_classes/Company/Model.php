@@ -1,10 +1,29 @@
 <?php
 namespace Company;
 use Magomogo\Model\ContainerReadyAbstract;
+use Magomogo\Model\PropertyBag;
 
 class Model extends ContainerReadyAbstract
 {
-    public function __construct(Properties $properties)
+    /**
+     * @param $id
+     * @param null $valuesToSet
+     * @return \Magomogo\Model\PropertyBag
+     */
+    public static function propertiesSample($id = null, $valuesToSet = null)
+    {
+        return new PropertyBag(
+            'company',
+            $id,
+            array(
+                'name' => '',
+            ),
+            array(),
+            $valuesToSet
+        );
+    }
+
+    public function __construct($properties)
     {
         $this->properties = $properties;
     }

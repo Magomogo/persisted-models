@@ -39,14 +39,9 @@ class ContainerReadyTest extends PHPUnit_Framework_TestCase
         $employee = new Employee($persistedCompany, $properties);
         $id = $employee->putIn($this->dbContainer());
 
-        $loadedProperties = EmployeeProperties::loadFrom($this->dbContainer(), $id);
-
         $this->assertEquals(
             $employee,
-            new Employee(
-                new Company($loadedProperties->reference('company')),
-                $loadedProperties
-            )
+            Employee::loadFrom($this->dbContainer(), $id)
         );
     }
 

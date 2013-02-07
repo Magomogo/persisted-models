@@ -92,12 +92,12 @@ class Db implements ContainerInterface
     /**
      * @param string $referenceName
      * @param \Magomogo\Model\PropertyBag $leftProperties
-     * @param string $rightPropertiesClassName
+     * @param \Magomogo\Model\PropertyBag $rightPropertiesSample
      * @return array
      */
-    public function listReferences($referenceName, $leftProperties, $rightPropertiesClassName)
+    public function listReferences($referenceName, $leftProperties, $rightPropertiesSample)
     {
-        $rightPropertiesName = $this->classToName($rightPropertiesClassName);
+        $rightPropertiesName = $this->classToName($rightPropertiesSample);
 
         $statement = $this->db->executeQuery(
             "SELECT $rightPropertiesName FROM $referenceName WHERE " . $this->classToName($leftProperties) . '=?',
@@ -106,9 +106,8 @@ class Db implements ContainerInterface
 
         $connections = array();
         while ($id = $statement->fetchColumn()) {
-            $properties = new $rightPropertiesClassName($id);
-            $this->loadProperties($properties);
-            $connections[] = $properties;
+            $rightPropertiesSample->persisted($id, $this);
+            $connections[] = $this->loadProperties(clone $rightPropertiesSample);
         }
 
         return $connections;
@@ -197,9 +196,7 @@ class Db implements ContainerInterface
 
     private function classToName($class)
     {
-        $name = strtolower(str_replace('\\', '_', is_object($class) ? get_class($class) : $class));
-        $namespacePart = strtolower(str_replace('\\', '_', $this->modelsNamespace));
-        return preg_replace('/^' . preg_quote($namespacePart) . '/', '', $name);
+        return $class->type();
     }
 
     private function collectReferences(array $row, $references)

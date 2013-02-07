@@ -1,10 +1,34 @@
 <?php
 namespace CreditCard;
 use Magomogo\Model\ContainerReadyAbstract;
+use Magomogo\Model\PropertyBag;
 
 class Model extends ContainerReadyAbstract
 {
-    public function __construct(Properties $properties)
+    /**
+     * @param $id
+     * @param null $valuesToSet
+     * @return \Magomogo\Model\PropertyBag
+     */
+    public static function propertiesSample($id = null, $valuesToSet = null)
+    {
+        return new PropertyBag(
+            'credit_card',
+            $id,
+            array(
+                'system' => '',
+                'pan' => '',
+                'validMonth' => '',
+                'validYear' => '',
+                'ccv' => '',
+                'cardholderName' => '',
+            ),
+            array(),
+            $valuesToSet
+        );
+    }
+
+    public function __construct($properties)
     {
         $this->properties = $properties;
     }

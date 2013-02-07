@@ -15,8 +15,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testFollowsTableNamingConvention()
     {
         $db = m::mock();
-        $db->shouldReceive('insert')->with('person_properties', typeOf('array'))->once();
-        $db->shouldReceive('insert')->with('creditcard_properties', typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('person', typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('credit_card', typeOf('array'))->once();
         $db->shouldIgnoreMissing();
         TestPerson::maxim()->putIn(self::container($db));
     }
@@ -29,11 +29,13 @@ class DbTest extends \PHPUnit_Framework_TestCase
             array()
         );
 
-        $properties = new TestType1(
+        $properties = new PropertyBag(
+            __CLASS__,
             1,
+            array(),
             array(
-                'ref1' => new TestType1(null),
-                'ref2' => new TestType2(null),
+                'ref1' => new PropertyBag(__CLASS__),
+                'ref2' => new PropertyBag(__CLASS__),
             )
         );
 
@@ -46,7 +48,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testSavesReferencesAsForeignKeys()
     {
         $db = m::mock();
-        $db->shouldReceive('insert')->with('propertycontainer_testtype1',
+        $db->shouldReceive('insert')->with('properties_type_1',
             array(
                 'ref1' => 4,
                 'ref2' => 5,
@@ -55,11 +57,13 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shouldIgnoreMissing();
 
         self::container($db)->saveProperties(
-            new TestType1(
+            new PropertyBag(
+                'properties_type_1',
                 null,
+                array(),
                 array(
-                    'ref1' => new TestType1(4),
-                    'ref2' => new TestType2(5)
+                    'ref1' => new PropertyBag(__CLASS__, 4),
+                    'ref2' => new PropertyBag(__CLASS__, 5)
                 )
             )
         );
@@ -68,19 +72,19 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testExceptionOnLoadingWhenPropertiesAreNotFound()
     {
         $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
-        self::container(m::mock(array('fetchAssoc' => false)))->loadProperties(new TestType1(1));
+        self::container(m::mock(array('fetchAssoc' => false)))->loadProperties(new PropertyBag(__CLASS__, 1));
     }
 
     public function testCanDeleteProperties()
     {
         $db = m::mock();
-        $db->shouldReceive('delete')->with('propertycontainer_testtype1', array('id' => 3))->once();
-        $db->shouldReceive('delete')->with('propertycontainer_testtype2', array('id' => 45))->once();
+        $db->shouldReceive('delete')->with('test_type_1', array('id' => 3))->once();
+        $db->shouldReceive('delete')->with('test_type_2', array('id' => 45))->once();
 
         self::container($db)->deleteProperties(
             array(
-                new TestType1(3),
-                new TestType2(45)
+                new PropertyBag('test_type_1', 3),
+                new PropertyBag('test_type_2', 45)
             )
         );
     }

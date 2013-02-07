@@ -4,6 +4,7 @@ use Magomogo\Model\PropertyContainer\ContainerInterface;
 use Magomogo\Model\ContainerReadyAbstract;
 use Keymarker\Model as Keymarker;
 use Magomogo\Model\PropertyBag;
+use CreditCard\Model as CreditCard;
 
 class Model extends ContainerReadyAbstract
 {
@@ -13,17 +14,40 @@ class Model extends ContainerReadyAbstract
     private $tags = array();
 
     /**
+     * @param $id
+     * @param null $valuesToSet
+     * @return \Magomogo\Model\PropertyBag
+     */
+    public static function propertiesSample($id = null, $valuesToSet = null)
+    {
+        return new PropertyBag(
+            'person',
+            $id,
+            array(
+                'title' => '',
+                'firstName' => '',
+                'lastName' => '',
+                'phone' => '',
+                'email' => '',
+                'creditCard' => new CreditCard(CreditCard::propertiesSample()),
+                'birthDay' => new \DateTime('1970-01-01')
+            ),
+            array(),
+            $valuesToSet
+        );
+    }
+
+    /**
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
      * @param string $id
      * @return \Person\Model
      */
     public static function loadFrom($container, $id)
     {
-        $properties = new Properties($id);
-        $container->loadProperties($properties);
+        $properties = $container->loadProperties(self::propertiesSample($id));
 
         $tags = array();
-        foreach ($container->listReferences('person2keymarker', $properties, 'Keymarker\Properties')
+        foreach ($container->listReferences('person2keymarker', $properties, Keymarker::propertiesSample())
                  as $keymarkerProperties) {
             $tags[] = new Keymarker($keymarkerProperties);
         }
@@ -31,10 +55,10 @@ class Model extends ContainerReadyAbstract
     }
 
     /**
-     * @param Properties $properties
+     * @param PropertyBag $properties
      * @param array $tags array of \Keymarker\Model
      */
-    public function __construct(Properties $properties, array $tags = array())
+    public function __construct($properties, array $tags = array())
     {
         $this->properties = $properties;
         $this->tags = $tags;

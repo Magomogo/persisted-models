@@ -35,25 +35,25 @@ class DbFixture
     {
         $db->exec(<<<SQL
 
-CREATE TABLE company_properties (
+CREATE TABLE company (
   id INTEGER CONSTRAINT pk_company PRIMARY KEY AUTOINCREMENT,
   name TEXT
 );
 
-CREATE TABLE jobrecord_properties (
+CREATE TABLE job_record (
   id INTEGER CONSTRAINT pk_jobrecord PRIMARY KEY AUTOINCREMENT,
-  currentCompany INTEGER CONSTRAINT fk_jobrecord_to_company1 REFERENCES company_properties (id)
+  currentCompany INTEGER CONSTRAINT fk_jobrecord_to_company1 REFERENCES company (id)
     ON DELETE SET NULL ON UPDATE CASCADE,
-  previousCompany INTEGER CONSTRAINT fk_jobrecord_to_company2 REFERENCES company_properties (id)
+  previousCompany INTEGER CONSTRAINT fk_jobrecord_to_company2 REFERENCES company (id)
     ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-CREATE table keymarker_properties (
+CREATE table keymarker (
   id TEXT CONSTRAINT pk_keymarker PRIMARY KEY,
   created DATE
 );
 
-CREATE table creditcard_properties (
+CREATE table credit_card (
   id INTEGER CONSTRAINT pk_creditcard PRIMARY KEY AUTOINCREMENT,
   system TEXT,
   pan TEXT,
@@ -63,7 +63,7 @@ CREATE table creditcard_properties (
   cardholderName TEXT
 );
 
-CREATE TABLE person_properties (
+CREATE TABLE person (
   id INTEGER CONSTRAINT pk_person PRIMARY KEY AUTOINCREMENT,
   title TEXT,
   firstName TEXT,
@@ -71,10 +71,10 @@ CREATE TABLE person_properties (
   email TEXT,
   phone TEXT,
   birthDay DATE,
-  creditCard INTEGER CONSTRAINT fk_person_to_cc REFERENCES creditcard_properties (id) ON DELETE SET NULL ON UPDATE CASCADE
+  creditCard INTEGER CONSTRAINT fk_person_to_cc REFERENCES credit_card (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-CREATE TABLE employee_properties (
+CREATE TABLE employee (
   id INTEGER CONSTRAINT pk_person PRIMARY KEY AUTOINCREMENT,
   title TEXT,
   firstName TEXT,
@@ -82,14 +82,14 @@ CREATE TABLE employee_properties (
   email TEXT,
   phone TEXT,
   birthDay DATE,
-  creditCard INTEGER CONSTRAINT fk_person_to_cc REFERENCES creditcard_properties (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  company INTEGER CONSTRAINT fk_person_to_company REFERENCES company_properties (id) ON DELETE SET NULL ON UPDATE CASCADE
+  creditCard INTEGER CONSTRAINT fk_person_to_cc REFERENCES creditcard (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  company INTEGER CONSTRAINT fk_person_to_company REFERENCES company (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE person2keymarker (
-  person_properties INTEGER CONSTRAINT fk_person2keymarker1 REFERENCES person_properties (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  keymarker_properties INTEGER CONSTRAINT fk_person2keymarker2 REFERENCES keymarker_properties (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT pk_person_properties_2_keymarker_properties PRIMARY KEY (person_properties, keymarker_properties)
+  person INTEGER CONSTRAINT fk_person2keymarker1 REFERENCES person (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  keymarker INTEGER CONSTRAINT fk_person2keymarker2 REFERENCES keymarker (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT pk_person_2_keymarker PRIMARY KEY (person, keymarker)
 );
 SQL
         );
