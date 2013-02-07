@@ -28,14 +28,18 @@ class DbTest extends \PHPUnit_Framework_TestCase
             array()
         );
 
-        $refs = array(
-            'ref1' => new TestType1(null),
-            'ref2' => new TestType2(null),
+        $properties = new TestType1(
+            1,
+            array(
+                'ref1' => new TestType1(null),
+                'ref2' => new TestType2(null),
+            )
         );
-        self::container($db)->loadProperties(new TestType1(1), $refs);
 
-        $this->assertEquals(4, $refs['ref1']->id);
-        $this->assertEquals(5, $refs['ref2']->id);
+        self::container($db)->loadProperties($properties);
+
+        $this->assertEquals(4, $properties->reference('ref1')->id);
+        $this->assertEquals(5, $properties->reference('ref2')->id);
     }
 
     public function testSavesReferencesAsForeignKeys()
@@ -50,10 +54,12 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shouldIgnoreMissing();
 
         self::container($db)->saveProperties(
-            new TestType1(),
-            array(
-                'ref1' => new TestType1(4),
-                'ref2' => new TestType2(5)
+            new TestType1(
+                null,
+                array(
+                    'ref1' => new TestType1(4),
+                    'ref2' => new TestType2(5)
+                )
             )
         );
     }

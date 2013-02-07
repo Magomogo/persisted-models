@@ -6,17 +6,15 @@ interface ContainerInterface
 {
     /**
      * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @param array $references
      * @return \Magomogo\Model\PropertyBag $propertyBag loaded with data
      */
-    public function loadProperties($propertyBag, array $references = array());
+    public function loadProperties($propertyBag);
 
     /**
      * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @param array $references array of PropertyBag
      * @return \Magomogo\Model\PropertyBag
      */
-    public function saveProperties($propertyBag, array $references = array());
+    public function saveProperties($propertyBag);
 
     /**
      * @param array $propertyBags array of \Magomogo\Model\PropertyBag

@@ -4,6 +4,8 @@ use Magomogo\Model\PropertyContainer\Db;
 use Magomogo\Model\ContainerReadyInterface;
 use Test\ObjectMother;
 use Employee\Model as Employee;
+use Employee\Properties as EmployeeProperties;
+use Company\Model as Company;
 
 class ContainerReadyTest extends PHPUnit_Framework_TestCase
 {
@@ -23,20 +25,27 @@ class ContainerReadyTest extends PHPUnit_Framework_TestCase
         $id = $model->putIn($this->dbContainer());
         $this->assertEquals(
             $model,
-            $model::loadFrom($this->dbContainer(), $id)
+            $model->newFrom($this->dbContainer(), $id)
         );
     }
 
     public function testEmployeeModel()
     {
-        $company = ObjectMother\Company::xiag();
+        $properties = ObjectMother\Employee::maximProperties();
+        $company = new Company($properties->reference('company'));
         $company->putIn($this->dbContainer());
-        $employee = new Employee($company, ObjectMother\Person::maximProperties());
+
+        $employee = new Employee($company, $properties);
         $id = $employee->putIn($this->dbContainer());
+
+        $loadedProperties = EmployeeProperties::loadFrom($this->dbContainer(), $id);
 
         $this->assertEquals(
             $employee,
-            Employee::loadFrom($this->dbContainer(), $id)
+            new Employee(
+                new Company($loadedProperties->reference('company')),
+                $loadedProperties
+            )
         );
     }
 

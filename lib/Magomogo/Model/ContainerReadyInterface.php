@@ -9,7 +9,7 @@ interface ContainerReadyInterface
      * @param string $id
      * @return self
      */
-    public static function loadFrom($container, $id);
+    public function newFrom($container, $id);
 
     /**
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container

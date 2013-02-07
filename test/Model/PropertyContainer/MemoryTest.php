@@ -21,7 +21,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $model,
-            $model::loadFrom($container, $id)
+            $model->newFrom($container, $id)
         );
     }
 
@@ -32,14 +32,14 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
             array(ObjectMother\Person::maxim()),
             array(ObjectMother\Company::xiag()),
             array(ObjectMother\Keymarker::friend()),
-            array(new Employee(ObjectMother\Company::xiag(), ObjectMother\Person::maximProperties()))
+            array(ObjectMother\Employee::maxim())
         );
     }
 
     public function testBehavesCorrectlyWhenEmpty()
     {
         $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
-        Employee::loadFrom(new Memory, null);
+        ObjectMother\Employee::maxim()->newFrom(new Memory, null);
     }
 
     public function testDelete()
@@ -50,7 +50,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $cc->deleteFrom($container);
 
         $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
-        CreditCard::loadFrom($container, null);
+        $cc->newFrom($container, null);
     }
 
 }

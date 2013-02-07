@@ -71,6 +71,17 @@ CREATE TABLE person_properties (
   email TEXT,
   phone TEXT,
   birthDay DATE,
+  creditCard INTEGER CONSTRAINT fk_person_to_cc REFERENCES creditcard_properties (id) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE employee_properties (
+  id INTEGER CONSTRAINT pk_person PRIMARY KEY AUTOINCREMENT,
+  title TEXT,
+  firstName TEXT,
+  lastName TEXT,
+  email TEXT,
+  phone TEXT,
+  birthDay DATE,
   creditCard INTEGER CONSTRAINT fk_person_to_cc REFERENCES creditcard_properties (id) ON DELETE SET NULL ON UPDATE CASCADE,
   company INTEGER CONSTRAINT fk_person_to_company REFERENCES company_properties (id) ON DELETE SET NULL ON UPDATE CASCADE
 );

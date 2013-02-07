@@ -18,7 +18,7 @@ class Model extends ContainerReadyAbstract
      * @param string $id
      * @return \Person\Model
      */
-    public static function loadFrom($container, $id)
+    public function newFrom($container, $id)
     {
         $properties = new Properties($id);
         $container->loadProperties($properties);

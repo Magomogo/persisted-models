@@ -68,7 +68,9 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function johnDoeProperties()
     {
-        return new Properties(null,
+        return new Properties(
+            null,
+            array(),
             array(
                 'title' => 'Mr.',
                 'firstName' => 'John',
@@ -82,7 +84,9 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function personWithoutCreditCard()
     {
-        return new Model(new Properties(null,
+        return new Model(new Properties(
+            null,
+            array(),
             array(
                 'title' => 'Mr.',
                 'firstName' => 'John',

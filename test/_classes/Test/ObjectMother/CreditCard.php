@@ -8,7 +8,7 @@ class CreditCard
 {
     public static function datatransTesting($id = null)
     {
-        return new Model(new Properties($id, array(
+        return new Model(new Properties($id, array(), array(
             'system' => 'VISA',
             'pan' => '9500000000000001',
             'validMonth' => '12',

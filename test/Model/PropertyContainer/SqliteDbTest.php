@@ -7,7 +7,9 @@ use Test\ObjectMother\Company;
 use Magomogo\Model\PropertyContainer\Db;
 use JobRecord;
 use Test\ObjectMother\Keymarker;
+use Test\ObjectMother\Employee;
 use Company\Model as CompanyModel;
+use Employee\Model as EmployeeModel;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,7 +62,6 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
                 'creditCard' => '1',
-                'company' => null,
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
@@ -116,28 +117,39 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'company' => '1',
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
+            $this->fixture->db->fetchAssoc("SELECT * FROM employee_properties")
         );
     }
 
     public function testReadsEmployeeModel()
     {
         $employee = $this->putEmployeeIn($this->sqliteContainer());
-        $newEmployee = \Employee\Model::loadFrom($this->sqliteContainer(), 1);
-        $this->assertEquals($employee, $newEmployee);
+        $this->assertEquals($employee, $employee->newFrom($this->sqliteContainer(), 1));
     }
 
     public function testCanSaveAndLoadAJobRecord()
     {
         $currentCompany = Company::xiag();
-        $currentCompany->putIn(self::sqliteContainer());
+        $currentCompany->putIn($this->sqliteContainer());
         $previousCompany = Company::nstu();
-        $previousCompany->putIn(self::sqliteContainer());
+        $previousCompany->putIn($this->sqliteContainer());
 
-        $record = new JobRecord\Model($currentCompany, $previousCompany, new \JobRecord\Properties());
-        $id = $record->putIn(self::sqliteContainer());
+        $jobRecordProps = new \JobRecord\Properties(
+            null,
+            array(
+                'currentCompany' => $currentCompany->propertiesFrom($this->sqliteContainer()),
+                'previousCompany' => $previousCompany->propertiesFrom($this->sqliteContainer())
+            )
+        );
 
-        $this->assertEquals($record, $record::loadFrom(self::sqliteContainer(), $id));
+        $record = new JobRecord\Model(
+            $jobRecordProps->reference('currentCompany'),
+            $jobRecordProps->reference('previousCompany'),
+            $jobRecordProps
+        );
+        $id = $record->putIn($this->sqliteContainer());
+
+        $this->assertEquals($record, $record->newFrom(self::sqliteContainer(), $id));
     }
 
     public function testCreatesTwoRecordsOfSameType()
@@ -167,7 +179,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $person,
-            $person::loadFrom($this->sqliteContainer(), $id)
+            $person->newFrom($this->sqliteContainer(), $id)
         );
     }
 
@@ -184,7 +196,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
             $this->fixture->db->fetchColumn('SELECT lastName FROM person_properties WHERE id = ?', array($id))
         );
 
-        $properties = \Person\Model::loadFrom(self::sqliteContainer(), $id)->propertiesFrom(self::sqliteContainer());
+        $properties = \Person\Properties::loadFrom(self::sqliteContainer(), $id);
         $this->assertNull($properties->lastName);
     }
 
@@ -196,17 +208,18 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $company->deleteFrom($this->sqliteContainer());
 
         $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
-        CompanyModel::loadFrom($this->sqliteContainer(), $companyId);
+        $company->newFrom($this->sqliteContainer(), $companyId);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
 
     private function putEmployeeIn($container)
     {
-        $company = Company::xiag();
+        $properties = Employee::maximProperties();
+        $company = new CompanyModel($properties->reference('company'));
         $company->putIn($container);
 
-        $employee = new \Employee\Model($company, Person::maximProperties());
+        $employee = new EmployeeModel($company, $properties);
         $employee->putIn($container);
         return $employee;
     }
@@ -218,6 +231,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private function loadPersonFromContainer($id)
     {
-        return \Person\Model::loadFrom(self::sqliteContainer(), $id);
+        $person = new \Person\Model(new \Person\Properties());
+        return $person->newFrom($this->sqliteContainer(), $id);
     }
 }

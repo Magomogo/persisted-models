@@ -17,20 +17,14 @@ class Memory implements ContainerInterface
     /**
      * @var array
      */
-    protected $references = array();
-
-    /**
-     * @var array
-     */
     protected $manyToManyReferences = array();
 
     /**
      * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @param array $references
      * @return \Magomogo\Model\PropertyBag
      * @throws \Magomogo\Model\Exception\NotFound
      */
-    public function loadProperties($propertyBag, array $references = array())
+    public function loadProperties($propertyBag)
     {
         if (is_null($this->properties)) {
             throw new NotFound;
@@ -40,24 +34,22 @@ class Memory implements ContainerInterface
             $propertyBag->$name = $property;
         }
 
-        /* @var PropertyBag $storedProperties */
-        foreach ($this->references as $referenceName => $storedProperties) {
-            foreach ($references[$referenceName] as $name => $property) {
-                $references[$referenceName]->$name = $storedProperties->$name;
+        foreach($this->properties->exposeReferences() as $referenceName => $referenceProperties) {
+            foreach ($referenceProperties as $name => $property) {
+                $propertyBag->reference($referenceName)->$name = $property;
             }
         }
+
         return $propertyBag;
     }
 
     /**
      * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @param array $references
      * @return \Magomogo\Model\PropertyBag
      */
-    public function saveProperties($propertyBag, array $references = array())
+    public function saveProperties($propertyBag)
     {
         $this->properties = $propertyBag;
-        $this->references = $references;
         return $propertyBag;
     }
 
@@ -102,7 +94,6 @@ class Memory implements ContainerInterface
     public function deleteProperties(array $propertyBags)
     {
         $this->properties = null;
-        $this->references = array();
         $this->manyToManyReferences = array();
     }
 }

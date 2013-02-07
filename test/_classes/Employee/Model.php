@@ -1,33 +1,34 @@
 <?php
 namespace Employee;
-use Person;
-use Company;
+use Person\Model as Person;
+use Company\Model as Company;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
 
-class Model extends Person\Model
+class Model extends Person
 {
     /**
-     * @var Company\Model
+     * @var \Company\Model
      */
     private $company;
+
+    public function __construct(Company $company, Properties $properties)
+    {
+        parent::__construct($properties);
+        $this->company = $company;
+    }
 
     /**
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
      * @param string $id
      * @return \Employee\Model
      */
-    public static function loadFrom($container, $id)
+    public function newFrom($container, $id)
     {
-        $properties = new \Person\Properties($id);
-        $references = array('company' => new \Company\Properties());
-        $container->loadProperties($properties, $references);
-        return new self(new Company\Model($references['company']), $properties);
-    }
-
-    public function __construct(Company\Model $company, Person\Properties $properties)
-    {
-        parent::__construct($properties);
-        $this->company = $company;
+        $loadedProperties = Properties::loadFrom($container, $id);
+        return new self(
+            new Company($loadedProperties->reference('company')),
+            $loadedProperties
+        );
     }
 
     public function greeting()
@@ -41,9 +42,6 @@ class Model extends Person\Model
      */
     public function putIn($container)
     {
-        return $container->saveProperties(
-            $this->properties,
-            array('company' => $this->company->propertiesFrom($container))
-        )->id;
+        return $container->saveProperties($this->properties)->id;
     }
 }

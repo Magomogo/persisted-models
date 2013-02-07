@@ -29,10 +29,9 @@ class Db implements ContainerInterface
 
     /**
      * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @param array $references
      * @return \Magomogo\Model\PropertyBag
      */
-    public function loadProperties($propertyBag, array $references = array())
+    public function loadProperties($propertyBag)
     {
         $row = $this->begin($propertyBag);
         $propertyBag->assertOriginIs($this);
@@ -40,25 +39,25 @@ class Db implements ContainerInterface
         foreach ($propertyBag as $name => &$property) {
             $property = array_key_exists($name, $row) ? $this->fromDbValue($property, $row[$name]) : null;
         }
-        $this->collectReferences($row, $references);
+        $this->collectReferences($row, $propertyBag->exposeReferences());
 
         return $propertyBag;
     }
 
     /**
      * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @param array $references
      * @return \Magomogo\Model\PropertyBag
      */
-    public function saveProperties($propertyBag, array $references = array())
+    public function saveProperties($propertyBag)
     {
-        $row = $this->foreignKeys($references);
+        $row = $this->foreignKeys($propertyBag->exposeReferences());
         if (!is_null($propertyBag->id)) {
             $row['id'] = $propertyBag->id;
         }
         foreach ($propertyBag as $name => $property) {
             $row[$name] = $this->toDbValue($property);
         }
+
         return $this->commit($row, $propertyBag);
     }
 
@@ -120,7 +119,7 @@ class Db implements ContainerInterface
     private function fromDbValue($property, $column)
     {
         if ($property instanceof ContainerReadyInterface) {
-            return $property::loadFrom($this, $column);
+            return $property->newFrom($this, $column);
         } elseif($property instanceof \DateTime) {
             return new \DateTime($column);
         }
@@ -203,7 +202,7 @@ class Db implements ContainerInterface
         return preg_replace('/^' . preg_quote($namespacePart) . '/', '', $name);
     }
 
-    private function collectReferences(array $row, array $references)
+    private function collectReferences(array $row, $references)
     {
         /* @var PropertyBag $properties */
         foreach ($references as $referenceName => $properties) {
@@ -213,7 +212,7 @@ class Db implements ContainerInterface
         return $references;
     }
 
-    private function foreignKeys(array $references = array())
+    private function foreignKeys($references)
     {
         $keys = array();
         /* @var PropertyBag $properties */

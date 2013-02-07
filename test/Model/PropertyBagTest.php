@@ -34,7 +34,7 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
     public function testKnowsItsOrigin()
     {
         $properties = self::bag(11);
-        $container = new Db(m::mock(array('fetchAssoc' => array('title' => 'hehe'))));
+        $container = new Db(m::mock(array('fetchAssoc' => array('title' => 'hehe', 'company' => 1))));
         $container->loadProperties($properties);
 
         $this->assertSame($properties, $properties->assertOriginIs($container));
@@ -55,12 +55,16 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $expected,
-            new TestProperties(null, array(
-                'title' => 'Rework',
-                'description' => 'A book',
-                'object' => new \DateTime('2013-02-05 12:31:00'),
-                'to-be-ignored' => '13'
-            ))
+            new TestProperties(
+                null,
+                array('company' => new \Company\Properties()),
+                    array(
+                    'title' => 'Rework',
+                    'description' => 'A book',
+                    'object' => new \DateTime('2013-02-05 12:31:00'),
+                    'to-be-ignored' => '13'
+                )
+            )
         );
     }
 
@@ -70,18 +74,25 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         self::bag()->assertOriginIs(new Memory());
     }
 
+    public function testReferencesCanBeExposed()
+    {
+        $this->assertInstanceOf('Company\\Properties', self::bag()->exposeReferences()->company);
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function bag($id = null)
     {
-        return new TestProperties($id);
+        return new TestProperties($id, array(
+            'company' => new \Company\Properties()
+        ));
     }
 
 }
 
-
 class TestProperties extends PropertyBag
 {
+
     protected function properties()
     {
         return array(

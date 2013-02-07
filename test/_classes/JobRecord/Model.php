@@ -21,25 +21,27 @@ class Model extends ContainerReadyAbstract
      * @param string $id
      * @return self
      */
-    public static function loadFrom($container, $id)
+    public function newFrom($container, $id)
     {
-        $properties = new Properties($id);
-        $references = array(
-            'currentCompany' => new Company\Properties(),
-            'previousCompany' => new Company\Properties()
+        $properties = new Properties(
+            $id,
+            array(
+                'currentCompany' => new Company\Properties(),
+                'previousCompany' => new Company\Properties()
+            )
         );
-        $container->loadProperties($properties, $references);
+        $container->loadProperties($properties);
 
         return new self(
-            new Company\Model($references['currentCompany']),
-            new Company\Model($references['previousCompany']),
+            $properties->reference('currentCompany'),
+            $properties->reference('previousCompany'),
             $properties
         );
     }
 
     /**
      * @param \Company\Model $currentCompany
-     * @param \Company\Model $previousCompany
+     * @param $previousCompany
      * @param Properties $properties
      */
     public function __construct($currentCompany, $previousCompany, $properties)
@@ -47,21 +49,5 @@ class Model extends ContainerReadyAbstract
         $this->currentCompany = $currentCompany;
         $this->previousCompany = $previousCompany;
         $this->properties = $properties;
-    }
-
-    /**
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
-     * @return string unique identifier
-     */
-    public function putIn($container)
-    {
-        return $container->saveProperties(
-            $this->properties,
-            array(
-                'currentCompany' => $this->currentCompany->propertiesFrom($container),
-                'previousCompany' => $this->previousCompany->propertiesFrom($container)
-            )
-        )->id;
-
     }
 }

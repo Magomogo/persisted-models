@@ -2,6 +2,7 @@
 namespace Magomogo\Model;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
 use Magomogo\Model\PropertyContainer\Memory;
+use Magomogo\Model\Exception\UnknownReference;
 
 /**
  * @property string $id
@@ -10,18 +11,32 @@ abstract class PropertyBag implements \IteratorAggregate
 {
     private $id;
     private $origin;
-    private $nameToDataMap;
+    private $properties;
+    private $references;
 
     abstract protected function properties();
 
-    public function __construct($id = null, $valuesMap = null)
+    /**
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param string $id
+     * @return self
+     */
+    public static function loadFrom($container, $id)
+    {
+        $properties = new static($id);
+        $container->loadProperties($properties);
+        return $properties;
+    }
+
+    public function __construct($id = null, array $references = array(), $valuesMap = null)
     {
         $this->id = $id;
-        $this->nameToDataMap = (object)$this->properties();
+        $this->properties = (object)$this->properties();
+        $this->references = (object)$references;
 
         if (!is_null($valuesMap)) {
             foreach ($valuesMap as $name => $value) {
-                if (isset($this->nameToDataMap->$name)) {
+                if (isset($this->properties->$name)) {
                     $this->$name = $value;
                 }
             }
@@ -33,13 +48,13 @@ abstract class PropertyBag implements \IteratorAggregate
         if ($name == 'id') {
             return $this->id;
         }
-        return $this->nameToDataMap->$name;
+        return $this->properties->$name;
     }
 
     public function __set($name, $value)
     {
-        if (isset($this->nameToDataMap->$name)) {
-            $this->nameToDataMap->$name = $value;
+        if (isset($this->properties->$name)) {
+            $this->properties->$name = $value;
         } else {
             trigger_error('Undefined property: ' . $name, E_USER_NOTICE);
         }
@@ -66,7 +81,7 @@ abstract class PropertyBag implements \IteratorAggregate
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->nameToDataMap);
+        return new \ArrayIterator($this->properties);
     }
 
     /**
@@ -80,5 +95,18 @@ abstract class PropertyBag implements \IteratorAggregate
             return $this;
         }
         throw new Exception\Origin();
+    }
+
+    public function reference($referenceName)
+    {
+        if (property_exists($this->references, $referenceName)) {
+            return $this->references->$referenceName;
+        }
+        throw new UnknownReference($referenceName);
+    }
+
+    public function exposeReferences()
+    {
+        return $this->references;
     }
 }

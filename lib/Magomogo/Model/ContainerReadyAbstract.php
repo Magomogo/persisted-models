@@ -11,6 +11,18 @@ abstract class ContainerReadyAbstract implements ContainerReadyInterface
 
     /**
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param string $id
+     * @return self
+     */
+    public function newFrom($container, $id)
+    {
+        $properties = $this->properties;
+        $className = get_class($this);
+        return new $className($properties::loadFrom($container, $id));
+    }
+
+    /**
+     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
      * @return string unique identifier
      */
     public function putIn($container)
