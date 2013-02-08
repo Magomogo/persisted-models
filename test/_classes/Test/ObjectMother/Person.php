@@ -17,7 +17,7 @@ class Person
      */
     public static function maximProperties($id = null)
     {
-        return Model::propertiesSample($id, array(
+        return new Properties($id, array(
             'title' => 'Mr.',
             'firstName' => 'Maxim',
             'lastName' => 'Gnatenko',

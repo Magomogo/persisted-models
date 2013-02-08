@@ -12,20 +12,7 @@ class Model extends ContainerReadyAbstract
      */
     public static function propertiesSample($id = null, $valuesToSet = null)
     {
-        return new PropertyBag(
-            'credit_card',
-            $id,
-            array(
-                'system' => '',
-                'pan' => '',
-                'validMonth' => '',
-                'validYear' => '',
-                'ccv' => '',
-                'cardholderName' => '',
-            ),
-            array(),
-            $valuesToSet
-        );
+        return new Properties($id, $valuesToSet);
     }
 
     public function __construct($properties)

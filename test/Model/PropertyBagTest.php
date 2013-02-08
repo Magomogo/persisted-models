@@ -4,6 +4,7 @@ namespace Magomogo\Model;
 use Mockery as m;
 use Magomogo\Model\PropertyContainer\Db;
 use Magomogo\Model\PropertyContainer\Memory;
+use Company\Properties as CompanyProperties;
 
 class PropertyBagTest extends \PHPUnit_Framework_TestCase
 {
@@ -55,25 +56,14 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
     public function testReferencesCanBeExposed()
     {
-        $this->assertInstanceOf('Magomogo\\Model\\PropertyBag', self::bag()->exposeReferences()->company);
+        $this->assertInstanceOf('Magomogo\\Model\\PropertyBag', self::bag()->foreign()->company);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function bag($id = null)
     {
-        return new PropertyBag(
-            __CLASS__,
-            $id,
-            array(
-                'title' => 'default title',
-                'description' => 'default descr',
-                'object' => new \stdClass()
-            ),
-            array(
-                'company' => \Company\Model::propertiesSample()
-            )
-        );
+        return new TestProperties($id);
     }
 
 }
@@ -87,6 +77,13 @@ class TestProperties extends PropertyBag
             'title' => 'default title',
             'description' => 'default descr',
             'object' => new \stdClass()
+        );
+    }
+
+    protected function foreigners()
+    {
+        return array(
+            'company' => new CompanyProperties
         );
     }
 }

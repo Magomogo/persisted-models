@@ -2,7 +2,6 @@
 namespace JobRecord;
 use Magomogo\Model\ContainerReadyAbstract;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
-use Company\Model as Company;
 use Magomogo\Model\PropertyBag;
 
 class Model extends ContainerReadyAbstract
@@ -24,16 +23,7 @@ class Model extends ContainerReadyAbstract
      */
     public static function propertiesSample($id = null, $valuesToSet = null)
     {
-        return new PropertyBag(
-            'job_record',
-            $id,
-            array(),
-            array(
-                'currentCompany' => Company::propertiesSample(),
-                'previousCompany' => Company::propertiesSample()
-            ),
-            $valuesToSet
-        );
+        return new Properties($id, $valuesToSet);
     }
 
     /**
@@ -46,8 +36,8 @@ class Model extends ContainerReadyAbstract
         $properties = $container->loadProperties(self::propertiesSample($id));
 
         return new self(
-            $properties->reference('currentCompany'),
-            $properties->reference('previousCompany'),
+            $properties->foreign()->currentCompany,
+            $properties->foreign()->previousCompany,
             $properties
         );
     }

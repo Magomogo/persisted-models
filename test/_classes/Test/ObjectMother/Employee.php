@@ -10,7 +10,7 @@ class Employee
     public static function maxim($id = null)
     {
         $maxim = self::maximProperties($id);
-        return new EmployeeModel(new CompanyModel($maxim->reference('company')), $maxim);
+        return new EmployeeModel(new CompanyModel($maxim->foreign()->company), $maxim);
     }
 
     /**
@@ -19,7 +19,7 @@ class Employee
      */
     public static function maximProperties($id = null)
     {
-        $properties = EmployeeModel::propertiesSample(
+        $properties = new EmployeeProperties(
             $id,
             array(
                 'title' => 'Mr.',
@@ -31,7 +31,7 @@ class Employee
                 'birthDay' => new \DateTime('1975-07-07T00:00:00+07:00')
             )
         );
-        $properties->reference('company')->name = 'XIAG';
+        $properties->foreign()->company->name = 'XIAG';
 
         return $properties;
     }

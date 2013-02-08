@@ -13,5 +13,10 @@ use Company\Properties as CompanyProperties;
  */
 class Properties extends PersonProperties
 {
-
+    protected function foreigners()
+    {
+        return array(
+            'company' => new CompanyProperties
+        );
+    }
 }

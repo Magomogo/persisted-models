@@ -26,20 +26,20 @@ class Memory implements ContainerInterface
      */
     public function loadProperties($propertyBag)
     {
-        if (!array_key_exists($propertyBag->type(), $this->storage)) {
+        if (!array_key_exists(get_class($propertyBag), $this->storage)) {
             throw new NotFound;
         }
 
         /** @var $properties PropertyBag */
-        $properties = $this->storage[$propertyBag->type()][$propertyBag->id];
+        $properties = $this->storage[get_class($propertyBag)][$propertyBag->id];
 
         foreach ($properties as $name => $property) {
             $propertyBag->$name = $property;
         }
 
-        foreach($properties->exposeReferences() as $referenceName => $referenceProperties) {
+        foreach($properties->foreign() as $referenceName => $referenceProperties) {
             foreach ($referenceProperties as $name => $property) {
-                $propertyBag->reference($referenceName)->$name = $property;
+                $propertyBag->foreign()->$referenceName->$name = $property;
             }
         }
 
@@ -52,8 +52,8 @@ class Memory implements ContainerInterface
      */
     public function saveProperties($propertyBag)
     {
-        $this->storage[$propertyBag->type()][$propertyBag->id] = $propertyBag;
-        foreach ($propertyBag->exposeReferences() as $referenceProperties) {
+        $this->storage[get_class($propertyBag)][$propertyBag->id] = $propertyBag;
+        foreach ($propertyBag->foreign() as $referenceProperties) {
             $this->saveProperties($referenceProperties);
         }
         return $propertyBag;

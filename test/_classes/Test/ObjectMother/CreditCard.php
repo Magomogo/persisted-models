@@ -2,12 +2,13 @@
 namespace Test\ObjectMother;
 
 use CreditCard\Model;
+use CreditCard\Properties;
 
 class CreditCard
 {
     public static function datatransTesting($id = null)
     {
-        return new Model(Model::propertiesSample($id, array(
+        return new Model(new Properties($id, array(
             'system' => 'VISA',
             'pan' => '9500000000000001',
             'validMonth' => '12',

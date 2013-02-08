@@ -39,7 +39,7 @@ class Db implements ContainerInterface
         foreach ($propertyBag as $name => &$property) {
             $property = array_key_exists($name, $row) ? $this->fromDbValue($property, $row[$name]) : null;
         }
-        $this->collectReferences($row, $propertyBag->exposeReferences());
+        $this->collectReferences($row, $propertyBag->foreign());
 
         return $propertyBag;
     }
@@ -50,7 +50,7 @@ class Db implements ContainerInterface
      */
     public function saveProperties($propertyBag)
     {
-        $row = $this->foreignKeys($propertyBag->exposeReferences());
+        $row = $this->foreignKeys($propertyBag->foreign());
         if (!is_null($propertyBag->id)) {
             $row['id'] = $propertyBag->id;
         }
@@ -196,7 +196,9 @@ class Db implements ContainerInterface
 
     private function classToName($class)
     {
-        return $class->type();
+        $name = strtolower(str_replace('\\', '_', get_class($class)));
+        $namespacePart = strtolower(str_replace('\\', '_', $this->modelsNamespace));
+        return preg_replace('/^' . preg_quote($namespacePart) . '/', '', $name);
     }
 
     private function collectReferences(array $row, $references)

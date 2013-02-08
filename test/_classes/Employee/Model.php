@@ -4,7 +4,6 @@ use Person\Model as Person;
 use Company\Model as Company;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
 use Magomogo\Model\PropertyBag;
-use CreditCard\Model as CreditCard;
 
 class Model extends Person
 {
@@ -20,23 +19,7 @@ class Model extends Person
      */
     public static function propertiesSample($id = null, $valuesToSet = null)
     {
-        return new PropertyBag(
-            'employee',
-            $id,
-            array(
-                'title' => '',
-                'firstName' => '',
-                'lastName' => '',
-                'phone' => '',
-                'email' => '',
-                'creditCard' => new CreditCard(CreditCard::propertiesSample()),
-                'birthDay' => new \DateTime('1970-01-01')
-            ),
-            array(
-                'company' => Company::propertiesSample()
-            ),
-            $valuesToSet
-        );
+        return new Properties($id, $valuesToSet);
     }
 
     /**
@@ -56,9 +39,9 @@ class Model extends Person
      */
     public static function loadFrom($container, $id)
     {
-        $loadedProperties = $container->loadProperties(self::propertiesSample($id));
+        $loadedProperties = $container->loadProperties(new Properties($id));
         return new self(
-            Company::loadFrom($container, $loadedProperties->reference('company')->id),
+            Company::loadFrom($container, $loadedProperties->foreign()->company->id),
             $loadedProperties
         );
     }

@@ -3,8 +3,8 @@ namespace Person;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
 use Magomogo\Model\ContainerReadyAbstract;
 use Keymarker\Model as Keymarker;
+use Keymarker\Properties as KeymarkerProperties;
 use Magomogo\Model\PropertyBag;
-use CreditCard\Model as CreditCard;
 
 class Model extends ContainerReadyAbstract
 {
@@ -20,21 +20,7 @@ class Model extends ContainerReadyAbstract
      */
     public static function propertiesSample($id = null, $valuesToSet = null)
     {
-        return new PropertyBag(
-            'person',
-            $id,
-            array(
-                'title' => '',
-                'firstName' => '',
-                'lastName' => '',
-                'phone' => '',
-                'email' => '',
-                'creditCard' => new CreditCard(CreditCard::propertiesSample()),
-                'birthDay' => new \DateTime('1970-01-01')
-            ),
-            array(),
-            $valuesToSet
-        );
+        return new Properties($id, $valuesToSet);
     }
 
     /**
@@ -44,10 +30,10 @@ class Model extends ContainerReadyAbstract
      */
     public static function loadFrom($container, $id)
     {
-        $properties = $container->loadProperties(self::propertiesSample($id));
+        $properties = $container->loadProperties(new Properties($id));
 
         $tags = array();
-        foreach ($container->listReferences('person2keymarker', $properties, Keymarker::propertiesSample())
+        foreach ($container->listReferences('person2keymarker', $properties, new KeymarkerProperties)
                  as $keymarkerProperties) {
             $tags[] = Keymarker::loadFrom($container, $keymarkerProperties->id);
         }

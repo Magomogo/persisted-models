@@ -13,15 +13,7 @@ class Model extends ContainerReadyAbstract
      */
     public static function propertiesSample($id = null, $valuesToSet = null)
     {
-        return new PropertyBag(
-            'keymarker',
-            $id,
-            array(
-                'created' => new \DateTime
-            ),
-            array(),
-            $valuesToSet
-        );
+        return new Properties($id, $valuesToSet);
     }
 
     public function __construct($properties)

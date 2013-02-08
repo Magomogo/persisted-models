@@ -33,7 +33,7 @@ class ContainerReadyTest extends PHPUnit_Framework_TestCase
     {
         $properties = ObjectMother\Employee::maximProperties();
 
-        $persistedCompany = new Company($properties->reference('company'));
+        $persistedCompany = new Company($properties->foreign()->company);
         $persistedCompany->putIn($this->dbContainer());
 
         $employee = new Employee($persistedCompany, $properties);

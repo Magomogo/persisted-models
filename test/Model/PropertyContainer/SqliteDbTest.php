@@ -26,9 +26,9 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testFixtureHasCorrectTablesCreated()
     {
-        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM company"));
-        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM person"));
-        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM credit_card"));
+        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM company_properties"));
+        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM person_properties"));
+        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM creditcard_properties"));
     }
 
     public function testSavesCreditCardIntoDatabase()
@@ -45,7 +45,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'ccv' => '234',
                 'cardholderName' => 'Maxim Gnatenko'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM credit_card")
+            $this->fixture->db->fetchAssoc("SELECT * FROM creditcard_properties")
         );
     }
 
@@ -64,7 +64,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'creditCard' => '1',
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM person")
+            $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
         );
 
         $this->assertEquals(
@@ -77,7 +77,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'ccv' => '234',
                 'cardholderName' => 'Maxim Gnatenko'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM credit_card")
+            $this->fixture->db->fetchAssoc("SELECT * FROM creditcard_properties")
         );
     }
 
@@ -117,7 +117,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'company' => '1',
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM employee")
+            $this->fixture->db->fetchAssoc("SELECT * FROM employee_properties")
         );
     }
 
@@ -134,13 +134,13 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $previousCompany = ObjectMother\Company::nstu();
         $previousCompany->putIn($this->sqliteContainer());
 
-        $jobRecordProps = JobRecord::propertiesSample();
-        $jobRecordProps->exposeReferences()->currentCompany = $currentCompany->propertiesFrom($this->sqliteContainer());
-        $jobRecordProps->exposeReferences()->previousCompany = $previousCompany->propertiesFrom($this->sqliteContainer());
+        $jobRecordProps = new JobRecordProperties();
+        $jobRecordProps->foreign()->currentCompany = $currentCompany->propertiesFrom($this->sqliteContainer());
+        $jobRecordProps->foreign()->previousCompany = $previousCompany->propertiesFrom($this->sqliteContainer());
 
         $record = new JobRecord(
-            $jobRecordProps->reference('currentCompany'),
-            $jobRecordProps->reference('previousCompany'),
+            $jobRecordProps->foreign()->currentCompany,
+            $jobRecordProps->foreign()->previousCompany,
             $jobRecordProps
         );
         $id = $record->putIn($this->sqliteContainer());
@@ -151,7 +151,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     public function testCreatesTwoRecordsOfSameType()
     {
         $this->persistTwoKeymarkers();
-        $this->assertEquals('2', $this->fixture->db->fetchColumn('select count(1) from keymarker'));
+        $this->assertEquals('2', $this->fixture->db->fetchColumn('select count(1) from keymarker_properties'));
     }
 
     private function persistTwoKeymarkers()
@@ -181,7 +181,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testWorksWithNulls()
     {
-        $personProperties = Person::propertiesSample();
+        $personProperties = new PersonProperties();
         $personProperties->firstName = 'Vova';
         $personProperties->lastName = null;
 
@@ -189,10 +189,10 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $id = $vova->putIn(self::sqliteContainer());
 
         $this->assertNull(
-            $this->fixture->db->fetchColumn('SELECT lastName FROM person WHERE id = ?', array($id))
+            $this->fixture->db->fetchColumn('SELECT lastName FROM person_properties WHERE id = ?', array($id))
         );
 
-        $properties = self::sqliteContainer()->loadProperties(Person::propertiesSample($id));
+        $properties = self::sqliteContainer()->loadProperties(new PersonProperties($id));
         $this->assertNull($properties->lastName);
     }
 
@@ -212,7 +212,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     private function putEmployeeIn($container)
     {
         $properties = ObjectMother\Employee::maximProperties();
-        $company = new Company($properties->reference('company'));
+        $company = new Company($properties->foreign()->company);
         $company->putIn($container);
 
         $employee = new Employee($company, $properties);

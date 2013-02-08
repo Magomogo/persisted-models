@@ -10,6 +10,6 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function keymarker()
     {
-        return new Model(Model::propertiesSample('Friend', array('created' => new \DateTime('2012-12-08 09:50'))));
+        return new Model(new Properties('Friend', array('created' => new \DateTime('2012-12-08 09:50'))));
     }
 }

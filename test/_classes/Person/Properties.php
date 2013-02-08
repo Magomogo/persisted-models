@@ -1,6 +1,9 @@
 <?php
 namespace Person;
+
 use Magomogo\Model\PropertyBag;
+use CreditCard\Model as CreditCard;
+use CreditCard\Properties as CreditCardProperties;
 
 /**
  * @property string $title
@@ -20,7 +23,7 @@ class Properties extends PropertyBag
             'lastName' => '',
             'phone' => '',
             'email' => '',
-            'creditCard' => new \CreditCard\Model(new \CreditCard\Properties()),
+            'creditCard' => new CreditCard(new CreditCardProperties),
             'birthDay' => new \DateTime('1970-01-01')
         );
     }
