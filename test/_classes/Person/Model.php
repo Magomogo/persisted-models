@@ -14,16 +14,6 @@ class Model extends ContainerReadyAbstract
     private $tags = array();
 
     /**
-     * @param $id
-     * @param null $valuesToSet
-     * @return \Magomogo\Model\PropertyBag
-     */
-    public static function propertiesSample($id = null, $valuesToSet = null)
-    {
-        return new Properties($id, $valuesToSet);
-    }
-
-    /**
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
      * @param string $id
      * @return \Person\Model

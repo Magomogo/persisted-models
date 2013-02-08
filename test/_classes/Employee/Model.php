@@ -1,5 +1,6 @@
 <?php
 namespace Employee;
+
 use Person\Model as Person;
 use Company\Model as Company;
 use Magomogo\Model\PropertyContainer\ContainerInterface;
@@ -11,16 +12,6 @@ class Model extends Person
      * @var \Company\Model
      */
     private $company;
-
-    /**
-     * @param $id
-     * @param null $valuesToSet
-     * @return \Magomogo\Model\PropertyBag
-     */
-    public static function propertiesSample($id = null, $valuesToSet = null)
-    {
-        return new Properties($id, $valuesToSet);
-    }
 
     /**
      * @param \Company\Model $company

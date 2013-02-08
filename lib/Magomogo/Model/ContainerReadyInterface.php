@@ -5,13 +5,6 @@ use Magomogo\Model\PropertyContainer\ContainerInterface;
 interface ContainerReadyInterface
 {
     /**
-     * @param $id
-     * @param null $valuesToSet
-     * @return \Magomogo\Model\PropertyBag
-     */
-    public static function propertiesSample($id = null, $valuesToSet = null);
-
-    /**
      * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
      * @param string $id
      * @return self
