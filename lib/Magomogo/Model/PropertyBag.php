@@ -1,8 +1,8 @@
 <?php
 namespace Magomogo\Model;
+
 use Magomogo\Model\PropertyContainer\ContainerInterface;
 use Magomogo\Model\PropertyContainer\Memory;
-use Magomogo\Model\Exception\UnknownReference;
 
 /**
  * @property string $id
