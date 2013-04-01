@@ -1,10 +1,10 @@
 <?php
-namespace Magomogo\Model\PropertyContainer;
+namespace Magomogo\Persisted\PropertyContainer;
 
 use Test\ObjectMother;
 use Employee\Model as Employee;
 use CreditCard\Model as CreditCard;
-use Magomogo\Model\ContainerReadyInterface;
+use Magomogo\Persisted\ContainerReadyInterface;
 
 class MemoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,7 +37,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
 
     public function testBehavesCorrectlyWhenEmpty()
     {
-        $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
+        $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
         Employee::loadFrom(new Memory, null);
     }
 
@@ -48,7 +48,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $cc->putIn($container);
         $cc->deleteFrom($container);
 
-        $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
+        $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
         CreditCard::loadFrom($container, null);
     }
 

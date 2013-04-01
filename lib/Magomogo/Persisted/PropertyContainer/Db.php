@@ -1,9 +1,9 @@
 <?php
-namespace Magomogo\Model\PropertyContainer;
+namespace Magomogo\Persisted\PropertyContainer;
 use Doctrine\DBAL\Connection;
-use Magomogo\Model\PropertyBag;
-use Magomogo\Model\ContainerReadyInterface;
-use Magomogo\Model\Exception;
+use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\ContainerReadyInterface;
+use Magomogo\Persisted\Exception;
 
 class Db implements ContainerInterface
 {
@@ -28,8 +28,8 @@ class Db implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @return \Magomogo\Model\PropertyBag
+     * @param \Magomogo\Persisted\PropertyBag $propertyBag
+     * @return \Magomogo\Persisted\PropertyBag
      */
     public function loadProperties($propertyBag)
     {
@@ -45,8 +45,8 @@ class Db implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @return \Magomogo\Model\PropertyBag
+     * @param \Magomogo\Persisted\PropertyBag $propertyBag
+     * @return \Magomogo\Persisted\PropertyBag
      */
     public function saveProperties($propertyBag)
     {
@@ -73,7 +73,7 @@ class Db implements ContainerInterface
 
     /**
      * @param string $referenceName
-     * @param \Magomogo\Model\PropertyBag $leftProperties
+     * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @param array $connections
      */
     public function referToMany($referenceName, $leftProperties, array $connections)
@@ -91,8 +91,8 @@ class Db implements ContainerInterface
 
     /**
      * @param string $referenceName
-     * @param \Magomogo\Model\PropertyBag $leftProperties
-     * @param \Magomogo\Model\PropertyBag $rightPropertiesSample
+     * @param \Magomogo\Persisted\PropertyBag $leftProperties
+     * @param \Magomogo\Persisted\PropertyBag $rightPropertiesSample
      * @return array
      */
     public function listReferences($referenceName, $leftProperties, $rightPropertiesSample)
@@ -139,9 +139,9 @@ class Db implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Model\PropertyBag $propertyBag
+     * @param \Magomogo\Persisted\PropertyBag $propertyBag
      * @return array
-     * @throws \Magomogo\Model\Exception\NotFound
+     * @throws \Magomogo\Persisted\Exception\NotFound
      */
     private function begin($propertyBag)
     {
@@ -161,8 +161,8 @@ class Db implements ContainerInterface
 
     /**
      * @param array $row
-     * @param \Magomogo\Model\PropertyBag $properties
-     * @return \Magomogo\Model\PropertyBag
+     * @param \Magomogo\Persisted\PropertyBag $properties
+     * @return \Magomogo\Persisted\PropertyBag
      */
     private function commit(array $row, $properties)
     {
@@ -179,7 +179,7 @@ class Db implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Model\PropertyBag $properties
+     * @param \Magomogo\Persisted\PropertyBag $properties
      */
     private function confirmPersistency($properties)
     {

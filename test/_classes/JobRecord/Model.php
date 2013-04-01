@@ -1,8 +1,8 @@
 <?php
 namespace JobRecord;
-use Magomogo\Model\ContainerReadyAbstract;
-use Magomogo\Model\PropertyContainer\ContainerInterface;
-use Magomogo\Model\PropertyBag;
+use Magomogo\Persisted\ContainerReadyAbstract;
+use Magomogo\Persisted\PropertyContainer\ContainerInterface;
+use Magomogo\Persisted\PropertyBag;
 
 class Model extends ContainerReadyAbstract
 {
@@ -17,7 +17,7 @@ class Model extends ContainerReadyAbstract
     private $currentCompany;
 
     /**
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
      * @param string $id
      * @return self
      */

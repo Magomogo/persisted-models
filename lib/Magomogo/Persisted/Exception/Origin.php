@@ -1,5 +1,5 @@
 <?php
-namespace Magomogo\Model\Exception;
+namespace Magomogo\Persisted\Exception;
 
 class Origin extends \Exception
 {

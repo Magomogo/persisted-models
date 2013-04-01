@@ -1,18 +1,18 @@
 <?php
-namespace Magomogo\Model\PropertyContainer;
-use Magomogo\Model\PropertyBag;
+namespace Magomogo\Persisted\PropertyContainer;
+use Magomogo\Persisted\PropertyBag;
 
 interface ContainerInterface
 {
     /**
-     * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @return \Magomogo\Model\PropertyBag $propertyBag loaded with data
+     * @param \Magomogo\Persisted\PropertyBag $propertyBag
+     * @return \Magomogo\Persisted\PropertyBag $propertyBag loaded with data
      */
     public function loadProperties($propertyBag);
 
     /**
-     * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @return \Magomogo\Model\PropertyBag
+     * @param \Magomogo\Persisted\PropertyBag $propertyBag
+     * @return \Magomogo\Persisted\PropertyBag
      */
     public function saveProperties($propertyBag);
 
@@ -24,7 +24,7 @@ interface ContainerInterface
 
     /**
      * @param string $referenceName
-     * @param \Magomogo\Model\PropertyBag $leftProperties
+     * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @param array $connections array of \Magomogo\Model\PropertyBag
      * @return void
      */
@@ -32,7 +32,7 @@ interface ContainerInterface
 
     /**
      * @param string $referenceName
-     * @param \Magomogo\Model\PropertyBag $leftProperties
+     * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @param string $rightPropertiesSample
      * @return array of \Magomogo\Model\PropertyBag
      */

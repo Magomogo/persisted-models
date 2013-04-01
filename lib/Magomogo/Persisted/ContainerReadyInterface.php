@@ -1,18 +1,18 @@
 <?php
-namespace Magomogo\Model;
-use Magomogo\Model\PropertyContainer\ContainerInterface;
+namespace Magomogo\Persisted;
+use Magomogo\Persisted\PropertyContainer\ContainerInterface;
 
 interface ContainerReadyInterface
 {
     /**
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
      * @param string $id
      * @return self
      */
     public static function loadFrom($container, $id);
 
     /**
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
      * @return string unique identifier
      */
     public function putIn($container);
@@ -26,8 +26,8 @@ interface ContainerReadyInterface
     /**
      * Confirms that properties has correct origin
      *
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
-     * @return \Magomogo\Model\PropertyBag
+     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @return \Magomogo\Persisted\PropertyBag
      */
     public function propertiesFrom($container);
 }

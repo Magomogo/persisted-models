@@ -1,6 +1,6 @@
 <?php
 namespace Keymarker;
-use Magomogo\Model\PropertyBag;
+use Magomogo\Persisted\PropertyBag;
 
 /**
  * @property string $id

@@ -1,7 +1,7 @@
 <?php
 namespace JobRecord;
 
-use Magomogo\Model\PropertyBag;
+use Magomogo\Persisted\PropertyBag;
 use Company\Properties as CompanyProperties;
 
 /**

@@ -1,9 +1,9 @@
 <?php
-namespace Magomogo\Model;
+namespace Magomogo\Persisted;
 
 use Mockery as m;
-use Magomogo\Model\PropertyContainer\Db;
-use Magomogo\Model\PropertyContainer\Memory;
+use Magomogo\Persisted\PropertyContainer\Db;
+use Magomogo\Persisted\PropertyContainer\Memory;
 use Company\Properties as CompanyProperties;
 
 class PropertyBagTest extends \PHPUnit_Framework_TestCase
@@ -56,7 +56,7 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
     public function testReferencesCanBeExposed()
     {
-        $this->assertInstanceOf('Magomogo\\Model\\PropertyBag', self::bag()->foreign()->company);
+        $this->assertInstanceOf('Magomogo\\Persisted\\PropertyBag', self::bag()->foreign()->company);
     }
 
 //----------------------------------------------------------------------------------------------------------------------

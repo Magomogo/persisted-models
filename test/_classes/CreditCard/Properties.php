@@ -1,6 +1,6 @@
 <?php
 namespace CreditCard;
-use Magomogo\Model\PropertyBag;
+use Magomogo\Persisted\PropertyBag;
 
 /**
  * @property string $system

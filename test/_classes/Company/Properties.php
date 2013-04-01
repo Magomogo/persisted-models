@@ -1,6 +1,6 @@
 <?php
 namespace Company;
-use Magomogo\Model\PropertyBag;
+use Magomogo\Persisted\PropertyBag;
 
 /**
  * @property string $type

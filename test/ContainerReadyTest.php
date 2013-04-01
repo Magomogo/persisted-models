@@ -1,7 +1,7 @@
 <?php
 use Test\DbFixture;
-use Magomogo\Model\PropertyContainer\Db;
-use Magomogo\Model\ContainerReadyInterface;
+use Magomogo\Persisted\PropertyContainer\Db;
+use Magomogo\Persisted\ContainerReadyInterface;
 use Test\ObjectMother;
 use Employee\Model as Employee;
 use Employee\Properties as EmployeeProperties;

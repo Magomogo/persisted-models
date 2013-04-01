@@ -1,7 +1,7 @@
 <?php
 namespace Person;
 
-use Magomogo\Model\PropertyBag;
+use Magomogo\Persisted\PropertyBag;
 use CreditCard\Model as CreditCard;
 use CreditCard\Properties as CreditCardProperties;
 

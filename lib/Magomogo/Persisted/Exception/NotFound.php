@@ -1,5 +1,5 @@
 <?php
-namespace Magomogo\Model\Exception;
+namespace Magomogo\Persisted\Exception;
 
 class NotFound extends \Exception
 {

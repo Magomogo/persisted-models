@@ -1,9 +1,9 @@
 <?php
-namespace Magomogo\Model\PropertyContainer;
+namespace Magomogo\Persisted\PropertyContainer;
 
 use Test\DbFixture;
 use Test\ObjectMother;
-use Magomogo\Model\PropertyContainer\Db;
+use Magomogo\Persisted\PropertyContainer\Db;
 use Company\Model as Company;
 use Employee\Model as Employee;
 use Person\Model as Person;
@@ -203,7 +203,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
         $company->deleteFrom($this->sqliteContainer());
 
-        $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
+        $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
         $company->loadFrom($this->sqliteContainer(), $companyId);
     }
 

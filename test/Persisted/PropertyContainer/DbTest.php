@@ -1,15 +1,15 @@
 <?php
-namespace Magomogo\Model\PropertyContainer;
+namespace Magomogo\Persisted\PropertyContainer;
 
 use Mockery as m;
 use Test\ObjectMother\Person as TestPerson;
-use Magomogo\Model\PropertyBag;
+use Magomogo\Persisted\PropertyBag;
 
 class DbTest extends \PHPUnit_Framework_TestCase
 {
     public function testImplementsContainerInterface()
     {
-        $this->assertInstanceOf('Magomogo\\Model\\PropertyContainer\\ContainerInterface', self::container());
+        $this->assertInstanceOf('Magomogo\\Persisted\\PropertyContainer\\ContainerInterface', self::container());
     }
 
     public function testFollowsTableNamingConvention()
@@ -57,7 +57,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     public function testExceptionOnLoadingWhenPropertiesAreNotFound()
     {
-        $this->setExpectedException('Magomogo\\Model\\Exception\\NotFound');
+        $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
         self::container(m::mock(array('fetchAssoc' => false)))->loadProperties(new TestType1(1));
     }
 
@@ -79,7 +79,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     private static function container($db = null)
     {
-        return new Db($db ?: m::mock(array('fetchAssoc' => array())), 'Magomogo\\Model\\');
+        return new Db($db ?: m::mock(array('fetchAssoc' => array())), 'Magomogo\\Persisted\\');
     }
 }
 

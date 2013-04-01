@@ -1,8 +1,8 @@
 <?php
-namespace Magomogo\Model;
+namespace Magomogo\Persisted;
 
-use Magomogo\Model\PropertyContainer\ContainerInterface;
-use Magomogo\Model\PropertyContainer\Memory;
+use Magomogo\Persisted\PropertyContainer\ContainerInterface;
+use Magomogo\Persisted\PropertyContainer\Memory;
 
 /**
  * @property string $id
@@ -53,7 +53,7 @@ abstract class PropertyBag implements \IteratorAggregate
 
     /**
      * @param $id
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
      */
     public function persisted($id, $container)
     {
@@ -62,7 +62,7 @@ abstract class PropertyBag implements \IteratorAggregate
     }
 
     /**
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
      * @return bool
      */
     public function isPersistedIn($container)
@@ -76,8 +76,8 @@ abstract class PropertyBag implements \IteratorAggregate
     }
 
     /**
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
-     * @return \Magomogo\Model\PropertyBag
+     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @return \Magomogo\Persisted\PropertyBag
      * @throws Exception\Origin
      */
     public function assertOriginIs($container)

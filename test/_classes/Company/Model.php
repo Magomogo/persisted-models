@@ -1,12 +1,12 @@
 <?php
 namespace Company;
 
-use Magomogo\Model\ContainerReadyAbstract;
+use Magomogo\Persisted\ContainerReadyAbstract;
 
 class Model extends ContainerReadyAbstract
 {
     /**
-     * @param \Magomogo\Model\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
      * @param string $id
      * @return self
      */

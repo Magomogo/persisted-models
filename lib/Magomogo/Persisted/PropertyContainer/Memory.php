@@ -1,8 +1,8 @@
 <?php
-namespace Magomogo\Model\PropertyContainer;
+namespace Magomogo\Persisted\PropertyContainer;
 
-use Magomogo\Model\PropertyBag;
-use Magomogo\Model\Exception\NotFound;
+use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\Exception\NotFound;
 
 /**
  * This container can keep one model and all its references in memory.
@@ -20,9 +20,9 @@ class Memory implements ContainerInterface
     protected $manyToManyReferences = array();
 
     /**
-     * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @return \Magomogo\Model\PropertyBag
-     * @throws \Magomogo\Model\Exception\NotFound
+     * @param \Magomogo\Persisted\PropertyBag $propertyBag
+     * @return \Magomogo\Persisted\PropertyBag
+     * @throws \Magomogo\Persisted\Exception\NotFound
      */
     public function loadProperties($propertyBag)
     {
@@ -47,8 +47,8 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Model\PropertyBag $propertyBag
-     * @return \Magomogo\Model\PropertyBag
+     * @param \Magomogo\Persisted\PropertyBag $propertyBag
+     * @return \Magomogo\Persisted\PropertyBag
      */
     public function saveProperties($propertyBag)
     {
@@ -61,7 +61,7 @@ class Memory implements ContainerInterface
 
     /**
      * @param string $referenceName
-     * @param \Magomogo\Model\PropertyBag $leftProperties
+     * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @param array $connections
      */
     public function referToMany($referenceName, $leftProperties, array $connections)
@@ -79,7 +79,7 @@ class Memory implements ContainerInterface
 
     /**
      * @param string $referenceName
-     * @param \Magomogo\Model\PropertyBag $leftProperties
+     * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @param string $rightPropertiesSample
      * @return array
      */
