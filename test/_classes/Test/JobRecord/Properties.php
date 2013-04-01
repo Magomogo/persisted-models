@@ -1,8 +1,8 @@
 <?php
-namespace JobRecord;
+namespace Test\JobRecord;
 
 use Magomogo\Persisted\PropertyBag;
-use Company\Properties as CompanyProperties;
+use Test\Company\Properties as CompanyProperties;
 
 /**
  * @property string $id

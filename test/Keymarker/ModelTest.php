@@ -1,5 +1,5 @@
 <?php
-namespace Keymarker;
+namespace Test\Keymarker;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {

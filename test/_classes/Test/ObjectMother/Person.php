@@ -1,8 +1,8 @@
 <?php
 namespace Test\ObjectMother;
 
-use Person\Properties;
-use Person\Model;
+use Test\Person\Properties;
+use Test\Person\Model;
 
 class Person
 {

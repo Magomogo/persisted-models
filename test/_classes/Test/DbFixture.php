@@ -1,5 +1,6 @@
 <?php
 namespace Test;
+
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
@@ -20,7 +21,7 @@ class DbFixture
                 'password' => '',
                 'driver' => 'pdo_sqlite',
             ),
-            new \Doctrine\DBAL\Configuration
+            new Configuration
         );
     }
 

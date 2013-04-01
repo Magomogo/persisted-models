@@ -1,13 +1,14 @@
 <?php
+namespace Magomogo\Persisted;
+
 use Test\DbFixture;
 use Magomogo\Persisted\PropertyContainer\Db;
-use Magomogo\Persisted\ContainerReadyInterface;
+use Magomogo\Persisted\PersistedInterface;
 use Test\ObjectMother;
-use Employee\Model as Employee;
-use Employee\Properties as EmployeeProperties;
-use Company\Model as Company;
+use Test\Employee\Model as Employee;
+use Test\Company\Model as Company;
 
-class ContainerReadyTest extends PHPUnit_Framework_TestCase
+class ModelsTest extends \PHPUnit_Framework_TestCase
 {
     private $fixture;
 
@@ -20,7 +21,7 @@ class ContainerReadyTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider modelsProvider
      */
-    public function testCanBePutInAndLoadedFrom(ContainerReadyInterface $model)
+    public function testCanBePutInAndLoadedFrom(PersistedInterface $model)
     {
         $id = $model->putIn($this->dbContainer());
         $this->assertEquals(
@@ -57,6 +58,6 @@ class ContainerReadyTest extends PHPUnit_Framework_TestCase
 
     private function dbContainer()
     {
-        return new Db($this->fixture->db);
+        return new Db($this->fixture->db, 'Test\\');
     }
 }

@@ -1,9 +1,9 @@
 <?php
-namespace Company;
+namespace Test\Keymarker;
 
-use Magomogo\Persisted\ContainerReadyAbstract;
+use Magomogo\Persisted\PersistedAbstract;
 
-class Model extends ContainerReadyAbstract
+class Model extends PersistedAbstract
 {
     /**
      * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
@@ -15,13 +15,16 @@ class Model extends ContainerReadyAbstract
         return new self($container->loadProperties(new Properties($id)));
     }
 
+    /**
+     * @param Properties $properties
+     */
     public function __construct($properties)
     {
         $this->properties = $properties;
     }
 
-    public function name()
+    public function __toString()
     {
-        return $this->properties->name;
+        return $this->properties->id;
     }
 }

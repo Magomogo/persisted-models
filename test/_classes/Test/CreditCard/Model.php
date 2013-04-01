@@ -1,9 +1,9 @@
 <?php
-namespace Keymarker;
+namespace Test\CreditCard;
 
-use Magomogo\Persisted\ContainerReadyAbstract;
+use Magomogo\Persisted\PersistedAbstract;
 
-class Model extends ContainerReadyAbstract
+class Model extends PersistedAbstract
 {
     /**
      * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
@@ -20,8 +20,18 @@ class Model extends ContainerReadyAbstract
         $this->properties = $properties;
     }
 
-    public function __toString()
+    public function maskedPan()
     {
-        return $this->properties->id;
+        return substr($this->properties->pan, 0, 4) . ' **** **** ' . substr($this->properties->pan, 12, 4);
+    }
+
+    public function paymentSystem()
+    {
+        return $this->properties->system;
+    }
+
+    public function payFor($something)
+    {
+
     }
 }

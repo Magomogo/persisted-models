@@ -1,20 +1,20 @@
 <?php
-namespace Employee;
+namespace Test\Employee;
 
-use Person\Model as Person;
-use Company\Model as Company;
+use Test\Person\Model as Person;
+use Test\Company\Model as Company;
 use Magomogo\Persisted\PropertyContainer\ContainerInterface;
 use Magomogo\Persisted\PropertyBag;
 
 class Model extends Person
 {
     /**
-     * @var \Company\Model
+     * @var \Test\Company\Model
      */
     private $company;
 
     /**
-     * @param \Company\Model $company
+     * @param \Test\Company\Model $company
      * @param PropertyBag $properties
      */
     public function __construct($company, $properties)
@@ -26,7 +26,7 @@ class Model extends Person
     /**
      * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
      * @param string $id
-     * @return \Employee\Model
+     * @return \Test\Employee\Model
      */
     public static function loadFrom($container, $id)
     {

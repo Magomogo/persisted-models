@@ -2,7 +2,7 @@
 namespace Magomogo\Persisted\PropertyContainer;
 use Doctrine\DBAL\Connection;
 use Magomogo\Persisted\PropertyBag;
-use Magomogo\Persisted\ContainerReadyInterface;
+use Magomogo\Persisted\PersistedInterface;
 use Magomogo\Persisted\Exception;
 
 class Db implements ContainerInterface
@@ -117,7 +117,7 @@ class Db implements ContainerInterface
 
     private function fromDbValue($property, $column)
     {
-        if ($property instanceof ContainerReadyInterface) {
+        if ($property instanceof PersistedInterface) {
             return $property::loadFrom($this, $column);
         } elseif($property instanceof \DateTime) {
             return new \DateTime($column);
@@ -129,7 +129,7 @@ class Db implements ContainerInterface
     {
         if (is_scalar($property) || is_null($property)) {
             return $property;
-        } elseif ($property instanceof ContainerReadyInterface) {
+        } elseif ($property instanceof PersistedInterface) {
             return $property->putIn($this);
         } elseif ($property instanceof \DateTime) {
             return $property->format('c');

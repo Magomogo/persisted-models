@@ -1,5 +1,6 @@
 <?php
-namespace Person;
+namespace Test\Person;
+
 use Mockery as m;
 use Test\ObjectMother;
 

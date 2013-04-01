@@ -1,9 +1,9 @@
 <?php
 namespace Test\ObjectMother;
 
-use Employee\Properties as EmployeeProperties;
-use Employee\Model as EmployeeModel;
-use Company\Model as CompanyModel;
+use Test\Employee\Properties as EmployeeProperties;
+use Test\Employee\Model as EmployeeModel;
+use Test\Company\Model as CompanyModel;
 
 class Employee
 {

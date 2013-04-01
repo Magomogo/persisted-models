@@ -1,8 +1,8 @@
 <?php
 namespace Test\ObjectMother;
 
-use Company\Model;
-use Company\Properties;
+use Test\Company\Model;
+use Test\Company\Properties;
 
 class Company
 {

@@ -2,9 +2,9 @@
 namespace Magomogo\Persisted\PropertyContainer;
 
 use Test\ObjectMother;
-use Employee\Model as Employee;
-use CreditCard\Model as CreditCard;
-use Magomogo\Persisted\ContainerReadyInterface;
+use Test\Employee\Model as Employee;
+use Test\CreditCard\Model as CreditCard;
+use Magomogo\Persisted\PersistedInterface;
 
 class MemoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,7 +12,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider modelsProvider
      */
-    public function testCanBePutInAndLoadedFrom(ContainerReadyInterface $model)
+    public function testCanBePutInAndLoadedFrom(PersistedInterface $model)
     {
         $container = new Memory;
 

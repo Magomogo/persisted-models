@@ -4,12 +4,12 @@ namespace Magomogo\Persisted\PropertyContainer;
 use Test\DbFixture;
 use Test\ObjectMother;
 use Magomogo\Persisted\PropertyContainer\Db;
-use Company\Model as Company;
-use Employee\Model as Employee;
-use Person\Model as Person;
-use JobRecord\Model as JobRecord;
-use Person\Properties as PersonProperties;
-use JobRecord\Properties as JobRecordProperties;
+use Test\Company\Model as Company;
+use Test\Employee\Model as Employee;
+use Test\Person\Model as Person;
+use Test\JobRecord\Model as JobRecord;
+use Test\Person\Properties as PersonProperties;
+use Test\JobRecord\Properties as JobRecordProperties;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -222,6 +222,6 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private function sqliteContainer()
     {
-        return new Db($this->fixture->db);
+        return new Db($this->fixture->db, 'Test\\');
     }
 }

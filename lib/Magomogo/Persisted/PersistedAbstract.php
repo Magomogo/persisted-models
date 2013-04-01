@@ -2,7 +2,7 @@
 namespace Magomogo\Persisted;
 use Magomogo\Persisted\PropertyContainer\ContainerInterface;
 
-abstract class ContainerReadyAbstract implements ContainerReadyInterface
+abstract class PersistedAbstract implements PersistedInterface
 {
     /**
      * @var PropertyBag

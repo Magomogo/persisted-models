@@ -1,7 +1,7 @@
 <?php
-namespace Company;
+namespace Test\Company;
 
-use Test\ObjectMother\Company as TestCompany;
+use Test\ObjectMother\Company as CompanyMother;
 use Mockery as m;
 
 class CompanyTest extends \PHPUnit_Framework_TestCase
@@ -13,6 +13,6 @@ class CompanyTest extends \PHPUnit_Framework_TestCase
 
     public function testProperties()
     {
-        $this->assertEquals('XIAG', TestCompany::xiag()->name());
+        $this->assertEquals('XIAG', CompanyMother::xiag()->name());
     }
 }

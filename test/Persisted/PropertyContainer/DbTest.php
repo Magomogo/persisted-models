@@ -15,8 +15,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testFollowsTableNamingConvention()
     {
         $db = m::mock();
-        $db->shouldReceive('insert')->with('person_properties', typeOf('array'))->once();
-        $db->shouldReceive('insert')->with('creditcard_properties', typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('test_person_properties', typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('test_creditcard_properties', typeOf('array'))->once();
         $db->shouldIgnoreMissing();
         TestPerson::maxim()->putIn(self::container($db));
     }

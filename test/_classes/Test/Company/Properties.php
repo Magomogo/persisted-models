@@ -1,5 +1,6 @@
 <?php
-namespace Company;
+namespace Test\Company;
+
 use Magomogo\Persisted\PropertyBag;
 
 /**

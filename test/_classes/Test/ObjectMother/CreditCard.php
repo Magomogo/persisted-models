@@ -1,8 +1,8 @@
 <?php
 namespace Test\ObjectMother;
 
-use CreditCard\Model;
-use CreditCard\Properties;
+use Test\CreditCard\Model;
+use Test\CreditCard\Properties;
 
 class CreditCard
 {

@@ -1,5 +1,6 @@
 <?php
-namespace CreditCard;
+namespace Test\CreditCard;
+
 use Magomogo\Persisted\PropertyBag;
 
 /**

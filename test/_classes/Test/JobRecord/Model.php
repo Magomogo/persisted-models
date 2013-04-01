@@ -1,18 +1,18 @@
 <?php
-namespace JobRecord;
-use Magomogo\Persisted\ContainerReadyAbstract;
-use Magomogo\Persisted\PropertyContainer\ContainerInterface;
-use Magomogo\Persisted\PropertyBag;
+namespace Test\JobRecord;
 
-class Model extends ContainerReadyAbstract
+use Magomogo\Persisted\PersistedAbstract;
+use Magomogo\Persisted\PropertyContainer\ContainerInterface;
+
+class Model extends PersistedAbstract
 {
     /**
-     * @var \Company\Model
+     * @var \Test\Company\Model
      */
     private $previousCompany;
 
     /**
-     * @var \Company\Model
+     * @var \Test\Company\Model
      */
     private $currentCompany;
 
@@ -33,7 +33,7 @@ class Model extends ContainerReadyAbstract
     }
 
     /**
-     * @param \Company\Model $currentCompany
+     * @param \Test\Company\Model $currentCompany
      * @param $previousCompany
      * @param Properties $properties
      */

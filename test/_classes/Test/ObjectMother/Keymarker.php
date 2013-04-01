@@ -1,8 +1,8 @@
 <?php
 namespace Test\ObjectMother;
 
-use Keymarker\Model;
-use Keymarker\Properties;
+use Test\Keymarker\Model;
+use Test\Keymarker\Properties;
 
 class Keymarker
 {

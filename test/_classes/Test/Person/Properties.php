@@ -1,9 +1,9 @@
 <?php
-namespace Person;
+namespace Test\Person;
 
 use Magomogo\Persisted\PropertyBag;
-use CreditCard\Model as CreditCard;
-use CreditCard\Properties as CreditCardProperties;
+use Test\CreditCard\Model as CreditCard;
+use Test\CreditCard\Properties as CreditCardProperties;
 
 /**
  * @property string $title
@@ -11,7 +11,7 @@ use CreditCard\Properties as CreditCardProperties;
  * @property string $lastName
  * @property string $phone
  * @property string $email
- * @property \CreditCard\Model $creditCard
+ * @property \Test\CreditCard\Model $creditCard
  */
 class Properties extends PropertyBag
 {

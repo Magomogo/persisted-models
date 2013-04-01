@@ -2,7 +2,7 @@
 namespace Magomogo\Persisted;
 use Magomogo\Persisted\PropertyContainer\ContainerInterface;
 
-interface ContainerReadyInterface
+interface PersistedInterface
 {
     /**
      * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container

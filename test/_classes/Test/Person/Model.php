@@ -1,12 +1,13 @@
 <?php
-namespace Person;
+namespace Test\Person;
+
 use Magomogo\Persisted\PropertyContainer\ContainerInterface;
-use Magomogo\Persisted\ContainerReadyAbstract;
-use Keymarker\Model as Keymarker;
-use Keymarker\Properties as KeymarkerProperties;
+use Magomogo\Persisted\PersistedAbstract;
+use Test\Keymarker\Model as Keymarker;
+use Test\Keymarker\Properties as KeymarkerProperties;
 use Magomogo\Persisted\PropertyBag;
 
-class Model extends ContainerReadyAbstract
+class Model extends PersistedAbstract
 {
     /**
      * @var array
@@ -16,7 +17,7 @@ class Model extends ContainerReadyAbstract
     /**
      * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
      * @param string $id
-     * @return \Person\Model
+     * @return \Test\Person\Model
      */
     public static function loadFrom($container, $id)
     {
@@ -31,7 +32,7 @@ class Model extends ContainerReadyAbstract
     }
 
     /**
-     * @param PropertyBag $properties
+     * @param Properties $properties
      * @param array $tags array of \Keymarker\Model
      */
     public function __construct($properties, array $tags = array())
@@ -85,7 +86,7 @@ class Model extends ContainerReadyAbstract
         $container->saveProperties($this->properties);
 
         $connectedProperties = array();
-        /** @var \Magomogo\Persisted\ContainerReadyInterface $keymarker */
+        /** @var \Magomogo\Persisted\PersistedInterface $keymarker */
         foreach ($this->tags as $keymarker) {
             $connectedProperties[] = $keymarker->propertiesFrom($container);
         }
