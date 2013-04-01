@@ -2,7 +2,7 @@
 namespace Magomogo\Persisted;
 
 use Test\DbFixture;
-use Magomogo\Persisted\PropertyContainer\Db;
+use Magomogo\Persisted\Container\Db;
 use Magomogo\Persisted\PersistedInterface;
 use Test\ObjectMother;
 use Test\Employee\Model as Employee;

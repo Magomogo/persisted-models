@@ -1,5 +1,5 @@
 <?php
-namespace Magomogo\Persisted\PropertyContainer;
+namespace Magomogo\Persisted\Container;
 
 use Test\ObjectMother;
 use Test\Employee\Model as Employee;

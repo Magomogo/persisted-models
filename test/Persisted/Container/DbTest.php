@@ -1,5 +1,5 @@
 <?php
-namespace Magomogo\Persisted\PropertyContainer;
+namespace Magomogo\Persisted\Container;
 
 use Mockery as m;
 use Test\ObjectMother\Person as TestPerson;
@@ -9,7 +9,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 {
     public function testImplementsContainerInterface()
     {
-        $this->assertInstanceOf('Magomogo\\Persisted\\PropertyContainer\\ContainerInterface', self::container());
+        $this->assertInstanceOf('Magomogo\\Persisted\\Container\\ContainerInterface', self::container());
     }
 
     public function testFollowsTableNamingConvention()
@@ -40,7 +40,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testSavesReferencesAsForeignKeys()
     {
         $db = m::mock();
-        $db->shouldReceive('insert')->with('propertycontainer_testtype3',
+        $db->shouldReceive('insert')->with('container_testtype3',
             array(
                 'ref1' => 4,
                 'ref2' => 5,
@@ -64,8 +64,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testCanDeleteProperties()
     {
         $db = m::mock();
-        $db->shouldReceive('delete')->with('propertycontainer_testtype1', array('id' => 3))->once();
-        $db->shouldReceive('delete')->with('propertycontainer_testtype2', array('id' => 45))->once();
+        $db->shouldReceive('delete')->with('container_testtype1', array('id' => 3))->once();
+        $db->shouldReceive('delete')->with('container_testtype2', array('id' => 45))->once();
 
         self::container($db)->deleteProperties(
             array(

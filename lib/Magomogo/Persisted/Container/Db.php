@@ -1,5 +1,6 @@
 <?php
-namespace Magomogo\Persisted\PropertyContainer;
+namespace Magomogo\Persisted\Container;
+
 use Doctrine\DBAL\Connection;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\PersistedInterface;

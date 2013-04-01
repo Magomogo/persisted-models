@@ -1,5 +1,5 @@
 <?php
-namespace Magomogo\Persisted\PropertyContainer;
+namespace Magomogo\Persisted\Container;
 
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Exception\NotFound;

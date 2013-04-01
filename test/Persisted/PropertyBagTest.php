@@ -2,8 +2,8 @@
 namespace Magomogo\Persisted;
 
 use Mockery as m;
-use Magomogo\Persisted\PropertyContainer\Db;
-use Magomogo\Persisted\PropertyContainer\Memory;
+use Magomogo\Persisted\Container\Db;
+use Magomogo\Persisted\Container\Memory;
 use Test\Company\Properties as CompanyProperties;
 
 class PropertyBagTest extends \PHPUnit_Framework_TestCase

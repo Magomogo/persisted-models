@@ -1,9 +1,9 @@
 <?php
-namespace Magomogo\Persisted\PropertyContainer;
+namespace Magomogo\Persisted\Container;
 
 use Test\DbFixture;
 use Test\ObjectMother;
-use Magomogo\Persisted\PropertyContainer\Db;
+use Magomogo\Persisted\Container\Db;
 use Test\Company\Model as Company;
 use Test\Employee\Model as Employee;
 use Test\Person\Model as Person;

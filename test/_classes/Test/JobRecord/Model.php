@@ -2,7 +2,7 @@
 namespace Test\JobRecord;
 
 use Magomogo\Persisted\PersistedAbstract;
-use Magomogo\Persisted\PropertyContainer\ContainerInterface;
+use Magomogo\Persisted\Container\ContainerInterface;
 
 class Model extends PersistedAbstract
 {
@@ -17,7 +17,7 @@ class Model extends PersistedAbstract
     private $currentCompany;
 
     /**
-     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @param string $id
      * @return self
      */

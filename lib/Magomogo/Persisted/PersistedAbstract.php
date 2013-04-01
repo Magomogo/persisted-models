@@ -1,6 +1,6 @@
 <?php
 namespace Magomogo\Persisted;
-use Magomogo\Persisted\PropertyContainer\ContainerInterface;
+use Magomogo\Persisted\Container\ContainerInterface;
 
 abstract class PersistedAbstract implements PersistedInterface
 {
@@ -10,7 +10,7 @@ abstract class PersistedAbstract implements PersistedInterface
     protected $properties;
 
     /**
-     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @return string unique identifier
      */
     public function putIn($container)
@@ -19,7 +19,7 @@ abstract class PersistedAbstract implements PersistedInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @return void
      */
     public function deleteFrom($container)
@@ -30,7 +30,7 @@ abstract class PersistedAbstract implements PersistedInterface
     /**
      * Confirms that properties has correct origin
      *
-     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @return \Magomogo\Persisted\PropertyBag
      */
     public function propertiesFrom($container)

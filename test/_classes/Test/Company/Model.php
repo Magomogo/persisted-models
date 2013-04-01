@@ -6,7 +6,7 @@ use Magomogo\Persisted\PersistedAbstract;
 class Model extends PersistedAbstract
 {
     /**
-     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @param string $id
      * @return self
      */

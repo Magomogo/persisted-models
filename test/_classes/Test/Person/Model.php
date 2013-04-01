@@ -1,7 +1,7 @@
 <?php
 namespace Test\Person;
 
-use Magomogo\Persisted\PropertyContainer\ContainerInterface;
+use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\PersistedAbstract;
 use Test\Keymarker\Model as Keymarker;
 use Test\Keymarker\Properties as KeymarkerProperties;
@@ -15,7 +15,7 @@ class Model extends PersistedAbstract
     private $tags = array();
 
     /**
-     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @param string $id
      * @return \Test\Person\Model
      */
@@ -78,7 +78,7 @@ class Model extends PersistedAbstract
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @return string
      */
     public function putIn($container)

@@ -3,7 +3,7 @@ namespace Test\Employee;
 
 use Test\Person\Model as Person;
 use Test\Company\Model as Company;
-use Magomogo\Persisted\PropertyContainer\ContainerInterface;
+use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\PropertyBag;
 
 class Model extends Person
@@ -24,7 +24,7 @@ class Model extends Person
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @param string $id
      * @return \Test\Employee\Model
      */
@@ -43,7 +43,7 @@ class Model extends Person
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyContainer\ContainerInterface $container
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @return string
      */
     public function putIn($container)
