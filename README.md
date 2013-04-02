@@ -1,6 +1,8 @@
 Persisted models
 ================
 
+[![Build Status](https://travis-ci.org/Magomogo/persisted-models.png)](https://travis-ci.org/Magomogo/persisted-models)
+
 Intro
 -----
 
