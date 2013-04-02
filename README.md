@@ -1,12 +1,12 @@
-The Best Domain Model ever
-==========================
+Persisted models
+================
 
 Intro
 -----
 
 - I don't like ActiveRecord because of tigth coupling with the database,
 - I not so comfortable with Data mappers becasue a mapper breaks model encapsulation,
-- I'm afraid of **'The State'** and want to keep it separately from the logic.
+- I like the idea to keep **'The State'** separately from the logic.
 
 Here is the way
 ---------------
@@ -19,23 +19,23 @@ instance that have no sence from the business logic point of view.
     $person = new Person\Model($propertiesBag);
     $employee = new Employee\Model($company, $propertiesBag);
     
-source: [Person\Model](//github.com/Magomogo/best-domain-model/blob/master/lib/Person/Model.php "Person model") | [Employee\Model](//github.com/Magomogo/best-domain-model/blob/master/lib/Employee/Model.php "Employee model")
+source: [Person\Model](//github.com/Magomogo/persisted-models/blob/master/test/_classes/Test/Person/Model.php "Person model") | [Employee\Model](//github.com/Magomogo/persisted-models/blob/master/test/_classes/Test/Employee/Model.php "Employee model")
 
 ### Obvious responsibilities
 
 To achieve persistency we not need to store **A model**, it is necessary to store its properties.
 
     // save/update
-    $dbContainer = new Model\PropertyContainer\Db($connection);
+    $dbContainer = new Persisted\Container\Db($connection);
     $person->putIn($dbContainer);
 
     // load
     $persistedPerson = Person\Model::loadFrom($dbContainer, $id);
 
-source: [Model\PropertyContainer\Db](//github.com/Magomogo/best-domain-model/blob/master/lib/Model/PropertyContainer/Db.php "Database container")
+source: [Persisted\Container\Db](//github.com/Magomogo/persisted-models/blob/master/lib/Magomogo/Persisted/Container/Db.php "Database container")
 
 
-Handling user input with **'Forms'**, **'A Form'** is kind of a PropertyContainer.
+Handling user input with **'Forms'**, **'A Form'** is kind of a Container.
 
     $form = new ProfileForm;
     $person->putIn($form);
