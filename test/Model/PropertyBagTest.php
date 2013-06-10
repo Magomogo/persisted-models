@@ -17,8 +17,8 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
             $properties[] = $property;
         }
 
-        $this->assertEquals(array('title', 'description', 'object'), $names);
-        $this->assertEquals(array('default title', 'default descr', new \stdClass()), $properties);
+        $this->assertEquals(array('title', 'description', 'object', 'nullDefault'), $names);
+        $this->assertEquals(array('default title', 'default descr', new \stdClass(), null), $properties);
     }
 
     public function testIdIsNullInitially()
@@ -59,6 +59,14 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Magomogo\\Model\\PropertyBag', self::bag()->foreign()->company);
     }
 
+    public function testAllowsDefineAPropertyHavingNullDefaultValue()
+    {
+        $properties = self::bag();
+        $this->assertNull(self::bag()->nullDefault);
+        $properties->nullDefault = 1;
+        $this->assertEquals(1, $properties->nullDefault);
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function bag($id = null)
@@ -76,7 +84,8 @@ class TestProperties extends PropertyBag
         return array(
             'title' => 'default title',
             'description' => 'default descr',
-            'object' => new \stdClass()
+            'object' => new \stdClass(),
+            'nullDefault' => null
         );
     }
 

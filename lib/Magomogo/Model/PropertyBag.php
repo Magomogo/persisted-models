@@ -44,7 +44,7 @@ abstract class PropertyBag implements \IteratorAggregate
 
     public function __set($name, $value)
     {
-        if (isset($this->properties->$name)) {
+        if (property_exists($this->properties, $name)) {
             $this->properties->$name = $value;
         } else {
             trigger_error('Undefined property: ' . $name, E_USER_NOTICE);
