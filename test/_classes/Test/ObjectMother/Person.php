@@ -11,6 +11,13 @@ class Person
         return new Model(self::maximProperties($id));
     }
 
+    public static function maximWithoutCC()
+    {
+        $properties = self::maximProperties();
+        $properties->creditCard = null;
+        return new Model($properties);
+    }
+
     /**
      * @param null $id
      * @return Properties
