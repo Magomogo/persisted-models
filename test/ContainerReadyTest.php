@@ -50,6 +50,7 @@ class ContainerReadyTest extends PHPUnit_Framework_TestCase
         return array(
             array(ObjectMother\CreditCard::datatransTesting()),
             array(ObjectMother\Person::maxim()),
+            array(ObjectMother\Person::maximWithoutCC()),
             array(ObjectMother\Company::xiag()),
             array(ObjectMother\Keymarker::friend()),
         );
