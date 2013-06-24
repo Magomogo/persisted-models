@@ -22,7 +22,7 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
      */
     public function testCanBePutInAndLoadedFrom(ModelInterface $model)
     {
-        $id = $model->propertiesFor($this->dbContainer())->putIn($this->dbContainer());
+        $id = $model->propertiesFrom($this->dbContainer())->putIn($this->dbContainer());
         $this->assertEquals(
             $model,
             $model::newProperties($id)->loadFrom($this->dbContainer())->constructModel()
@@ -34,10 +34,10 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
         $properties = ObjectMother\Employee::maximProperties();
 
         $persistedCompany = new Company($properties->foreign()->company);
-        $persistedCompany->propertiesFor($this->dbContainer())->putIn($this->dbContainer());
+        $persistedCompany->propertiesFrom($this->dbContainer())->putIn($this->dbContainer());
 
         $employee = new Employee($persistedCompany, $properties);
-        $id = $employee->propertiesFor($this->dbContainer())->putIn($this->dbContainer());
+        $id = $employee->propertiesFrom($this->dbContainer())->putIn($this->dbContainer());
 
         $this->assertEquals(
             $employee,

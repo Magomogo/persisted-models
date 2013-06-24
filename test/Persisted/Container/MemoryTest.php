@@ -16,7 +16,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Memory;
 
-        $id = $model->propertiesFor($container)->putIn($container);
+        $id = $model->propertiesFrom($container)->putIn($container);
 
         $this->assertEquals(
             $model,
@@ -45,8 +45,8 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Memory;
         $cc = ObjectMother\CreditCard::datatransTesting();
-        $cc->propertiesFor($container)->putIn($container);
-        $cc->propertiesFor($container)->deleteFrom($container);
+        $cc->propertiesFrom($container)->putIn($container);
+        $cc->propertiesFrom($container)->deleteFrom($container);
 
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
         CreditCard::newProperties()->loadFrom($container);

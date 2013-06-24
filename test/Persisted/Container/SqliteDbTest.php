@@ -34,7 +34,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testSavesCreditCardIntoDatabase()
     {
-        ObjectMother\CreditCard::datatransTesting()->propertiesFor($this->sqliteContainer())
+        ObjectMother\CreditCard::datatransTesting()->propertiesFrom($this->sqliteContainer())
             ->putIn($this->sqliteContainer());
 
         $this->assertEquals(
@@ -53,7 +53,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testSavesAPersonHavingCreditCardIntoDatabase()
     {
-        ObjectMother\Person::maxim()->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        ObjectMother\Person::maxim()->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
 
         $this->assertEquals(
             array(
@@ -85,7 +85,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testReadsModelFromTheDatabase()
     {
-        $maximId = ObjectMother\Person::maxim()->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        $maximId = ObjectMother\Person::maxim()->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
         $this->assertEquals(
             ObjectMother\Person::maxim($maximId)->politeTitle(),
             Person::newProperties($maximId)->loadFrom($this->sqliteContainer())->constructModel()->politeTitle()
@@ -94,11 +94,11 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testCanUpdateModelInTheDatabase()
     {
-        $maximId = ObjectMother\Person::maxim()->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        $maximId = ObjectMother\Person::maxim()->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
         $maxim = Person::newProperties($maximId)->loadFrom($this->sqliteContainer())->constructModel();
 
         $maxim->phoneNumberIsChanged('903-903');
-        $maxim->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        $maxim->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
 
         $this->assertContains(
             '903-903',
@@ -138,20 +138,20 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     public function testCanSaveAndLoadAJobRecord()
     {
         $currentCompany = ObjectMother\Company::xiag();
-        $currentCompany->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        $currentCompany->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
         $previousCompany = ObjectMother\Company::nstu();
-        $previousCompany->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        $previousCompany->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
 
         $jobRecordProps = new JobRecordProperties();
-        $jobRecordProps->foreign()->currentCompany = $currentCompany->propertiesFor($this->sqliteContainer());
-        $jobRecordProps->foreign()->previousCompany = $previousCompany->propertiesFor($this->sqliteContainer());
+        $jobRecordProps->foreign()->currentCompany = $currentCompany->propertiesFrom($this->sqliteContainer());
+        $jobRecordProps->foreign()->previousCompany = $previousCompany->propertiesFrom($this->sqliteContainer());
 
         $record = new JobRecord(
             $jobRecordProps->foreign()->currentCompany->constructModel(),
             $jobRecordProps->foreign()->previousCompany->constructModel(),
             $jobRecordProps
         );
-        $id = $record->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        $id = $record->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
 
         $this->assertEquals(
             $record,
@@ -168,9 +168,9 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     private function persistTwoKeymarkers()
     {
         $persistedKeymarker1 = ObjectMother\Keymarker::friend();
-        $persistedKeymarker1->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        $persistedKeymarker1->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
         $persistedKeymarker2 = ObjectMother\Keymarker::IT();
-        $persistedKeymarker2->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        $persistedKeymarker2->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
         return array($persistedKeymarker1, $persistedKeymarker2);
     }
 
@@ -182,7 +182,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $person->tag($persistedKeymarker1);
         $person->tag($persistedKeymarker2);
 
-        $id = $person->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        $id = $person->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
 
         $this->assertEquals(
             $person,
@@ -197,7 +197,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $personProperties->lastName = null;
 
         $vova = new Person($personProperties);
-        $id = $vova->propertiesFor($this->sqliteContainer())->putIn(self::sqliteContainer());
+        $id = $vova->propertiesFrom($this->sqliteContainer())->putIn(self::sqliteContainer());
 
         $this->assertNull(
             $this->fixture->db->fetchColumn('SELECT lastName FROM person_properties WHERE id = ?', array($id))
@@ -210,12 +210,12 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     public function testACompanyCanBeDeletedFromContainer()
     {
         $company = ObjectMother\Company::xiag();
-        $companyId = $company->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
+        $companyId = $company->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
 
-        $company->propertiesFor($this->sqliteContainer())->deleteFrom($this->sqliteContainer());
+        $company->propertiesFrom($this->sqliteContainer())->deleteFrom($this->sqliteContainer());
 
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-        $company->propertiesFor($this->sqliteContainer())->loadFrom($this->sqliteContainer(), $companyId);
+        $company->propertiesFrom($this->sqliteContainer())->loadFrom($this->sqliteContainer(), $companyId);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -224,10 +224,10 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     {
         $properties = ObjectMother\Employee::maximProperties();
         $company = new Company($properties->foreign()->company);
-        $company->propertiesFor($this->sqliteContainer())->putIn($container);
+        $company->propertiesFrom($this->sqliteContainer())->putIn($container);
 
         $employee = new Employee($company, $properties);
-        $employee->propertiesFor($this->sqliteContainer())->putIn($container);
+        $employee->propertiesFrom($this->sqliteContainer())->putIn($container);
         return $employee;
     }
 

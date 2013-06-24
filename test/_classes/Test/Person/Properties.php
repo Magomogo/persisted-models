@@ -67,7 +67,7 @@ class Properties extends PropertyBag
         $connectedProperties = array();
         /** @var \Magomogo\Persisted\ModelInterface $keymarker */
         foreach ($this->tags as $keymarker) {
-            $connectedProperties[] = $keymarker->propertiesFor($container);
+            $connectedProperties[] = $keymarker->propertiesFrom($container);
         }
 
         $container->referToMany('person2keymarker', $this, $connectedProperties);

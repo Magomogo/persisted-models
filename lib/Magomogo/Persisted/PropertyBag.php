@@ -138,16 +138,4 @@ abstract class PropertyBag implements \IteratorAggregate
     {
         $container->deleteProperties(array($this));
     }
-
-    /**
-     * Confirms that properties has correct origin
-     *
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
-     * @return PropertyBag
-     */
-    public function propertiesFrom($container)
-    {
-        return $this->assertOriginIs($container);
-    }
-
 }
