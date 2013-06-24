@@ -15,4 +15,9 @@ class Properties extends PropertyBag
             'created' => new \DateTime
         );
     }
+
+    public function constructModel()
+    {
+        return new Model($this);
+    }
 }

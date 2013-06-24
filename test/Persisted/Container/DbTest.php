@@ -4,6 +4,7 @@ namespace Magomogo\Persisted\Container;
 use Mockery as m;
 use Test\ObjectMother\Person as TestPerson;
 use Magomogo\Persisted\PropertyBag;
+use Test\Person;
 
 class DbTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +19,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shouldReceive('insert')->with('test_person_properties', typeOf('array'))->once();
         $db->shouldReceive('insert')->with('test_creditcard_properties', typeOf('array'))->once();
         $db->shouldIgnoreMissing();
-        TestPerson::maxim()->putIn(self::container($db));
+        Person\Model::newPropertyBag()->putIn(self::container($db));
     }
 
     public function testLoadsReferencesAccordingToReferenceName()
@@ -90,6 +91,11 @@ class TestType1 extends PropertyBag
     {
         return array();
     }
+
+    public function constructModel()
+    {
+        // TODO: Implement constructModel() method.
+    }
 }
 
 class TestType2 extends PropertyBag
@@ -97,6 +103,11 @@ class TestType2 extends PropertyBag
     protected function properties()
     {
         return array();
+    }
+
+    public function constructModel()
+    {
+        // TODO: Implement constructModel() method.
     }
 }
 
@@ -114,6 +125,11 @@ class TestType3 extends PropertyBag
             'ref1' => new TestType1(null),
             'ref2' => new TestType2(null),
         );
+    }
+
+    public function constructModel()
+    {
+        // TODO: Implement constructModel() method.
     }
 }
 

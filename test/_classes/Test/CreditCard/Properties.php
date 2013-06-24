@@ -24,4 +24,10 @@ class Properties extends PropertyBag
             'cardholderName' => '',
         );
     }
+
+    public function constructModel()
+    {
+        return new Model($this);
+    }
+
 }

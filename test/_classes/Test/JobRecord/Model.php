@@ -1,10 +1,10 @@
 <?php
 namespace Test\JobRecord;
 
-use Magomogo\Persisted\PersistedAbstract;
+use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\Container\ContainerInterface;
 
-class Model extends PersistedAbstract
+class Model implements ModelInterface
 {
     /**
      * @var \Test\Company\Model
@@ -17,25 +17,30 @@ class Model extends PersistedAbstract
     private $currentCompany;
 
     /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @param string $id
-     * @return self
+     * @return Properties
      */
-    public static function loadFrom($container, $id)
+    public static function newPropertyBag($id = null)
     {
-        $properties = $container->loadProperties(new Properties($id));
-
-        return new self(
-            $properties->foreign()->currentCompany,
-            $properties->foreign()->previousCompany,
-            $properties
-        );
+        return new Properties($id);
     }
 
     /**
+     * @param ContainerInterface $container
+     * @return Properties
+     */
+    public function propertiesFor($container)
+    {
+        return $this->properties;
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+    /**
      * @param \Test\Company\Model $currentCompany
-     * @param $previousCompany
+     * @param \Test\Company\Model $previousCompany
      * @param Properties $properties
+     * @return \Test\JobRecord\Model
      */
     public function __construct($currentCompany, $previousCompany, $properties)
     {

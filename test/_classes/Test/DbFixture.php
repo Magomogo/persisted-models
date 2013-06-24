@@ -93,9 +93,11 @@ CREATE TABLE employee_properties (
 CREATE TABLE person2keymarker (
   person_properties INTEGER CONSTRAINT fk_person2keymarker1 REFERENCES person_properties (id)
     ON DELETE CASCADE ON UPDATE CASCADE,
-  keymarker_properties INTEGER CONSTRAINT fk_person2keymarker2 REFERENCES keymarker_properties (id)
+  employee_properties INTEGER CONSTRAINT fk_person2keymarker2 REFERENCES employee_properties (id)
     ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT pk_person_2_keymarker PRIMARY KEY (person_properties, keymarker_properties)
+  keymarker_properties INTEGER CONSTRAINT fk_person2keymarker3 REFERENCES keymarker_properties (id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT pk_person_2_keymarker PRIMARY KEY (person_properties, employee_properties, keymarker_properties)
 );
 SQL
         );

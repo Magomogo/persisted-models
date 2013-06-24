@@ -95,4 +95,10 @@ class TestProperties extends PropertyBag
             'company' => new CompanyProperties
         );
     }
+
+    public function constructModel()
+    {
+        // TODO: Implement constructModel() method.
+    }
+
 }

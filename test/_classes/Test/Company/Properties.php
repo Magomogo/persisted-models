@@ -4,7 +4,7 @@ namespace Test\Company;
 use Magomogo\Persisted\PropertyBag;
 
 /**
- * @property string $type
+ * @property string $name
  */
 class Properties extends PropertyBag
 {
@@ -14,4 +14,13 @@ class Properties extends PropertyBag
             'name' => '',
         );
     }
+
+    /**
+     * @return Model
+     */
+    public function constructModel()
+    {
+        return new Model($this);
+    }
+
 }

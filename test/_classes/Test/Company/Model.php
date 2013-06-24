@@ -1,19 +1,35 @@
 <?php
 namespace Test\Company;
 
-use Magomogo\Persisted\PersistedAbstract;
+use Magomogo\Persisted\Container\ContainerInterface;
+use Magomogo\Persisted\ModelInterface;
 
-class Model extends PersistedAbstract
+class Model implements ModelInterface
 {
     /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
-     * @param string $id
-     * @return self
+     * @var Properties
      */
-    public static function loadFrom($container, $id)
+    private $properties;
+
+    /**
+     * @param string $id
+     * @return Properties
+     */
+    public static function newPropertyBag($id = null)
     {
-        return new self($container->loadProperties(new Properties($id)));
+        return new Properties($id);
     }
+
+    /**
+     * @param ContainerInterface $container
+     * @return Properties
+     */
+    public function propertiesFor($container)
+    {
+        return $this->properties;
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
 
     public function __construct($properties)
     {

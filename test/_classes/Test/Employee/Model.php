@@ -2,52 +2,38 @@
 namespace Test\Employee;
 
 use Test\Person\Model as Person;
-use Test\Company\Model as Company;
-use Magomogo\Persisted\Container\ContainerInterface;
-use Magomogo\Persisted\PropertyBag;
+use Test\Company;
 
 class Model extends Person
 {
     /**
-     * @var \Test\Company\Model
+     * @var Company\Model
      */
     private $company;
 
     /**
-     * @param \Test\Company\Model $company
-     * @param PropertyBag $properties
+     * @param string $id
+     * @return Properties
      */
-    public function __construct($company, $properties)
+    public static function newPropertyBag($id = null)
     {
-        parent::__construct($properties);
-        $this->company = $company;
+        return new Properties($id);
     }
 
     /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
-     * @param string $id
-     * @return \Test\Employee\Model
+     * @param Company\Model $company
+     * @param Properties $properties
+     * @param array $tags
+     * @return Model
      */
-    public static function loadFrom($container, $id)
+    public function __construct($company, $properties, array $tags = array())
     {
-        $loadedProperties = $container->loadProperties(new Properties($id));
-        return new self(
-            Company::loadFrom($container, $loadedProperties->foreign()->company->id),
-            $loadedProperties
-        );
+        parent::__construct($properties, $tags);
+        $this->company = $company;
     }
 
     public function greeting()
     {
         return $this->politeTitle() . ' from ' . $this->company->name();
-    }
-
-    /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
-     * @return string
-     */
-    public function putIn($container)
-    {
-        return $container->saveProperties($this->properties)->id;
     }
 }

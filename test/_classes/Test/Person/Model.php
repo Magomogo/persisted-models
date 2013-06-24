@@ -2,34 +2,35 @@
 namespace Test\Person;
 
 use Magomogo\Persisted\Container\ContainerInterface;
-use Magomogo\Persisted\PersistedAbstract;
+use Magomogo\Persisted\ModelInterface;
 use Test\Keymarker\Model as Keymarker;
-use Test\Keymarker\Properties as KeymarkerProperties;
-use Magomogo\Persisted\PropertyBag;
 
-class Model extends PersistedAbstract
+class Model implements ModelInterface
 {
     /**
-     * @var array
+     * @var Properties
      */
-    private $tags = array();
+    private $properties;
 
     /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @param string $id
-     * @return \Test\Person\Model
+     * @return Properties
      */
-    public static function loadFrom($container, $id)
+    public static function newPropertyBag($id = null)
     {
-        $properties = $container->loadProperties(new Properties($id));
-
-        $tags = array();
-        foreach ($container->listReferences('person2keymarker', $properties, new KeymarkerProperties)
-                 as $keymarkerProperties) {
-            $tags[] = Keymarker::loadFrom($container, $keymarkerProperties->id);
-        }
-        return new self($properties, $tags);
+        return new Properties($id);
     }
+
+    /**
+     * @param ContainerInterface $container
+     * @return Properties
+     */
+    public function propertiesFor($container)
+    {
+        return $this->properties;
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
 
     /**
      * @param Properties $properties
@@ -38,7 +39,7 @@ class Model extends PersistedAbstract
     public function __construct($properties, array $tags = array())
     {
         $this->properties = $properties;
-        $this->tags = $tags;
+        $this->properties->tags = $tags;
     }
 
     public function politeTitle()
@@ -69,30 +70,12 @@ class Model extends PersistedAbstract
 
     public function tag(Keymarker $keymarker)
     {
-        $this->tags[] = $keymarker;
+        $this->properties->tags[] = $keymarker;
     }
 
     public function taggedAs()
     {
-        return join(', ', $this->tags);
-    }
-
-    /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
-     * @return string
-     */
-    public function putIn($container)
-    {
-        $container->saveProperties($this->properties);
-
-        $connectedProperties = array();
-        /** @var \Magomogo\Persisted\PersistedInterface $keymarker */
-        foreach ($this->tags as $keymarker) {
-            $connectedProperties[] = $keymarker->propertiesFrom($container);
-        }
-
-        $container->referToMany('person2keymarker', $this->properties, $connectedProperties);
-        return $this->properties->id;
+        return join(', ', $this->properties->tags);
     }
 
 }

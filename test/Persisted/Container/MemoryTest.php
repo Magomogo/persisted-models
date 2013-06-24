@@ -1,10 +1,10 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
+use Magomogo\Persisted\ModelInterface;
 use Test\ObjectMother;
 use Test\Employee\Model as Employee;
 use Test\CreditCard\Model as CreditCard;
-use Magomogo\Persisted\PersistedInterface;
 
 class MemoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,15 +12,15 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider modelsProvider
      */
-    public function testCanBePutInAndLoadedFrom(PersistedInterface $model)
+    public function testCanBePutInAndLoadedFrom(ModelInterface $model)
     {
         $container = new Memory;
 
-        $id = $model->putIn($container);
+        $id = $model->propertiesFor($container)->putIn($container);
 
         $this->assertEquals(
             $model,
-            $model::loadFrom($container, $id)
+            $model::newPropertyBag($id)->loadFrom($container)->constructModel()
         );
     }
 
@@ -38,18 +38,18 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     public function testBehavesCorrectlyWhenEmpty()
     {
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-        Employee::loadFrom(new Memory, null);
+        Employee::newPropertyBag()->loadFrom(new Memory);
     }
 
     public function testDelete()
     {
         $container = new Memory;
         $cc = ObjectMother\CreditCard::datatransTesting();
-        $cc->putIn($container);
-        $cc->deleteFrom($container);
+        $cc->propertiesFor($container)->putIn($container);
+        $cc->propertiesFor($container)->deleteFrom($container);
 
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-        CreditCard::loadFrom($container, null);
+        CreditCard::newPropertyBag()->loadFrom($container);
     }
 
 }

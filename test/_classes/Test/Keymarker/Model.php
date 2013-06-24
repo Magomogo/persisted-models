@@ -1,19 +1,36 @@
 <?php
 namespace Test\Keymarker;
 
-use Magomogo\Persisted\PersistedAbstract;
+use Magomogo\Persisted\Container\ContainerInterface;
+use Magomogo\Persisted\ModelInterface;
+use Magomogo\Persisted\PropertyBag;
 
-class Model extends PersistedAbstract
+class Model implements ModelInterface
 {
     /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
-     * @param string $id
-     * @return self
+     * @var Properties
      */
-    public static function loadFrom($container, $id)
+    private $properties;
+
+    /**
+     * @param string $id
+     * @return PropertyBag
+     */
+    public static function newPropertyBag($id = null)
     {
-        return new self($container->loadProperties(new Properties($id)));
+        return new Properties($id);
     }
+
+    /**
+     * @param ContainerInterface $container
+     * @return PropertyBag
+     */
+    public function propertiesFor($container)
+    {
+        return $this->properties;
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
 
     /**
      * @param Properties $properties

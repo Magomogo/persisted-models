@@ -46,7 +46,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             ->once();
         $container->shouldIgnoreMissing();
 
-        $id = self::person()->putIn($container);
+        $id = self::person()->propertiesFor($container)->putIn($container);
         $this->assertEquals(15, $id);
     }
 

@@ -29,6 +29,11 @@ abstract class PropertyBag implements \IteratorAggregate
 
     protected abstract function properties();
 
+    /**
+     * @return ModelInterface
+     */
+    public abstract function constructModel();
+
     protected function foreigners()
     {
         return array();
@@ -77,7 +82,7 @@ abstract class PropertyBag implements \IteratorAggregate
 
     /**
      * @param \Magomogo\Persisted\Container\ContainerInterface $container
-     * @return \Magomogo\Persisted\PropertyBag
+     * @return PropertyBag
      * @throws Exception\Origin
      */
     public function assertOriginIs($container)
@@ -106,4 +111,43 @@ abstract class PropertyBag implements \IteratorAggregate
             $this->$name = clone $value;
         }
     }
+
+    /**
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @return self
+     */
+    public function loadFrom($container)
+    {
+        return $container->loadProperties($this);
+    }
+
+    /**
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @return string unique identifier
+     */
+    public function putIn($container)
+    {
+        return $container->saveProperties($this)->id;
+    }
+
+    /**
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @return void
+     */
+    public function deleteFrom($container)
+    {
+        $container->deleteProperties(array($this));
+    }
+
+    /**
+     * Confirms that properties has correct origin
+     *
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @return PropertyBag
+     */
+    public function propertiesFrom($container)
+    {
+        return $this->assertOriginIs($container);
+    }
+
 }

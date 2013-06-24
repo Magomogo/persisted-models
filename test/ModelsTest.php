@@ -3,7 +3,6 @@ namespace Magomogo\Persisted;
 
 use Test\DbFixture;
 use Magomogo\Persisted\Container\Db;
-use Magomogo\Persisted\PersistedInterface;
 use Test\ObjectMother;
 use Test\Employee\Model as Employee;
 use Test\Company\Model as Company;
@@ -21,12 +20,12 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider modelsProvider
      */
-    public function testCanBePutInAndLoadedFrom(PersistedInterface $model)
+    public function testCanBePutInAndLoadedFrom(ModelInterface $model)
     {
-        $id = $model->putIn($this->dbContainer());
+        $id = $model->propertiesFor($this->dbContainer())->putIn($this->dbContainer());
         $this->assertEquals(
             $model,
-            $model::loadFrom($this->dbContainer(), $id)
+            $model::newPropertyBag($id)->loadFrom($this->dbContainer())->constructModel()
         );
     }
 
@@ -35,14 +34,14 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
         $properties = ObjectMother\Employee::maximProperties();
 
         $persistedCompany = new Company($properties->foreign()->company);
-        $persistedCompany->putIn($this->dbContainer());
+        $persistedCompany->propertiesFor($this->dbContainer())->putIn($this->dbContainer());
 
         $employee = new Employee($persistedCompany, $properties);
-        $id = $employee->putIn($this->dbContainer());
+        $id = $employee->propertiesFor($this->dbContainer())->putIn($this->dbContainer());
 
         $this->assertEquals(
             $employee,
-            Employee::loadFrom($this->dbContainer(), $id)
+            Employee::newPropertyBag($id)->loadFrom($this->dbContainer())->constructModel()
         );
     }
 

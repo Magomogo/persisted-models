@@ -2,7 +2,7 @@
 namespace Test\Employee;
 
 use Test\Person\Properties as PersonProperties;
-use Test\Company\Properties as CompanyProperties;
+use Test\Company;
 
 /**
  * @property string $title
@@ -17,7 +17,16 @@ class Properties extends PersonProperties
     protected function foreigners()
     {
         return array(
-            'company' => new CompanyProperties
+            'company' => new Company\Properties
+        );
+    }
+
+    public function constructModel()
+    {
+        return new Model(
+            $this->foreign()->company->constructModel(),
+            $this,
+            $this->tags
         );
     }
 }

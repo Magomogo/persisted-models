@@ -4,6 +4,7 @@ namespace Test\Person;
 use Magomogo\Persisted\PropertyBag;
 use Test\CreditCard\Model as CreditCard;
 use Test\CreditCard\Properties as CreditCardProperties;
+use Test\Keymarker;
 
 /**
  * @property string $title
@@ -15,6 +16,11 @@ use Test\CreditCard\Properties as CreditCardProperties;
  */
 class Properties extends PropertyBag
 {
+    /**
+     * @var array
+     */
+    public $tags = array();
+
     protected function properties()
     {
         return array(
@@ -27,4 +33,45 @@ class Properties extends PropertyBag
             'birthDay' => new \DateTime('1970-01-01')
         );
     }
+
+    public function constructModel()
+    {
+        return new Model($this, $this->tags);
+    }
+
+    /**
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @return self
+     */
+    public function loadFrom($container)
+    {
+        $container->loadProperties($this);
+
+        $this->tags = array();
+        foreach ($container->listReferences('person2keymarker', $this, new Keymarker\Properties())
+                 as $keymarkerProperties) {
+            $this->tags[] = Keymarker\Model::newPropertyBag($keymarkerProperties->id)
+                ->loadFrom($container)->constructModel();
+        }
+        return $this;
+    }
+
+    /**
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @return string
+     */
+    public function putIn($container)
+    {
+        $container->saveProperties($this);
+
+        $connectedProperties = array();
+        /** @var \Magomogo\Persisted\ModelInterface $keymarker */
+        foreach ($this->tags as $keymarker) {
+            $connectedProperties[] = $keymarker->propertiesFor($container);
+        }
+
+        $container->referToMany('person2keymarker', $this, $connectedProperties);
+        return $this->id;
+    }
+
 }
