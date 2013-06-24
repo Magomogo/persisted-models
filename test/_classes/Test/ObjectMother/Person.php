@@ -24,7 +24,7 @@ class Person
      */
     public static function maximProperties($id = null)
     {
-        return new Properties($id, array(
+        return new Properties(array(
             'title' => 'Mr.',
             'firstName' => 'Maxim',
             'lastName' => 'Gnatenko',

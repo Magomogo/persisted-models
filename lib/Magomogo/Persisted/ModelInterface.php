@@ -7,10 +7,11 @@ use Magomogo\Persisted\Container\ContainerInterface;
 interface ModelInterface
 {
     /**
+     * @param ContainerInterface $container
      * @param string $id
-     * @return PropertyBag
+     * @return self
      */
-    public static function newProperties($id = null);
+    public static function load($container, $id = null);
 
     /**
      * @param ContainerInterface $container

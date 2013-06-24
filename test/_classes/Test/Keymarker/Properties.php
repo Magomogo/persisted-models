@@ -4,7 +4,7 @@ namespace Test\Keymarker;
 use Magomogo\Persisted\PropertyBag;
 
 /**
- * @property string $id
+ * @property string $name
  * @property \DateTime $created
  */
 class Properties extends PropertyBag
@@ -12,6 +12,7 @@ class Properties extends PropertyBag
     protected function properties()
     {
         return array(
+            'id' => '',
             'created' => new \DateTime
         );
     }
@@ -19,5 +20,10 @@ class Properties extends PropertyBag
     public function constructModel()
     {
         return new Model($this);
+    }
+
+    public function naturalKey()
+    {
+        return $this->id;
     }
 }

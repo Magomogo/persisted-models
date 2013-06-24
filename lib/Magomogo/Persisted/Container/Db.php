@@ -35,7 +35,6 @@ class Db implements ContainerInterface
     public function loadProperties($propertyBag)
     {
         $row = $this->begin($propertyBag);
-        $propertyBag->assertOriginIs($this);
 
         foreach ($propertyBag as $name => &$property) {
             $property = array_key_exists($name, $row) ? $this->fromDbValue($property, $row[$name]) : null;
@@ -119,7 +118,7 @@ class Db implements ContainerInterface
     private function fromDbValue($property, $column)
     {
         if ($property instanceof ModelInterface) {
-            return is_null($column) ? null : $property::newProperties($column)->loadFrom($this)->constructModel();
+            return is_null($column) ? null : $property::load($this, $column);
         } elseif($property instanceof \DateTime) {
             return new \DateTime($column);
         }
@@ -169,9 +168,9 @@ class Db implements ContainerInterface
     {
         $this->confirmPersistency($properties);
 
-        if (!$properties->isPersistedIn($this)) {
+        if (!$properties->id($this)) {
             $this->db->insert($this->classToName($properties), $row);
-            $properties->persisted($properties->id($this) ?: $this->db->lastInsertId(), $this);
+            $properties->persisted($properties->naturalKey() ?: $this->db->lastInsertId(), $this);
         } else {
             $this->db->update($this->classToName($properties), $row, array('id' => $properties->id($this)));
         }
@@ -184,14 +183,10 @@ class Db implements ContainerInterface
      */
     private function confirmPersistency($properties)
     {
-        try {
-            $properties->assertOriginIs($this);
-        } catch (Exception\Origin $e) {
-            if ($properties->id($this) && $this->db->fetchColumn(
-                'SELECT 1 FROM ' . $this->classToName($properties) . ' WHERE id=?', array($properties->id($this))
-            )) {
-                $properties->persisted($properties->id($this), $this);
-            }
+        if ($properties->id($this) && $this->db->fetchColumn(
+            'SELECT 1 FROM ' . $this->classToName($properties) . ' WHERE id=?', array($properties->id($this))
+        )) {
+            $properties->persisted($properties->id($this), $this);
         }
     }
 

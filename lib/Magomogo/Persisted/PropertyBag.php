@@ -9,14 +9,12 @@ use Magomogo\Persisted\Container\Memory;
  */
 abstract class PropertyBag implements \IteratorAggregate
 {
-    private $id;
-    private $origin;
+    private $idInContainer = array();
     private $properties;
     private $foreigners;
 
-    public function __construct($id = null, $valuesToSet = null)
+    public function __construct($valuesToSet = null)
     {
-        $this->id = $id;
         $this->properties = (object)$this->properties();
         $this->foreigners = (object)$this->foreigners();
 
@@ -43,9 +41,15 @@ abstract class PropertyBag implements \IteratorAggregate
      * @param ContainerInterface $container|null
      * @return string
      */
-    public function id($container = null)
+    public function id($container)
     {
-        return $this->id;
+        return array_key_exists(get_class($container), $this->idInContainer) ?
+            $this->idInContainer[get_class($container)] : null;
+    }
+
+    public function naturalKey()
+    {
+        return null;
     }
 
     public function __get($name)
@@ -68,35 +72,12 @@ abstract class PropertyBag implements \IteratorAggregate
      */
     public function persisted($id, $container)
     {
-        $this->id = $id;
-        $this->origin = get_class($container);
-    }
-
-    /**
-     * @param ContainerInterface $container
-     * @return bool
-     */
-    public function isPersistedIn($container)
-    {
-        return ($container instanceof Memory) || ($this->origin === get_class($container));
+        $this->idInContainer[get_class($container)] = $id;
     }
 
     public function getIterator()
     {
         return new \ArrayIterator($this->properties);
-    }
-
-    /**
-     * @param ContainerInterface $container
-     * @return PropertyBag
-     * @throws Exception\Origin
-     */
-    public function assertOriginIs($container)
-    {
-        if ($this->isPersistedIn($container)) {
-            return $this;
-        }
-        throw new Exception\Origin();
     }
 
     public function foreign()
@@ -110,7 +91,7 @@ abstract class PropertyBag implements \IteratorAggregate
         $this->foreigners = clone $this->foreigners;
 
         foreach ($this->properties as $name => $value) {
-            $this->$name = clone $value;
+            $this->$name = is_object($value) ? clone $value : $value;
         }
 
         foreach ($this->foreigners as $name => $value) {

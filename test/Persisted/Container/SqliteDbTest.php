@@ -5,9 +5,8 @@ use Test\DbFixture;
 use Test\ObjectMother;
 use Magomogo\Persisted\Container\Db;
 use Test\CreditCard;
-use Test\Person\Model as Person;
+use Test\Person;
 use Test\JobRecord\Model as JobRecord;
-use Test\Person\Properties as PersonProperties;
 use Test\JobRecord\Properties as JobRecordProperties;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
@@ -86,21 +85,21 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $maximId = ObjectMother\Person::maxim()->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
         $this->assertEquals(
             ObjectMother\Person::maxim($maximId)->politeTitle(),
-            Person::newProperties($maximId)->loadFrom($this->sqliteContainer())->constructModel()->politeTitle()
+            Person\Model::load($this->sqliteContainer(), $maximId)->politeTitle()
         );
     }
 
     public function testCanUpdateModelInTheDatabase()
     {
         $maximId = ObjectMother\Person::maxim()->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
-        $maxim = Person::newProperties($maximId)->loadFrom($this->sqliteContainer())->constructModel();
+        $maxim = Person\Model::load($this->sqliteContainer(), $maximId);
 
         $maxim->phoneNumberIsChanged('903-903');
         $maxim->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
 
         $this->assertContains(
             '903-903',
-            Person::newProperties($maximId)->loadFrom($this->sqliteContainer())->constructModel()->contactInfo()
+            Person\Model::load($this->sqliteContainer(), $maximId)->contactInfo()
         );
     }
 
@@ -129,7 +128,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $employee = $this->putEmployeeIn($this->sqliteContainer());
         $this->assertEquals(
             $employee,
-            $employee::newProperties(1)->loadFrom($this->sqliteContainer())->constructModel()
+            $employee::load($this->sqliteContainer(), 1)
         );
     }
 
@@ -153,7 +152,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $record,
-            $record::newProperties($id)->loadFrom($this->sqliteContainer())->constructModel()
+            $record::load($this->sqliteContainer(), $id)
         );
     }
 
@@ -184,24 +183,24 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $person,
-            $person::newProperties($id)->loadFrom($this->sqliteContainer())->constructModel()
+            $person::load($this->sqliteContainer(), $id)
         );
     }
 
     public function testWorksWithNulls()
     {
-        $personProperties = new PersonProperties();
+        $personProperties = new Person\Properties();
         $personProperties->firstName = 'Vova';
         $personProperties->lastName = null;
 
-        $vova = new Person($personProperties);
+        $vova = new Person\Model($personProperties);
         $id = $vova->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
 
         $this->assertNull(
             $this->fixture->db->fetchColumn('SELECT lastName FROM person_properties WHERE id = ?', array($id))
         );
 
-        $properties = $this->sqliteContainer()->loadProperties(new PersonProperties($id));
+        $properties = Person\Model::load($this->sqliteContainer(), $id)->propertiesFrom($this->sqliteContainer());
         $this->assertNull($properties->lastName);
     }
 

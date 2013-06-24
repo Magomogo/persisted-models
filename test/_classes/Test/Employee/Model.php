@@ -1,6 +1,7 @@
 <?php
 namespace Test\Employee;
 
+use Magomogo\Persisted\Container\ContainerInterface;
 use Test\Person\Model as Person;
 use Test\Company;
 
@@ -12,12 +13,15 @@ class Model extends Person
     private $company;
 
     /**
+     * @param ContainerInterface $container
      * @param string $id
-     * @return Properties
+     * @return self
      */
-    public static function newProperties($id = null)
+    public static function load($container, $id = null)
     {
-        return new Properties($id);
+        $p = new Properties();
+        $p->persisted($id, $container);
+        return $p->loadFrom($container)->constructModel();
     }
 
     /**

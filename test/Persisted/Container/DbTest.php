@@ -19,7 +19,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shouldReceive('insert')->with('test_person_properties', typeOf('array'))->once();
         $db->shouldReceive('insert')->with('test_creditcard_properties', typeOf('array'))->once();
         $db->shouldIgnoreMissing();
-        Person\Model::newProperties()->putIn(self::container($db));
+        $properties = new Person\Properties;
+        $properties->putIn(self::container($db));
     }
 
     public function testLoadsReferencesAccordingToReferenceName()
@@ -30,7 +31,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
             array()
         );
 
-        $properties = new TestType3(1);
+        $properties = new TestType3();
+        $properties->persisted(1, self::container($db));
 
         self::container($db)->loadProperties($properties);
 
@@ -50,8 +52,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shouldIgnoreMissing();
 
         $properties = new TestType3();
-        $properties->foreign()->ref1->persisted(4, $this);
-        $properties->foreign()->ref2->persisted(5, $this);
+        $properties->foreign()->ref1->persisted(4, self::container($db));
+        $properties->foreign()->ref2->persisted(5, self::container($db));
 
         self::container($db)->saveProperties($properties);
     }
@@ -59,7 +61,13 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testExceptionOnLoadingWhenPropertiesAreNotFound()
     {
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-        self::container(m::mock(array('fetchAssoc' => false)))->loadProperties(new TestType1(1));
+
+        $container = self::container(m::mock(array('fetchAssoc' => false)));
+
+        $notFoundProperties = new TestType1();
+        $notFoundProperties->persisted(11, $container);
+
+        $container->loadProperties($notFoundProperties);
     }
 
     public function testCanDeleteProperties()
@@ -68,10 +76,15 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shouldReceive('delete')->with('container_testtype1', array('id' => 3))->once();
         $db->shouldReceive('delete')->with('container_testtype2', array('id' => 45))->once();
 
+        $persistedProperties1 = new TestType1();
+        $persistedProperties1->persisted(3, self::container($db));
+        $persistedProperties2 = new TestType2();
+        $persistedProperties2->persisted(45, self::container($db));
+
         self::container($db)->deleteProperties(
             array(
-                new TestType1(3),
-                new TestType2(45)
+                $persistedProperties1,
+                $persistedProperties2
             )
         );
     }

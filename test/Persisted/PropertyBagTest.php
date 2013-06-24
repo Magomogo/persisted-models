@@ -23,35 +23,33 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
     public function testIdIsNullInitially()
     {
-        $this->assertNull(self::bag()->id());
+        $this->assertNull(self::bag()->id(m::mock()));
     }
 
     public function testPersistedMessageSetsId()
     {
         $bag = self::bag();
         $bag->persisted('888', m::mock());
-        $this->assertEquals('888', $bag->id());
+        $this->assertEquals('888', $bag->id(m::mock()));
     }
 
-    public function testKnowsItsOrigin()
+    public function testPropertiesBagCanHaveDifferentIdsInDifferentContainers()
     {
-        $properties = self::bag(11);
-        $container = new Db(m::mock(array('fetchAssoc' => array('title' => 'hehe', 'company' => 1))));
-        $container->loadProperties($properties);
+        $bag = self::bag();
+        $container1 = new Db(m::mock());
+        $container2 = new Memory();
 
-        $this->assertSame($properties, $properties->assertOriginIs($container));
+        $bag->persisted('888', $container1);
+        $bag->persisted('2342-klsjdf94', $container2);
+
+        $this->assertEquals('888', $bag->id($container1));
+        $this->assertEquals('2342-klsjdf94', $bag->id($container2));
     }
 
     public function testRejectsNotConfiguredProperties()
     {
         $this->setExpectedException('PHPUnit_Framework_Error_Notice');
         self::bag()->not_configured = 12;
-    }
-
-    public function testAssumedThatPropertiesArePersistedInMemory()
-    {
-        $this->assertTrue(self::bag()->isPersistedIn(new Memory));
-        self::bag()->assertOriginIs(new Memory());
     }
 
     public function testReferencesCanBeExposed()
@@ -69,9 +67,9 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
 //----------------------------------------------------------------------------------------------------------------------
 
-    private static function bag($id = null)
+    private static function bag()
     {
-        return new TestProperties($id);
+        return new TestProperties();
     }
 
 }

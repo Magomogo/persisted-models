@@ -10,7 +10,7 @@ class Employee
     public static function maxim($id = null)
     {
         $maxim = self::maximProperties($id);
-        return new EmployeeModel(new CompanyModel($maxim->foreign()->company), $maxim);
+        return $maxim->constructModel();
     }
 
     /**
@@ -20,7 +20,6 @@ class Employee
     public static function maximProperties($id = null)
     {
         $properties = new EmployeeProperties(
-            $id,
             array(
                 'title' => 'Mr.',
                 'firstName' => 'Maxim',

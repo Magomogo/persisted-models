@@ -12,12 +12,15 @@ class Model implements ModelInterface
     private $properties;
 
     /**
+     * @param ContainerInterface $container
      * @param string $id
-     * @return Properties
+     * @return self
      */
-    public static function newProperties($id = null)
+    public static function load($container, $id = null)
     {
-        return new Properties($id);
+        $p = new Properties();
+        $p->persisted($id, $container);
+        return $p->loadFrom($container)->constructModel();
     }
 
     /**

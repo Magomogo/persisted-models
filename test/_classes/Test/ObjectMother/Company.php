@@ -8,11 +8,11 @@ class Company
 {
     public static function xiag($id = null)
     {
-        return new Model(new Properties($id, array('name' => 'XIAG')));
+        return new Model(new Properties(array('name' => 'XIAG')));
     }
 
     public static function nstu($id = null)
     {
-        return new Model(new Properties($id, array('name' => 'NSTU')));
+        return new Model(new Properties(array('name' => 'NSTU')));
     }
 }

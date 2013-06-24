@@ -40,6 +40,7 @@ class Memory implements ContainerInterface
         foreach($properties->foreign() as $referenceName => $referenceProperties) {
             foreach ($referenceProperties as $name => $property) {
                 $propertyBag->foreign()->$referenceName->$name = $property;
+                $propertyBag->foreign()->$referenceName->persisted(null, $this);
             }
         }
 
@@ -52,10 +53,8 @@ class Memory implements ContainerInterface
      */
     public function saveProperties($propertyBag)
     {
+        $propertyBag->persisted(null, $this);
         $this->storage[get_class($propertyBag)][$propertyBag->id($this)] = $propertyBag;
-        foreach ($propertyBag->foreign() as $referenceProperties) {
-            $this->saveProperties($referenceProperties);
-        }
         return $propertyBag;
     }
 
