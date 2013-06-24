@@ -25,7 +25,7 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
         $id = $model->propertiesFor($this->dbContainer())->putIn($this->dbContainer());
         $this->assertEquals(
             $model,
-            $model::newPropertyBag($id)->loadFrom($this->dbContainer())->constructModel()
+            $model::newProperties($id)->loadFrom($this->dbContainer())->constructModel()
         );
     }
 
@@ -41,7 +41,7 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $employee,
-            Employee::newPropertyBag($id)->loadFrom($this->dbContainer())->constructModel()
+            Employee::newProperties($id)->loadFrom($this->dbContainer())->constructModel()
         );
     }
 

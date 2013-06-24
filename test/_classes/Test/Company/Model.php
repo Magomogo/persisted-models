@@ -15,7 +15,7 @@ class Model implements ModelInterface
      * @param string $id
      * @return Properties
      */
-    public static function newPropertyBag($id = null)
+    public static function newProperties($id = null)
     {
         return new Properties($id);
     }

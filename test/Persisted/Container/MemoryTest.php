@@ -20,7 +20,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $model,
-            $model::newPropertyBag($id)->loadFrom($container)->constructModel()
+            $model::newProperties($id)->loadFrom($container)->constructModel()
         );
     }
 
@@ -38,7 +38,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     public function testBehavesCorrectlyWhenEmpty()
     {
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-        Employee::newPropertyBag()->loadFrom(new Memory);
+        Employee::newProperties()->loadFrom(new Memory);
     }
 
     public function testDelete()
@@ -49,7 +49,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $cc->propertiesFor($container)->deleteFrom($container);
 
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-        CreditCard::newPropertyBag()->loadFrom($container);
+        CreditCard::newProperties()->loadFrom($container);
     }
 
 }

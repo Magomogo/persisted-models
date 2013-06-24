@@ -10,7 +10,7 @@ interface ModelInterface
      * @param string $id
      * @return PropertyBag
      */
-    public static function newPropertyBag($id = null);
+    public static function newProperties($id = null);
 
     /**
      * @param ContainerInterface $container

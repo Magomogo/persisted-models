@@ -19,7 +19,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shouldReceive('insert')->with('test_person_properties', typeOf('array'))->once();
         $db->shouldReceive('insert')->with('test_creditcard_properties', typeOf('array'))->once();
         $db->shouldIgnoreMissing();
-        Person\Model::newPropertyBag()->putIn(self::container($db));
+        Person\Model::newProperties()->putIn(self::container($db));
     }
 
     public function testLoadsReferencesAccordingToReferenceName()

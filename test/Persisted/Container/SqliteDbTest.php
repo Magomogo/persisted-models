@@ -88,21 +88,21 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $maximId = ObjectMother\Person::maxim()->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
         $this->assertEquals(
             ObjectMother\Person::maxim($maximId)->politeTitle(),
-            Person::newPropertyBag($maximId)->loadFrom($this->sqliteContainer())->constructModel()->politeTitle()
+            Person::newProperties($maximId)->loadFrom($this->sqliteContainer())->constructModel()->politeTitle()
         );
     }
 
     public function testCanUpdateModelInTheDatabase()
     {
         $maximId = ObjectMother\Person::maxim()->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
-        $maxim = Person::newPropertyBag($maximId)->loadFrom($this->sqliteContainer())->constructModel();
+        $maxim = Person::newProperties($maximId)->loadFrom($this->sqliteContainer())->constructModel();
 
         $maxim->phoneNumberIsChanged('903-903');
         $maxim->propertiesFor($this->sqliteContainer())->putIn($this->sqliteContainer());
 
         $this->assertContains(
             '903-903',
-            Person::newPropertyBag($maximId)->loadFrom($this->sqliteContainer())->constructModel()->contactInfo()
+            Person::newProperties($maximId)->loadFrom($this->sqliteContainer())->constructModel()->contactInfo()
         );
     }
 
@@ -131,7 +131,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $employee = $this->putEmployeeIn($this->sqliteContainer());
         $this->assertEquals(
             $employee,
-            $employee::newPropertyBag(1)->loadFrom($this->sqliteContainer())->constructModel()
+            $employee::newProperties(1)->loadFrom($this->sqliteContainer())->constructModel()
         );
     }
 
@@ -155,7 +155,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $record,
-            $record::newPropertyBag($id)->loadFrom(self::sqliteContainer())->constructModel()
+            $record::newProperties($id)->loadFrom(self::sqliteContainer())->constructModel()
         );
     }
 
@@ -186,7 +186,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $person,
-            $person::newPropertyBag($id)->loadFrom($this->sqliteContainer())->constructModel()
+            $person::newProperties($id)->loadFrom($this->sqliteContainer())->constructModel()
         );
     }
 
