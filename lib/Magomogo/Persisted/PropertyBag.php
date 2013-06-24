@@ -95,7 +95,7 @@ abstract class PropertyBag implements \IteratorAggregate
         }
 
         foreach ($this->foreigners as $name => $value) {
-            $this->$name = clone $value;
+            $this->foreigners->$name = clone $value;
         }
     }
 

@@ -36,7 +36,6 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $container = new Memory;
 
         $employee = ObjectMother\Employee::maxim();
-        $employee->propertiesFrom($container)->foreign()->company->putIn($container);
         $id = $employee->propertiesFrom($container)->putIn($container);
 
         $this->assertEquals($employee, Employee::load($container, $id));

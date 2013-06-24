@@ -26,7 +26,9 @@ class Memory implements ContainerInterface
      */
     public function loadProperties($propertyBag)
     {
-        if (!array_key_exists(get_class($propertyBag), $this->storage)) {
+        if (!array_key_exists(get_class($propertyBag), $this->storage)
+            || !array_key_exists($propertyBag->id($this), $this->storage[get_class($propertyBag)])
+        ) {
             throw new NotFound;
         }
 
@@ -40,7 +42,6 @@ class Memory implements ContainerInterface
         foreach($properties->foreign() as $referenceName => $referenceProperties) {
             foreach ($referenceProperties as $name => $property) {
                 $propertyBag->foreign()->$referenceName->$name = $property;
-                $propertyBag->foreign()->$referenceName->persisted(null, $this);
             }
         }
 
@@ -53,8 +54,9 @@ class Memory implements ContainerInterface
      */
     public function saveProperties($propertyBag)
     {
-        $propertyBag->persisted(null, $this);
-        $this->storage[get_class($propertyBag)][$propertyBag->id($this)] = $propertyBag;
+        $id = $propertyBag->id($this) ?: spl_object_hash($propertyBag);
+        $propertyBag->persisted($id, $this);
+        $this->storage[get_class($propertyBag)][$propertyBag->id($this)] = clone $propertyBag;
         return $propertyBag;
     }
 
