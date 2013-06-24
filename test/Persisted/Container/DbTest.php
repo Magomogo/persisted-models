@@ -34,8 +34,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
         self::container($db)->loadProperties($properties);
 
-        $this->assertEquals(4, $properties->foreign()->ref1->id);
-        $this->assertEquals(5, $properties->foreign()->ref2->id);
+        $this->assertEquals(4, $properties->foreign()->ref1->id(self::container($db)));
+        $this->assertEquals(5, $properties->foreign()->ref2->id(self::container($db)));
     }
 
     public function testSavesReferencesAsForeignKeys()

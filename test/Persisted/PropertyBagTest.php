@@ -23,14 +23,14 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
     public function testIdIsNullInitially()
     {
-        $this->assertNull(self::bag()->id);
+        $this->assertNull(self::bag()->id());
     }
 
     public function testPersistedMessageSetsId()
     {
         $bag = self::bag();
         $bag->persisted('888', m::mock());
-        $this->assertEquals('888', $bag->id);
+        $this->assertEquals('888', $bag->id());
     }
 
     public function testKnowsItsOrigin()

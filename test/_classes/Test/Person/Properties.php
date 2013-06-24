@@ -50,7 +50,7 @@ class Properties extends PropertyBag
         $this->tags = array();
         foreach ($container->listReferences('person2keymarker', $this, new Keymarker\Properties())
                  as $keymarkerProperties) {
-            $this->tags[] = Keymarker\Model::newProperties($keymarkerProperties->id)
+            $this->tags[] = Keymarker\Model::newProperties($keymarkerProperties->id($container))
                 ->loadFrom($container)->constructModel();
         }
         return $this;
@@ -71,7 +71,7 @@ class Properties extends PropertyBag
         }
 
         $container->referToMany('person2keymarker', $this, $connectedProperties);
-        return $this->id;
+        return $this->id($container);
     }
 
 }

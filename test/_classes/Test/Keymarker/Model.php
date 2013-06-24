@@ -42,6 +42,6 @@ class Model implements ModelInterface
 
     public function __toString()
     {
-        return $this->properties->id;
+        return $this->properties->id();
     }
 }

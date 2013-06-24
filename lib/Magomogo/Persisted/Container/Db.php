@@ -52,8 +52,8 @@ class Db implements ContainerInterface
     public function saveProperties($propertyBag)
     {
         $row = $this->foreignKeys($propertyBag->foreign());
-        if (!is_null($propertyBag->id)) {
-            $row['id'] = $propertyBag->id;
+        if (!is_null($propertyBag->id($this))) {
+            $row['id'] = $propertyBag->id($this);
         }
         foreach ($propertyBag as $name => $property) {
             $row[$name] = $this->toDbValue($property);
@@ -68,7 +68,7 @@ class Db implements ContainerInterface
     public function deleteProperties(array $propertyBags)
     {
         foreach ($propertyBags as $bag) {
-            $this->db->delete($this->classToName($bag), array('id' => $bag->id));
+            $this->db->delete($this->classToName($bag), array('id' => $bag->id($this)));
         }
     }
 
@@ -79,13 +79,13 @@ class Db implements ContainerInterface
      */
     public function referToMany($referenceName, $leftProperties, array $connections)
     {
-        $this->db->delete($referenceName, array($this->classToName($leftProperties) => $leftProperties->id));
+        $this->db->delete($referenceName, array($this->classToName($leftProperties) => $leftProperties->id($this)));
 
         /** @var PropertyBag $propertyBag */
         foreach ($connections as $rightProperties) {
             $this->db->insert($referenceName, array(
-                $this->classToName($leftProperties) => $leftProperties->id,
-                $this->classToName($rightProperties) => $rightProperties->id,
+                $this->classToName($leftProperties) => $leftProperties->id($this),
+                $this->classToName($rightProperties) => $rightProperties->id($this),
             ));
         }
     }
@@ -102,7 +102,7 @@ class Db implements ContainerInterface
 
         $statement = $this->db->executeQuery(
             "SELECT $rightPropertiesName FROM $referenceName WHERE " . $this->classToName($leftProperties) . '=?',
-            array($leftProperties->id)
+            array($leftProperties->id($this))
         );
 
         $connections = array();
@@ -146,12 +146,12 @@ class Db implements ContainerInterface
      */
     private function begin($propertyBag)
     {
-        if (!is_null($propertyBag->id)) {
+        if (!is_null($propertyBag->id($this))) {
             $table = $this->classToName($propertyBag);
-            $row = $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($propertyBag->id));
+            $row = $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($propertyBag->id($this)));
 
             if (is_array($row)) {
-                $propertyBag->persisted($propertyBag->id, $this);
+                $propertyBag->persisted($propertyBag->id($this), $this);
                 return $row;
             } else {
                 throw new Exception\NotFound;
@@ -171,9 +171,9 @@ class Db implements ContainerInterface
 
         if (!$properties->isPersistedIn($this)) {
             $this->db->insert($this->classToName($properties), $row);
-            $properties->persisted($properties->id ?: $this->db->lastInsertId(), $this);
+            $properties->persisted($properties->id($this) ?: $this->db->lastInsertId(), $this);
         } else {
-            $this->db->update($this->classToName($properties), $row, array('id' => $properties->id));
+            $this->db->update($this->classToName($properties), $row, array('id' => $properties->id($this)));
         }
 
         return $properties;
@@ -187,10 +187,10 @@ class Db implements ContainerInterface
         try {
             $properties->assertOriginIs($this);
         } catch (Exception\Origin $e) {
-            if ($properties->id && $this->db->fetchColumn(
-                'SELECT 1 FROM ' . $this->classToName($properties) . ' WHERE id=?', array($properties->id)
+            if ($properties->id($this) && $this->db->fetchColumn(
+                'SELECT 1 FROM ' . $this->classToName($properties) . ' WHERE id=?', array($properties->id($this))
             )) {
-                $properties->persisted($properties->id, $this);
+                $properties->persisted($properties->id($this), $this);
             }
         }
     }
@@ -217,7 +217,7 @@ class Db implements ContainerInterface
         $keys = array();
         /* @var PropertyBag $properties */
         foreach ($references as $referenceName => $properties) {
-            $keys[$referenceName] = $properties->id;
+            $keys[$referenceName] = $properties->id($this);
         }
 
         return $keys;

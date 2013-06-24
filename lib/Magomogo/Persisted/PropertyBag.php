@@ -39,11 +39,17 @@ abstract class PropertyBag implements \IteratorAggregate
         return array();
     }
 
+    /**
+     * @param ContainerInterface $container|null
+     * @return string
+     */
+    public function id($container = null)
+    {
+        return $this->id;
+    }
+
     public function __get($name)
     {
-        if ($name == 'id') {
-            return $this->id;
-        }
         return $this->properties->$name;
     }
 
@@ -58,7 +64,7 @@ abstract class PropertyBag implements \IteratorAggregate
 
     /**
      * @param $id
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @param ContainerInterface $container
      */
     public function persisted($id, $container)
     {
@@ -67,7 +73,7 @@ abstract class PropertyBag implements \IteratorAggregate
     }
 
     /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @param ContainerInterface $container
      * @return bool
      */
     public function isPersistedIn($container)
@@ -81,7 +87,7 @@ abstract class PropertyBag implements \IteratorAggregate
     }
 
     /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @param ContainerInterface $container
      * @return PropertyBag
      * @throws Exception\Origin
      */
@@ -113,7 +119,7 @@ abstract class PropertyBag implements \IteratorAggregate
     }
 
     /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @param ContainerInterface $container
      * @return self
      */
     public function loadFrom($container)
@@ -122,16 +128,16 @@ abstract class PropertyBag implements \IteratorAggregate
     }
 
     /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @param ContainerInterface $container
      * @return string unique identifier
      */
     public function putIn($container)
     {
-        return $container->saveProperties($this)->id;
+        return $container->saveProperties($this)->id($container);
     }
 
     /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @param ContainerInterface $container
      * @return void
      */
     public function deleteFrom($container)

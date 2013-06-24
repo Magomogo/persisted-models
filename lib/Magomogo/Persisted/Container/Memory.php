@@ -31,7 +31,7 @@ class Memory implements ContainerInterface
         }
 
         /** @var $properties PropertyBag */
-        $properties = $this->storage[get_class($propertyBag)][$propertyBag->id];
+        $properties = $this->storage[get_class($propertyBag)][$propertyBag->id($this)];
 
         foreach ($properties as $name => $property) {
             $propertyBag->$name = $property;
@@ -52,7 +52,7 @@ class Memory implements ContainerInterface
      */
     public function saveProperties($propertyBag)
     {
-        $this->storage[get_class($propertyBag)][$propertyBag->id] = $propertyBag;
+        $this->storage[get_class($propertyBag)][$propertyBag->id($this)] = $propertyBag;
         foreach ($propertyBag->foreign() as $referenceProperties) {
             $this->saveProperties($referenceProperties);
         }
