@@ -2,7 +2,7 @@
 namespace Test\JobRecord;
 
 use Magomogo\Persisted\PropertyBag;
-use Test\Company\Properties as CompanyProperties;
+use Test\Company;
 
 /**
  * @property string $id
@@ -17,8 +17,8 @@ class Properties extends PropertyBag
     protected function foreigners()
     {
         return array(
-            'currentCompany' => new CompanyProperties,
-            'previousCompany' => new CompanyProperties
+            'currentCompany' => new Company\Properties,
+            'previousCompany' => new Company\Properties
         );
     }
 

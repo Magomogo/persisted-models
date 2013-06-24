@@ -5,8 +5,6 @@ use Test\DbFixture;
 use Test\ObjectMother;
 use Magomogo\Persisted\Container\Db;
 use Test\CreditCard;
-use Test\Company\Model as Company;
-use Test\Employee\Model as Employee;
 use Test\Person\Model as Person;
 use Test\JobRecord\Model as JobRecord;
 use Test\Person\Properties as PersonProperties;
@@ -155,7 +153,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $record,
-            $record::newProperties($id)->loadFrom(self::sqliteContainer())->constructModel()
+            $record::newProperties($id)->loadFrom($this->sqliteContainer())->constructModel()
         );
     }
 
@@ -197,13 +195,13 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $personProperties->lastName = null;
 
         $vova = new Person($personProperties);
-        $id = $vova->propertiesFrom($this->sqliteContainer())->putIn(self::sqliteContainer());
+        $id = $vova->propertiesFrom($this->sqliteContainer())->putIn($this->sqliteContainer());
 
         $this->assertNull(
             $this->fixture->db->fetchColumn('SELECT lastName FROM person_properties WHERE id = ?', array($id))
         );
 
-        $properties = self::sqliteContainer()->loadProperties(new PersonProperties($id));
+        $properties = $this->sqliteContainer()->loadProperties(new PersonProperties($id));
         $this->assertNull($properties->lastName);
     }
 
@@ -222,12 +220,9 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private function putEmployeeIn($container)
     {
-        $properties = ObjectMother\Employee::maximProperties();
-        $company = new Company($properties->foreign()->company);
-        $company->propertiesFrom($this->sqliteContainer())->putIn($container);
-
-        $employee = new Employee($company, $properties);
-        $employee->propertiesFrom($this->sqliteContainer())->putIn($container);
+        $employee = ObjectMother\Employee::maxim();
+        $employee->propertiesFrom($container)->foreign()->company->putIn($container);
+        $employee->propertiesFrom($container)->putIn($container);
         return $employee;
     }
 

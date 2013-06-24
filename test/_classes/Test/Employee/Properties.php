@@ -1,7 +1,7 @@
 <?php
 namespace Test\Employee;
 
-use Test\Person\Properties as PersonProperties;
+use Test\Person;
 use Test\Company;
 
 /**
@@ -12,7 +12,7 @@ use Test\Company;
  * @property string $email
  * @property \Test\CreditCard\Model $creditCard
  */
-class Properties extends PersonProperties
+class Properties extends Person\Properties
 {
     protected function foreigners()
     {

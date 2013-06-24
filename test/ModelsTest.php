@@ -31,12 +31,8 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
 
     public function testEmployeeModel()
     {
-        $properties = ObjectMother\Employee::maximProperties();
-
-        $persistedCompany = new Company($properties->foreign()->company);
-        $persistedCompany->propertiesFrom($this->dbContainer())->putIn($this->dbContainer());
-
-        $employee = new Employee($persistedCompany, $properties);
+        $employee = ObjectMother\Employee::maxim();
+        $employee->propertiesFrom($this->dbContainer())->foreign()->company->putIn($this->dbContainer());
         $id = $employee->propertiesFrom($this->dbContainer())->putIn($this->dbContainer());
 
         $this->assertEquals(
