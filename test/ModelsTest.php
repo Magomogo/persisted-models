@@ -5,7 +5,6 @@ use Test\DbFixture;
 use Magomogo\Persisted\Container\Db;
 use Test\ObjectMother;
 use Test\Employee\Model as Employee;
-use Test\Company\Model as Company;
 
 class ModelsTest extends \PHPUnit_Framework_TestCase
 {

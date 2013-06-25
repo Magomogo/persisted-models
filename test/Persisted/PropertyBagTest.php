@@ -5,6 +5,8 @@ use Mockery as m;
 use Magomogo\Persisted\Container\Db;
 use Magomogo\Persisted\Container\Memory;
 use Test\Company\Properties as CompanyProperties;
+use Test\ObjectMother\Employee;
+use Test\Employee\Properties as EmployeeProperties;
 
 class PropertyBagTest extends \PHPUnit_Framework_TestCase
 {
@@ -63,6 +65,19 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         $this->assertNull(self::bag()->nullDefault);
         $properties->nullDefault = 1;
         $this->assertEquals(1, $properties->nullDefault);
+    }
+
+    public function testPropertiesCanBeCopiedToAnotherBag()
+    {
+        $properties = Employee::maximProperties();
+        $properties->persisted('1', m::mock('Magomogo\\Persisted\\Container\\Db'));
+        $properties->persisted('123123132', m::mock('Magomogo\\Persisted\\Container\\Memory'));
+
+        $anotherProperties = new EmployeeProperties();
+        $properties->copyTo($anotherProperties);
+
+        $this->assertNotSame($properties, $anotherProperties);
+        $this->assertEquals($properties, $anotherProperties);
     }
 
 //----------------------------------------------------------------------------------------------------------------------

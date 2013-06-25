@@ -19,6 +19,16 @@ class Memory implements ContainerInterface
      */
     protected $manyToManyReferences = array();
 
+    public function query($type, $id)
+    {
+        if (!array_key_exists($type, $this->storage)
+            || !array_key_exists($id, $this->storage[$type])
+        ) {
+            return null;
+        }
+        return $this->storage[$type][$id];
+    }
+
     /**
      * @param \Magomogo\Persisted\PropertyBag $propertyBag
      * @return \Magomogo\Persisted\PropertyBag
@@ -34,17 +44,7 @@ class Memory implements ContainerInterface
 
         /** @var $properties PropertyBag */
         $properties = $this->storage[get_class($propertyBag)][$propertyBag->id($this)];
-
-        foreach ($properties as $name => $property) {
-            $propertyBag->$name = $property;
-        }
-
-        foreach($properties->foreign() as $referenceName => $referenceProperties) {
-            foreach ($referenceProperties as $name => $property) {
-                $propertyBag->foreign()->$referenceName->$name = $property;
-            }
-        }
-
+        $properties->copyTo($propertyBag);
         return $propertyBag;
     }
 
@@ -67,15 +67,15 @@ class Memory implements ContainerInterface
      */
     public function referToMany($referenceName, $leftProperties, array $connections)
     {
+        $this->saveProperties($leftProperties);
         $this->manyToManyReferences[$referenceName] = array();
         foreach ($connections as $rightProperties) {
             $this->manyToManyReferences[$referenceName][] = array(
-                'left' => $leftProperties,
+                'left' => $leftProperties->id($this),
                 'right' => $rightProperties,
             );
             $this->saveProperties($rightProperties);
         }
-        $this->saveProperties($leftProperties);
     }
 
     /**
@@ -88,11 +88,10 @@ class Memory implements ContainerInterface
     {
         $connections = array();
         foreach ($this->manyToManyReferences[$referenceName] as $pair) {
-            if ($leftProperties === $pair['left']) {
+            if ($leftProperties->id($this) === $pair['left']) {
                 $connections[] = $pair['right'];
             }
         }
-
         return $connections;
     }
 

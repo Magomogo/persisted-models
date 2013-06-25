@@ -125,4 +125,21 @@ abstract class PropertyBag implements \IteratorAggregate
     {
         $container->deleteProperties(array($this));
     }
+
+    public function copyTo($propertyBag)
+    {
+        foreach ($this as $name => $property) {
+            $propertyBag->$name = $property;
+        }
+
+        foreach($this->foreign() as $referenceName => $referenceProperties) {
+            foreach ($referenceProperties as $name => $property) {
+                $propertyBag->foreign()->$referenceName->$name = $property;
+            }
+        }
+
+        $propertyBag->idInContainer = array_merge($propertyBag->idInContainer, $this->idInContainer);
+
+        return $this;
+    }
 }
