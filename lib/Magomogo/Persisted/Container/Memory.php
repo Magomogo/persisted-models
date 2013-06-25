@@ -21,6 +21,11 @@ class Memory implements ContainerInterface
      */
     protected $manyToManyReferences = array();
 
+    /**
+     * @param string $type
+     * @param string $id
+     * @return null|PropertyBag
+     */
     public function query($type, $id)
     {
         if (!array_key_exists($type, $this->storage)

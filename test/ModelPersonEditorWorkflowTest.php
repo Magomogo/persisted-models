@@ -67,7 +67,7 @@ class PersonEditor extends Memory
 
     public function updateProperties($map)
     {
-        $properties = $this->storage['Test\\Person\\Properties'][$this->idInMemory];
+        $properties = $this->query('Test\\Person\\Properties', $this->idInMemory);
         foreach ($map as $name => $value) {
             $properties->$name = $value;
         }
@@ -75,9 +75,10 @@ class PersonEditor extends Memory
 
     /**
      * @param ContainerInterface $container
+     * @return string
      */
     public function saveTo($container)
     {
-        Person\Model::load($this, $this->idInMemory)->putIn($container);
+        return $this->query('Test\\Person\\Properties', $this->idInMemory)->putIn($container);
     }
 }
