@@ -80,7 +80,7 @@ class Db implements ContainerInterface
     {
         $this->db->delete($referenceName, array($this->classToName($leftProperties) => $leftProperties->id($this)));
 
-        /** @var PropertyBag $propertyBag */
+        /** @var PropertyBag $rightProperties */
         foreach ($connections as $rightProperties) {
             $this->db->insert($referenceName, array(
                 $this->classToName($leftProperties) => $leftProperties->id($this),
