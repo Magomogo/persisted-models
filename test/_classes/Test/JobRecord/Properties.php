@@ -23,7 +23,7 @@ class Properties extends PropertyBag
     }
 
     /**
-     * @return self
+     * @return Model
      */
     public function constructModel()
     {

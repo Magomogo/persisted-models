@@ -6,8 +6,7 @@ use Test\ObjectMother;
 use Magomogo\Persisted\Container\Db;
 use Test\CreditCard;
 use Test\Person;
-use Test\JobRecord\Model as JobRecord;
-use Test\JobRecord\Properties as JobRecordProperties;
+use Test\JobRecord;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -139,20 +138,15 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $previousCompany = ObjectMother\Company::nstu();
         $previousCompany->properties()->putIn($this->sqliteContainer());
 
-        $jobRecordProps = new JobRecordProperties();
+        $jobRecordProps = new JobRecord\Properties();
         $jobRecordProps->foreign()->currentCompany = $currentCompany->properties();
         $jobRecordProps->foreign()->previousCompany = $previousCompany->properties();
 
-        $record = new JobRecord(
-            $jobRecordProps->foreign()->currentCompany->constructModel(),
-            $jobRecordProps->foreign()->previousCompany->constructModel(),
-            $jobRecordProps
-        );
-        $id = $record->properties()->putIn($this->sqliteContainer());
+        $id = $jobRecordProps->putIn($this->sqliteContainer());
 
         $this->assertEquals(
-            $record,
-            $record::load($this->sqliteContainer(), $id)
+            $jobRecordProps->constructModel(),
+            JobRecord\Model::load($this->sqliteContainer(), $id)
         );
     }
 

@@ -108,4 +108,21 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
             $container->query('Test\\Person\\Properties', $id)
         );
     }
+
+    public function testCanSaveAndLoadAJobRecord()
+    {
+        $container = new Memory;
+
+        $jobRecordProps = new JobRecord\Properties();
+        $jobRecordProps->foreign()->currentCompany = ObjectMother\Company::xiag()->properties();
+        $jobRecordProps->foreign()->previousCompany = ObjectMother\Company::nstu()->properties();
+
+        $id = $jobRecordProps->putIn($container);
+
+        $this->assertEquals(
+            $jobRecordProps->constructModel(),
+            JobRecord\Model::load($container, $id)
+        );
+    }
+
 }
