@@ -55,4 +55,9 @@ class Model implements ModelInterface
         $this->previousCompany = $previousCompany;
         $this->properties = $properties;
     }
+
+    public function description()
+    {
+        return $this->previousCompany->name() . ' -> ' . $this->currentCompany->name();
+    }
 }
