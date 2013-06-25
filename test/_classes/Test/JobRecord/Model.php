@@ -3,6 +3,7 @@ namespace Test\JobRecord;
 
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\Container\ContainerInterface;
+use Test\Company;
 
 class Model implements ModelInterface
 {
@@ -30,7 +31,12 @@ class Model implements ModelInterface
     {
         $p = new Properties();
         $p->persisted($id, $container);
-        return $p->loadFrom($container)->constructModel();
+        $p->loadFrom($container);
+        return new self(
+            new Company\Model($p->foreign()->currentCompany),
+            new Company\Model($p->foreign()->previousCompany),
+            $p
+        );
     }
 
     public function putIn($container)

@@ -21,7 +21,7 @@ class Model implements ModelInterface
     {
         $p = new Properties();
         $p->persisted($id, $container);
-        return $p->loadFrom($container)->constructModel();
+        return new self($p->loadFrom($container));
     }
 
     public function putIn($container)

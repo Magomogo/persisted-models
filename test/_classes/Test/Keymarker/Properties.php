@@ -17,11 +17,6 @@ class Properties extends PropertyBag
         );
     }
 
-    public function constructModel()
-    {
-        return new Model($this);
-    }
-
     public function naturalKey()
     {
         return $this->id;

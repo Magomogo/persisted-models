@@ -10,7 +10,7 @@ class Employee
     public static function maxim()
     {
         $maxim = self::maximProperties();
-        return $maxim->constructModel();
+        return new EmployeeModel(new CompanyModel($maxim->foreign()->company), $maxim, $maxim->tags);
     }
 
     /**

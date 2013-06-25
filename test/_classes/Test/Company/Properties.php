@@ -14,13 +14,4 @@ class Properties extends PropertyBag
             'name' => '',
         );
     }
-
-    /**
-     * @return Model
-     */
-    public function constructModel()
-    {
-        return new Model($this);
-    }
-
 }

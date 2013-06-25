@@ -121,7 +121,11 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $id = $jobRecordProps->putIn($container);
 
         $this->assertEquals(
-            $jobRecordProps->constructModel(),
+            new JobRecord\Model(
+                new Company\Model($jobRecordProps->foreign()->currentCompany),
+                new Company\Model($jobRecordProps->foreign()->previousCompany),
+                $jobRecordProps
+            ),
             JobRecord\Model::load($container, $id)
         );
     }

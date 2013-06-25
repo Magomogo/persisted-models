@@ -8,6 +8,7 @@ use Test\CreditCard;
 use Test\Person;
 use Test\JobRecord;
 use Test\Company;
+use Test\Employee;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -142,7 +143,11 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $id = $jobRecordProps->putIn($this->sqliteContainer());
 
         $this->assertEquals(
-            $jobRecordProps->constructModel(),
+            new JobRecord\Model(
+                new Company\Model($jobRecordProps->foreign()->currentCompany),
+                new Company\Model($jobRecordProps->foreign()->previousCompany),
+                $jobRecordProps
+            ),
             JobRecord\Model::load($this->sqliteContainer(), $id)
         );
     }
@@ -213,7 +218,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $props = ObjectMother\Employee::maximProperties();
         $props->foreign()->company->putIn($container);
         $props->putIn($container);
-        return $props->constructModel();
+        return new Employee\Model(new Company\Model($props->foreign()->company), $props);
     }
 
     private function sqliteContainer()

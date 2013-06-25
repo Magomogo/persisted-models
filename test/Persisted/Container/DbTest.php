@@ -104,11 +104,6 @@ class TestType1 extends PropertyBag
     {
         return array();
     }
-
-    public function constructModel()
-    {
-        // TODO: Implement constructModel() method.
-    }
 }
 
 class TestType2 extends PropertyBag
@@ -116,11 +111,6 @@ class TestType2 extends PropertyBag
     protected function properties()
     {
         return array();
-    }
-
-    public function constructModel()
-    {
-        // TODO: Implement constructModel() method.
     }
 }
 
@@ -138,11 +128,6 @@ class TestType3 extends PropertyBag
             'ref1' => new TestType1(null),
             'ref2' => new TestType2(null),
         );
-    }
-
-    public function constructModel()
-    {
-        // TODO: Implement constructModel() method.
     }
 }
 

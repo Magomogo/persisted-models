@@ -34,11 +34,6 @@ class Properties extends PropertyBag
         );
     }
 
-    public function constructModel()
-    {
-        return new Model($this, $this->tags);
-    }
-
     /**
      * @param \Magomogo\Persisted\Container\ContainerInterface $container
      * @return self
@@ -51,7 +46,7 @@ class Properties extends PropertyBag
         foreach ($container->listReferences('person2keymarker', $this, new Keymarker\Properties())
                  as $keymarkerProperties) {
             /** @var Keymarker\Properties $keymarkerProperties */
-            $this->tags[] = $keymarkerProperties->constructModel();
+            $this->tags[] = new Keymarker\Model($keymarkerProperties);
         }
         return $this;
     }

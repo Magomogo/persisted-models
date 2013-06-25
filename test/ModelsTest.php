@@ -4,7 +4,8 @@ namespace Magomogo\Persisted;
 use Test\DbFixture;
 use Magomogo\Persisted\Container\Db;
 use Test\ObjectMother;
-use Test\Employee\Model as Employee;
+use Test\Company;
+use Test\Employee;
 
 class ModelsTest extends \PHPUnit_Framework_TestCase
 {
@@ -31,7 +32,10 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
         $props->foreign()->company->putIn($this->dbContainer());
         $id = $props->putIn($this->dbContainer());
 
-        $this->assertEquals($props->constructModel(), Employee::load($this->dbContainer(), $id));
+        $this->assertEquals(
+            new Employee\Model(new Company\Model($props->foreign()->company), $props, $props->tags),
+            Employee\Model::load($this->dbContainer(), $id)
+        );
     }
 
     public static function modelsProvider()

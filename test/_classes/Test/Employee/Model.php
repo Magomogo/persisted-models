@@ -21,7 +21,8 @@ class Model extends Person
     {
         $p = new Properties();
         $p->persisted($id, $container);
-        return $p->loadFrom($container)->constructModel();
+        $p->loadFrom($container);
+        return new self(new Company\Model($p->foreign()->company), $p, $p->tags);
     }
 
     /**

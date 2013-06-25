@@ -20,13 +20,4 @@ class Properties extends Person\Properties
             'company' => new Company\Properties
         );
     }
-
-    public function constructModel()
-    {
-        return new Model(
-            $this->foreign()->company->constructModel(),
-            $this,
-            $this->tags
-        );
-    }
 }

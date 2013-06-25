@@ -21,17 +21,4 @@ class Properties extends PropertyBag
             'previousCompany' => new Company\Properties
         );
     }
-
-    /**
-     * @return Model
-     */
-    public function constructModel()
-    {
-        return new Model(
-            $this->foreign()->currentCompany->constructModel(),
-            $this->foreign()->previousCompany->constructModel(),
-            $this
-        );
-    }
-
 }

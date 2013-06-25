@@ -27,11 +27,6 @@ abstract class PropertyBag implements \IteratorAggregate
 
     protected abstract function properties();
 
-    /**
-     * @return ModelInterface
-     */
-    public abstract function constructModel();
-
     protected function foreigners()
     {
         return array();
