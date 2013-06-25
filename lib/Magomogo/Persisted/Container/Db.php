@@ -130,7 +130,7 @@ class Db implements ContainerInterface
         if (is_scalar($property) || is_null($property)) {
             return $property;
         } elseif ($property instanceof ModelInterface) {
-            return $property->properties()->putIn($this);
+            return $property->putIn($this);
         } elseif ($property instanceof \DateTime) {
             return $property->format('c');
         } else {

@@ -7,17 +7,16 @@ use Test\Company\Model as CompanyModel;
 
 class Employee
 {
-    public static function maxim($id = null)
+    public static function maxim()
     {
-        $maxim = self::maximProperties($id);
+        $maxim = self::maximProperties();
         return $maxim->constructModel();
     }
 
     /**
-     * @param null $id
      * @return EmployeeProperties
      */
-    public static function maximProperties($id = null)
+    public static function maximProperties()
     {
         $properties = new EmployeeProperties(
             array(
@@ -26,7 +25,7 @@ class Employee
                 'lastName' => 'Gnatenko',
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
-                'creditCard' => CreditCard::datatransTesting($id),
+                'creditCard' => CreditCard::datatransTesting(),
                 'birthDay' => new \DateTime('1975-07-07T00:00:00+07:00')
             )
         );

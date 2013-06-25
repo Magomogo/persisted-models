@@ -2,6 +2,7 @@
 namespace Magomogo\Persisted\Container;
 
 use Magomogo\Persisted\ModelInterface;
+use Test\Company;
 use Test\Keymarker;
 use Test\ObjectMother;
 use Test\Employee\Model as Employee;
@@ -17,7 +18,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     public function testCanBePutInAndLoadedFrom(ModelInterface $model)
     {
         $container = new Memory;
-        $id = $model->properties()->putIn($container);
+        $id = $model->putIn($container);
 
         $this->assertEquals($model, $model::load($container, $id));
     }
@@ -37,7 +38,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $container = new Memory;
 
         $employee = ObjectMother\Employee::maxim();
-        $id = $employee->properties()->putIn($container);
+        $id = $employee->putIn($container);
 
         $this->assertEquals($employee, Employee::load($container, $id));
     }
@@ -52,22 +53,22 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Memory;
         $cc = ObjectMother\CreditCard::datatransTesting();
-        $cc->properties()->putIn($container);
-        $cc->properties()->deleteFrom($container);
+        $id = $cc->putIn($container);
+        $cc->deleteFrom($container);
 
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-        CreditCard::load($container, $cc->properties()->id($container));
+        CreditCard::load($container, $id);
     }
 
     public function testCanSaveAndLoadTwoModelsOfSameType()
     {
         $container = new Memory;
 
-        $id1 = ObjectMother\Keymarker::friend()->properties()->putIn($container);
-        $id2 = ObjectMother\Keymarker::IT()->properties()->putIn($container);
+        $id1 = ObjectMother\Keymarker::friend()->putIn($container);
+        $id2 = ObjectMother\Keymarker::IT()->putIn($container);
 
-        $this->assertEquals('Friend', Keymarker\Model::load($container, $id1));
-        $this->assertEquals('IT', Keymarker\Model::load($container, $id2));
+        $this->assertEquals('Friend', strval(Keymarker\Model::load($container, $id1)));
+        $this->assertEquals('IT', strval(Keymarker\Model::load($container, $id2)));
     }
 
     public function testStoresPersonKeymarkers()
@@ -78,7 +79,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $person->tag(ObjectMother\Keymarker::friend());
         $person->tag(ObjectMother\Keymarker::IT());
 
-        $id = $person->properties()->putIn($container);
+        $id = $person->putIn($container);
 
         $this->assertEquals(
             $person,
@@ -89,7 +90,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     public function testCanQueryForStoredProperties()
     {
         $container = new Memory;
-        $properties = ObjectMother\Person::maxim()->properties();
+        $properties = ObjectMother\Person::maximProperties();
         $id = $properties->putIn($container);
         $this->assertEquals(
             $properties,
@@ -101,7 +102,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryExposesStoredPropertiesInstance() {
         $container = new Memory;
-        $id = ObjectMother\Person::maxim()->properties()->putIn($container);
+        $id = ObjectMother\Person::maxim()->putIn($container);
 
         $this->assertSame(
             $container->query('Test\\Person\\Properties', $id),
@@ -114,8 +115,8 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $container = new Memory;
 
         $jobRecordProps = new JobRecord\Properties();
-        $jobRecordProps->foreign()->currentCompany = ObjectMother\Company::xiag()->properties();
-        $jobRecordProps->foreign()->previousCompany = ObjectMother\Company::nstu()->properties();
+        $jobRecordProps->foreign()->currentCompany = new Company\Properties(array('name' => 'XIAG'));
+        $jobRecordProps->foreign()->previousCompany = new Company\Properties(array('name' => 'NSTU'));
 
         $id = $jobRecordProps->putIn($container);
 

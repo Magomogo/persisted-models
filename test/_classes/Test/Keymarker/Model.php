@@ -3,7 +3,7 @@ namespace Test\Keymarker;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
-use Magomogo\Persisted\PropertyBag;
+use Test\Person;
 
 class Model implements ModelInterface
 {
@@ -25,12 +25,9 @@ class Model implements ModelInterface
         return $p->loadFrom($container)->constructModel();
     }
 
-    /**
-     * @return PropertyBag
-     */
-    public function properties()
+    public function putIn($container)
     {
-        return $this->properties;
+        return $this->properties->putIn($container);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -46,5 +43,19 @@ class Model implements ModelInterface
     public function __toString()
     {
         return $this->properties->id;
+    }
+
+    /**
+     * @param Person\Properties $personProps
+     * @return array of Properties
+     */
+    public static function listProperties(Person\Properties $personProps)
+    {
+        $list = array();
+        /** @var self $keymarker */
+        foreach ($personProps->tags as $keymarker) {
+            $list[] = $keymarker->properties;
+        }
+        return $list;
     }
 }

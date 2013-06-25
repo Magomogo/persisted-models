@@ -14,7 +14,8 @@ interface ModelInterface
     public static function load($container, $id = null);
 
     /**
-     * @return PropertyBag
+     * @param ContainerInterface $container
+     * @return string unique ID
      */
-    public function properties();
+    public function putIn($container);
 }

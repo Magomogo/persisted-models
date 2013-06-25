@@ -50,7 +50,8 @@ class Properties extends PropertyBag
         $this->tags = array();
         foreach ($container->listReferences('person2keymarker', $this, new Keymarker\Properties())
                  as $keymarkerProperties) {
-            $this->tags[] = Keymarker\Model::load($container, $keymarkerProperties->id($container));
+            /** @var Keymarker\Properties $keymarkerProperties */
+            $this->tags[] = $keymarkerProperties->constructModel();
         }
         return $this;
     }
@@ -62,14 +63,7 @@ class Properties extends PropertyBag
     public function putIn($container)
     {
         $container->saveProperties($this);
-
-        $connectedProperties = array();
-        /** @var \Magomogo\Persisted\ModelInterface $keymarker */
-        foreach ($this->tags as $keymarker) {
-            $connectedProperties[] = $keymarker->properties();
-        }
-
-        $container->referToMany('person2keymarker', $this, $connectedProperties);
+        $container->referToMany('person2keymarker', $this, Keymarker\Model::listProperties($this));
         return $this->id($container);
     }
 

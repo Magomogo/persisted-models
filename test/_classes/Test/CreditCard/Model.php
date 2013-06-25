@@ -24,12 +24,14 @@ class Model implements ModelInterface
         return $p->loadFrom($container)->constructModel();
     }
 
-    /**
-     * @return PropertyBag
-     */
-    public function properties()
+    public function putIn($container)
     {
-        return $this->properties;
+        return $this->properties->putIn($container);
+    }
+
+    public function deleteFrom($container)
+    {
+        $this->properties->deleteFrom($container);
     }
 
 //----------------------------------------------------------------------------------------------------------------------

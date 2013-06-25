@@ -20,14 +20,13 @@ class ModelEditorWorkflowTest extends \PHPUnit_Framework_TestCase
         $this->fixture = new DbFixture();
         $this->fixture->install();
 
-        $this->propertiesId = ObjectMother\Person::maxim()
-            ->properties()->putIn($this->dbContainer());
+        $this->propertiesId = ObjectMother\Person::maxim()->putIn($this->dbContainer());
     }
 
     public function testCanBeEditWithSomeEditor()
     {
         $model = Person\Model::load($this->dbContainer(), $this->propertiesId);
-        $editor = new PersonEditor($model->properties());
+        $editor = new PersonEditor($model);
 
         $editor->updateProperties(array(
                 'firstName' => 'John',
@@ -59,11 +58,11 @@ class PersonEditor extends Memory
     private $idInMemory;
 
     /**
-     * @param Person\Properties $props
+     * @param Person\Model $person
      */
-    public function __construct($props)
+    public function __construct($person)
     {
-        $this->idInMemory = $props->putIn($this);
+        $this->idInMemory = $person->putIn($this);
     }
 
     public function updateProperties($map)
@@ -79,6 +78,6 @@ class PersonEditor extends Memory
      */
     public function saveTo($container)
     {
-        Person\Model::load($this, $this->idInMemory)->properties()->putIn($container);
+        Person\Model::load($this, $this->idInMemory)->putIn($container);
     }
 }

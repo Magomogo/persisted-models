@@ -9,6 +9,8 @@ use Magomogo\Persisted\Exception\NotFound;
  */
 class Memory implements ContainerInterface
 {
+    private static $autoincrement = 1;
+
     /**
      * @var array of PropertyBag
      */
@@ -54,7 +56,7 @@ class Memory implements ContainerInterface
      */
     public function saveProperties($propertyBag)
     {
-        $id = $propertyBag->id($this) ?: spl_object_hash($propertyBag);
+        $id = $propertyBag->id($this) ?: self::$autoincrement++;
         $propertyBag->persisted($id, $this);
         $this->storage[get_class($propertyBag)][$propertyBag->id($this)] = clone $propertyBag;
         return $propertyBag;

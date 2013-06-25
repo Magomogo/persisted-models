@@ -33,12 +33,9 @@ class Model implements ModelInterface
         return $p->loadFrom($container)->constructModel();
     }
 
-    /**
-     * @return Properties
-     */
-    public function properties()
+    public function putIn($container)
     {
-        return $this->properties;
+        return $this->properties->putIn($container);
     }
 
 //----------------------------------------------------------------------------------------------------------------------

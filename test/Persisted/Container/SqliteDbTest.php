@@ -7,6 +7,7 @@ use Magomogo\Persisted\Container\Db;
 use Test\CreditCard;
 use Test\Person;
 use Test\JobRecord;
+use Test\Company;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,8 +31,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testSavesCreditCardIntoDatabase()
     {
-        ObjectMother\CreditCard::datatransTesting()->properties()
-            ->putIn($this->sqliteContainer());
+        ObjectMother\CreditCard::datatransTesting()->putIn($this->sqliteContainer());
 
         $this->assertEquals(
             array(
@@ -49,7 +49,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testSavesAPersonHavingCreditCardIntoDatabase()
     {
-        ObjectMother\Person::maxim()->properties()->putIn($this->sqliteContainer());
+        ObjectMother\Person::maxim()->putIn($this->sqliteContainer());
 
         $this->assertEquals(
             array(
@@ -81,7 +81,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testReadsModelFromTheDatabase()
     {
-        $maximId = ObjectMother\Person::maxim()->properties()->putIn($this->sqliteContainer());
+        $maximId = ObjectMother\Person::maxim()->putIn($this->sqliteContainer());
         $this->assertEquals(
             ObjectMother\Person::maxim($maximId)->politeTitle(),
             Person\Model::load($this->sqliteContainer(), $maximId)->politeTitle()
@@ -90,11 +90,11 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testCanUpdateModelInTheDatabase()
     {
-        $maximId = ObjectMother\Person::maxim()->properties()->putIn($this->sqliteContainer());
+        $maximId = ObjectMother\Person::maxim()->putIn($this->sqliteContainer());
         $maxim = Person\Model::load($this->sqliteContainer(), $maximId);
 
         $maxim->phoneNumberIsChanged('903-903');
-        $maxim->properties()->putIn($this->sqliteContainer());
+        $maxim->putIn($this->sqliteContainer());
 
         $this->assertContains(
             '903-903',
@@ -133,14 +133,11 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testCanSaveAndLoadAJobRecord()
     {
-        $currentCompany = ObjectMother\Company::xiag();
-        $currentCompany->properties()->putIn($this->sqliteContainer());
-        $previousCompany = ObjectMother\Company::nstu();
-        $previousCompany->properties()->putIn($this->sqliteContainer());
-
         $jobRecordProps = new JobRecord\Properties();
-        $jobRecordProps->foreign()->currentCompany = $currentCompany->properties();
-        $jobRecordProps->foreign()->previousCompany = $previousCompany->properties();
+        $jobRecordProps->foreign()->currentCompany = new Company\Properties(array('name' => 'XIAG'));
+        $jobRecordProps->foreign()->currentCompany->putIn($this->sqliteContainer());
+        $jobRecordProps->foreign()->previousCompany = new Company\Properties(array('name' => 'NSTU'));
+        $jobRecordProps->foreign()->previousCompany->putIn($this->sqliteContainer());
 
         $id = $jobRecordProps->putIn($this->sqliteContainer());
 
@@ -159,9 +156,9 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     private function persistTwoKeymarkers()
     {
         $persistedKeymarker1 = ObjectMother\Keymarker::friend();
-        $persistedKeymarker1->properties()->putIn($this->sqliteContainer());
+        $persistedKeymarker1->putIn($this->sqliteContainer());
         $persistedKeymarker2 = ObjectMother\Keymarker::IT();
-        $persistedKeymarker2->properties()->putIn($this->sqliteContainer());
+        $persistedKeymarker2->putIn($this->sqliteContainer());
         return array($persistedKeymarker1, $persistedKeymarker2);
     }
 
@@ -173,7 +170,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $person->tag($persistedKeymarker1);
         $person->tag($persistedKeymarker2);
 
-        $id = $person->properties()->putIn($this->sqliteContainer());
+        $id = $person->putIn($this->sqliteContainer());
 
         $this->assertEquals(
             $person,
@@ -188,35 +185,35 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $personProperties->lastName = null;
 
         $vova = new Person\Model($personProperties);
-        $id = $vova->properties()->putIn($this->sqliteContainer());
+        $id = $vova->putIn($this->sqliteContainer());
 
         $this->assertNull(
             $this->fixture->db->fetchColumn('SELECT lastName FROM person_properties WHERE id = ?', array($id))
         );
 
-        $properties = Person\Model::load($this->sqliteContainer(), $id)->properties();
-        $this->assertNull($properties->lastName);
+        $person = Person\Model::load($this->sqliteContainer(), $id);
+        $this->assertNull($person->lastName());
     }
 
-    public function testACompanyCanBeDeletedFromContainer()
+    public function testAModelCanBeDeletedFromContainer()
     {
-        $company = ObjectMother\Company::xiag();
-        $companyId = $company->properties()->putIn($this->sqliteContainer());
+        $cc = ObjectMother\CreditCard::datatransTesting();
+        $id = $cc->putIn($this->sqliteContainer());
 
-        $company->properties()->deleteFrom($this->sqliteContainer());
+        $cc->deleteFrom($this->sqliteContainer());
 
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-        $company->properties()->loadFrom($this->sqliteContainer(), $companyId);
+        CreditCard\Model::load($this->sqliteContainer(), $id);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
 
     private function putEmployeeIn($container)
     {
-        $employee = ObjectMother\Employee::maxim();
-        $employee->properties()->foreign()->company->putIn($container);
-        $employee->properties()->putIn($container);
-        return $employee;
+        $props = ObjectMother\Employee::maximProperties();
+        $props->foreign()->company->putIn($container);
+        $props->putIn($container);
+        return $props->constructModel();
     }
 
     private function sqliteContainer()

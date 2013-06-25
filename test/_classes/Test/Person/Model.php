@@ -24,12 +24,9 @@ class Model implements ModelInterface
         return $p->loadFrom($container)->constructModel();
     }
 
-    /**
-     * @return Properties
-     */
-    public function properties()
+    public function putIn($container)
     {
-        return $this->properties;
+        return $this->properties->putIn($container);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -47,6 +44,11 @@ class Model implements ModelInterface
     public function politeTitle()
     {
         return $this->properties->title . ' ' . $this->properties->firstName . ' ' . $this->properties->lastName;
+    }
+
+    public function lastName()
+    {
+        return $this->properties->lastName;
     }
 
     public function contactInfo()
