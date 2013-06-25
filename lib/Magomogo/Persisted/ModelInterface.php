@@ -14,8 +14,7 @@ interface ModelInterface
     public static function load($container, $id = null);
 
     /**
-     * @param ContainerInterface $container
      * @return PropertyBag
      */
-    public function propertiesFrom($container);
+    public function properties();
 }

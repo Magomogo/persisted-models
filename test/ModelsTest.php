@@ -21,15 +21,15 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
      */
     public function testCanBePutInAndLoadedFrom(ModelInterface $model)
     {
-        $id = $model->propertiesFrom($this->dbContainer())->putIn($this->dbContainer());
+        $id = $model->properties()->putIn($this->dbContainer());
         $this->assertEquals($model, $model::load($this->dbContainer(), $id));
     }
 
     public function testEmployeeModel()
     {
         $employee = ObjectMother\Employee::maxim();
-        $employee->propertiesFrom($this->dbContainer())->foreign()->company->putIn($this->dbContainer());
-        $id = $employee->propertiesFrom($this->dbContainer())->putIn($this->dbContainer());
+        $employee->properties()->foreign()->company->putIn($this->dbContainer());
+        $id = $employee->properties()->putIn($this->dbContainer());
 
         $this->assertEquals($employee, Employee::load($this->dbContainer(), $id));
     }

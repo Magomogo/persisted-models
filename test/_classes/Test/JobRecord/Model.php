@@ -7,6 +7,11 @@ use Magomogo\Persisted\Container\ContainerInterface;
 class Model implements ModelInterface
 {
     /**
+     * @var Properties
+     */
+    private $properties;
+
+    /**
      * @var \Test\Company\Model
      */
     private $previousCompany;
@@ -29,10 +34,9 @@ class Model implements ModelInterface
     }
 
     /**
-     * @param ContainerInterface $container
      * @return Properties
      */
-    public function propertiesFrom($container)
+    public function properties()
     {
         return $this->properties;
     }

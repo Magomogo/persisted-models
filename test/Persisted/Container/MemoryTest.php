@@ -17,8 +17,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     public function testCanBePutInAndLoadedFrom(ModelInterface $model)
     {
         $container = new Memory;
-
-        $id = $model->propertiesFrom($container)->putIn($container);
+        $id = $model->properties()->putIn($container);
 
         $this->assertEquals($model, $model::load($container, $id));
     }
@@ -38,7 +37,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $container = new Memory;
 
         $employee = ObjectMother\Employee::maxim();
-        $id = $employee->propertiesFrom($container)->putIn($container);
+        $id = $employee->properties()->putIn($container);
 
         $this->assertEquals($employee, Employee::load($container, $id));
     }
@@ -53,19 +52,19 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Memory;
         $cc = ObjectMother\CreditCard::datatransTesting();
-        $cc->propertiesFrom($container)->putIn($container);
-        $cc->propertiesFrom($container)->deleteFrom($container);
+        $cc->properties()->putIn($container);
+        $cc->properties()->deleteFrom($container);
 
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-        CreditCard::load($container, $cc->propertiesFrom($container)->id($container));
+        CreditCard::load($container, $cc->properties()->id($container));
     }
 
     public function testCanSaveAndLoadTwoModelsOfSameType()
     {
         $container = new Memory;
 
-        $id1 = ObjectMother\Keymarker::friend()->propertiesFrom($container)->putIn($container);
-        $id2 = ObjectMother\Keymarker::IT()->propertiesFrom($container)->putIn($container);
+        $id1 = ObjectMother\Keymarker::friend()->properties()->putIn($container);
+        $id2 = ObjectMother\Keymarker::IT()->properties()->putIn($container);
 
         $this->assertEquals('Friend', Keymarker\Model::load($container, $id1));
         $this->assertEquals('IT', Keymarker\Model::load($container, $id2));
@@ -79,7 +78,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $person->tag(ObjectMother\Keymarker::friend());
         $person->tag(ObjectMother\Keymarker::IT());
 
-        $id = $person->propertiesFrom($container)->putIn($container);
+        $id = $person->properties()->putIn($container);
 
         $this->assertEquals(
             $person,
@@ -90,7 +89,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     public function testCanQueryForStoredProperties()
     {
         $container = new Memory;
-        $properties = ObjectMother\Person::maxim()->propertiesFrom($container);
+        $properties = ObjectMother\Person::maxim()->properties();
         $id = $properties->putIn($container);
         $this->assertEquals(
             $properties,
@@ -102,7 +101,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryExposesStoredPropertiesInstance() {
         $container = new Memory;
-        $id = ObjectMother\Person::maxim()->propertiesFrom($container)->putIn($container);
+        $id = ObjectMother\Person::maxim()->properties()->putIn($container);
 
         $this->assertSame(
             $container->query('Test\\Person\\Properties', $id),

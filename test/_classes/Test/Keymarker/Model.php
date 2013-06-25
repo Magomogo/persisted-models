@@ -26,10 +26,9 @@ class Model implements ModelInterface
     }
 
     /**
-     * @param ContainerInterface $container
      * @return PropertyBag
      */
-    public function propertiesFrom($container)
+    public function properties()
     {
         return $this->properties;
     }
