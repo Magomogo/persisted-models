@@ -58,7 +58,14 @@ class Properties extends PropertyBag
     public function putIn($container)
     {
         $container->saveProperties($this);
-        $container->referToMany('person2keymarker', $this, Keymarker\Model::listProperties($this));
+
+        $list = array();
+        /** @var Keymarker\Model $keymarker */
+        foreach ($this->tags as $keymarker) {
+            $list[] = $keymarker->propertiesToBeConnectedWith($this);
+        }
+        $container->referToMany('person2keymarker', $this, $list);
+
         return $this->id($container);
     }
 

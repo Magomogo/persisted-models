@@ -45,16 +45,11 @@ class Model implements ModelInterface
     }
 
     /**
-     * @param Person\Properties $personProps
+     * @param Person\Properties $personProperties
      * @return array of Properties
      */
-    public static function listProperties(Person\Properties $personProps)
+    public function propertiesToBeConnectedWith($personProperties)
     {
-        $list = array();
-        /** @var self $keymarker */
-        foreach ($personProps->tags as $keymarker) {
-            $list[] = $keymarker->properties;
-        }
-        return $list;
+        return $this->properties;
     }
 }
