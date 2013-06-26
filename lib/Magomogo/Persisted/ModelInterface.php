@@ -11,7 +11,7 @@ interface ModelInterface
      * @param string $id
      * @return self
      */
-    public static function load($container, $id = null);
+    public static function load($container, $id);
 
     /**
      * @param ContainerInterface $container

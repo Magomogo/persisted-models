@@ -80,6 +80,12 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($properties, $anotherProperties);
     }
 
+    public function testCloneCreatesEqualBag()
+    {
+        $bag = self::bag();
+        $this->assertEquals($bag, clone $bag);
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function bag()

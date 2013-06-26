@@ -16,7 +16,7 @@ class Model implements ModelInterface
      * @param string $id
      * @return self
      */
-    public static function load($container, $id = null)
+    public static function load($container, $id)
     {
         $p = new Properties();
         $p->persisted($id, $container);
