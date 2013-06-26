@@ -32,7 +32,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testSavesCreditCardIntoDatabase()
     {
-        ObjectMother\CreditCard::datatransTesting()->putIn($this->sqliteContainer());
+        ObjectMother\CreditCard::datatransTesting()->save($this->sqliteContainer());
 
         $this->assertEquals(
             array(
@@ -50,7 +50,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testSavesAPersonHavingCreditCardIntoDatabase()
     {
-        ObjectMother\Person::maxim()->putIn($this->sqliteContainer());
+        ObjectMother\Person::maxim()->save($this->sqliteContainer());
 
         $this->assertEquals(
             array(
@@ -82,7 +82,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testReadsModelFromTheDatabase()
     {
-        $maximId = ObjectMother\Person::maxim()->putIn($this->sqliteContainer());
+        $maximId = ObjectMother\Person::maxim()->save($this->sqliteContainer());
         $this->assertEquals(
             ObjectMother\Person::maxim($maximId)->politeTitle(),
             Person\Model::load($this->sqliteContainer(), $maximId)->politeTitle()
@@ -91,11 +91,11 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testCanUpdateModelInTheDatabase()
     {
-        $maximId = ObjectMother\Person::maxim()->putIn($this->sqliteContainer());
+        $maximId = ObjectMother\Person::maxim()->save($this->sqliteContainer());
         $maxim = Person\Model::load($this->sqliteContainer(), $maximId);
 
         $maxim->phoneNumberIsChanged('903-903');
-        $maxim->putIn($this->sqliteContainer());
+        $maxim->save($this->sqliteContainer());
 
         $this->assertContains(
             '903-903',
@@ -161,9 +161,9 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     private function persistTwoKeymarkers()
     {
         $persistedKeymarker1 = ObjectMother\Keymarker::friend();
-        $persistedKeymarker1->putIn($this->sqliteContainer());
+        $persistedKeymarker1->save($this->sqliteContainer());
         $persistedKeymarker2 = ObjectMother\Keymarker::IT();
-        $persistedKeymarker2->putIn($this->sqliteContainer());
+        $persistedKeymarker2->save($this->sqliteContainer());
         return array($persistedKeymarker1, $persistedKeymarker2);
     }
 
@@ -175,7 +175,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $person->tag($persistedKeymarker1);
         $person->tag($persistedKeymarker2);
 
-        $id = $person->putIn($this->sqliteContainer());
+        $id = $person->save($this->sqliteContainer());
 
         $this->assertEquals(
             $person,
@@ -190,7 +190,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $personProperties->lastName = null;
 
         $vova = new Person\Model($personProperties);
-        $id = $vova->putIn($this->sqliteContainer());
+        $id = $vova->save($this->sqliteContainer());
 
         $this->assertNull(
             $this->fixture->db->fetchColumn('SELECT lastName FROM person_properties WHERE id = ?', array($id))
@@ -203,7 +203,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     public function testAModelCanBeDeletedFromContainer()
     {
         $cc = ObjectMother\CreditCard::datatransTesting();
-        $id = $cc->putIn($this->sqliteContainer());
+        $id = $cc->save($this->sqliteContainer());
 
         $cc->deleteFrom($this->sqliteContainer());
 

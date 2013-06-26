@@ -18,7 +18,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     public function testCanBePutInAndLoadedFrom(ModelInterface $model)
     {
         $container = new Memory;
-        $id = $model->putIn($container);
+        $id = $model->save($container);
 
         $this->assertEquals($model, $model::load($container, $id));
     }
@@ -38,7 +38,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $container = new Memory;
 
         $employee = ObjectMother\Employee::maxim();
-        $id = $employee->putIn($container);
+        $id = $employee->save($container);
 
         $this->assertEquals($employee, Employee::load($container, $id));
     }
@@ -53,7 +53,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Memory;
         $cc = ObjectMother\CreditCard::datatransTesting();
-        $id = $cc->putIn($container);
+        $id = $cc->save($container);
         $cc->deleteFrom($container);
 
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
@@ -64,8 +64,8 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Memory;
 
-        $id1 = ObjectMother\Keymarker::friend()->putIn($container);
-        $id2 = ObjectMother\Keymarker::IT()->putIn($container);
+        $id1 = ObjectMother\Keymarker::friend()->save($container);
+        $id2 = ObjectMother\Keymarker::IT()->save($container);
 
         $this->assertEquals('Friend', strval(Keymarker\Model::load($container, $id1)));
         $this->assertEquals('IT', strval(Keymarker\Model::load($container, $id2)));
@@ -79,7 +79,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $person->tag(ObjectMother\Keymarker::friend());
         $person->tag(ObjectMother\Keymarker::IT());
 
-        $id = $person->putIn($container);
+        $id = $person->save($container);
 
         $this->assertEquals(
             $person,
@@ -102,7 +102,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryExposesStoredPropertiesInstance() {
         $container = new Memory;
-        $id = ObjectMother\Person::maxim()->putIn($container);
+        $id = ObjectMother\Person::maxim()->save($container);
 
         $this->assertSame(
             $container->query('Test\\Person\\Properties', $id),

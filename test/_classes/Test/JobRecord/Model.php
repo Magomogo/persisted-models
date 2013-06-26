@@ -39,7 +39,7 @@ class Model implements ModelInterface
         );
     }
 
-    public function putIn($container)
+    public function save($container)
     {
         return $this->properties->putIn($container);
     }

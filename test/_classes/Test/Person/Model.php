@@ -25,7 +25,7 @@ class Model implements ModelInterface
         return new self($p, $p->tags);
     }
 
-    public function putIn($container)
+    public function save($container)
     {
         return $this->properties->putIn($container);
     }

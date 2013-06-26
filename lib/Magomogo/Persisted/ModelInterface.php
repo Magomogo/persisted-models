@@ -17,5 +17,5 @@ interface ModelInterface
      * @param ContainerInterface $container
      * @return string unique ID
      */
-    public function putIn($container);
+    public function save($container);
 }

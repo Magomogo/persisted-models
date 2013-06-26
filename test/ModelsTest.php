@@ -22,7 +22,7 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
      */
     public function testCanBePutInAndLoadedFrom(ModelInterface $model)
     {
-        $id = $model->putIn($this->dbContainer());
+        $id = $model->save($this->dbContainer());
         $this->assertEquals($model, $model::load($this->dbContainer(), $id));
     }
 

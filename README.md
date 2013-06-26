@@ -29,10 +29,10 @@ To achieve persistency we not need to store **A model**, it is necessary to stor
 
     // save/update
     $dbContainer = new Persisted\Container\Db($connection);
-    $person->putIn($dbContainer);
+    $person->save($dbContainer);
 
     // load
-    $persistedPerson = Person\Model::loadFrom($dbContainer, $id);
+    $persistedPerson = Person\Model::load($dbContainer, $id);
 
 source: [Persisted\Container\Db](//github.com/Magomogo/persisted-models/blob/master/lib/Magomogo/Persisted/Container/Db.php "Database container")
 
@@ -40,11 +40,11 @@ source: [Persisted\Container\Db](//github.com/Magomogo/persisted-models/blob/mas
 Handling user input with **'Forms'**, **'A Form'** is kind of a Container.
 
     $form = new ProfileForm;
-    $person->putIn($form);
+    $person->save($form);
 
     // final validation here
-    $editedPerson = Person\Model::loadFrom($form);
-    $editedPerson->putIn($dbContainer);
+    $editedPerson = Person\Model::load($form);
+    $editedPerson->save($dbContainer);
 
 ### Strong separation between different types of object relations.
 
@@ -60,11 +60,11 @@ For example person properties can have a contact info aggregated, it gets stored
 In another hand there is a person who working in a company, these objects are connected by foreign key and
 created/updated separately.
 
-    $company->putIn($dbContainer);
+    $company->save($dbContainer);
     $employee = new Employee\Model($company, $employeeProperties);
 
     // this won't update company, only creates one to many reference company -> person in the container
-    $employee->putIn($dbContainer);
+    $employee->save($dbContainer);
 
 
 

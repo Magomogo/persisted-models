@@ -23,7 +23,7 @@ class Model implements ModelInterface
         return new self($p->loadFrom($container));
     }
 
-    public function putIn($container)
+    public function save($container)
     {
         return $this->properties->putIn($container);
     }
