@@ -23,12 +23,27 @@ class ModelEditorWorkflowTest extends \PHPUnit_Framework_TestCase
         $this->propertiesId = ObjectMother\Person::maxim()->save($this->dbContainer());
     }
 
+    public function testCanCreateANewModel()
+    {
+        $editor = new PersonEditor();
+        $editor->edit(array(
+                'firstName' => 'John',
+                'lastName' => 'Doe',
+            ));
+        $id = $editor->saveTo($this->dbContainer());
+
+        $this->assertEquals(
+            'Mr. John Doe',
+            Person\Model::load($this->dbContainer(), $id)->politeTitle()
+        );
+    }
+
     public function testCanBeEditWithSomeEditor()
     {
         $model = Person\Model::load($this->dbContainer(), $this->propertiesId);
         $editor = new PersonEditor($model);
 
-        $editor->updateProperties(array(
+        $editor->edit(array(
                 'firstName' => 'John',
                 'lastName' => 'Doe',
                 'email' => 'John.Doe@example.com',
@@ -58,17 +73,17 @@ class PersonEditor extends Memory
     private $idInMemory;
 
     /**
-     * @param Person\Model $person
+     * @param Person\Model|null $person
      */
-    public function __construct($person)
+    public function __construct($person = null)
     {
-        $this->idInMemory = $person->save($this);
+        $this->idInMemory = $person ? $person->save($this) : self::newPerson()->save($this);
     }
 
-    public function updateProperties($map)
+    public function edit($data)
     {
         $properties = $this->query('Test\\Person\\Properties', $this->idInMemory);
-        foreach ($map as $name => $value) {
+        foreach ($data as $name => $value) {
             $properties->$name = $value;
         }
     }
@@ -80,5 +95,10 @@ class PersonEditor extends Memory
     public function saveTo($container)
     {
         return $this->query('Test\\Person\\Properties', $this->idInMemory)->putIn($container);
+    }
+
+    private static function newPerson()
+    {
+        return new Person\Model(new Person\Properties(array('title' => 'Mr.')));
     }
 }
