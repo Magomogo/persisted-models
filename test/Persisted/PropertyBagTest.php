@@ -86,6 +86,13 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($bag, clone $bag);
     }
 
+    public function testIssetMagicMethod()
+    {
+        $this->assertTrue(isset(self::bag()->title));
+        $this->assertTrue(isset(self::bag()->nullDefault));
+        $this->assertFalse(isset(self::bag()->not_existing));
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function bag()

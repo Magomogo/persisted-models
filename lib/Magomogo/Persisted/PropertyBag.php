@@ -94,6 +94,11 @@ abstract class PropertyBag implements \IteratorAggregate
         }
     }
 
+    public function __isset($name)
+    {
+        return property_exists($this->properties, $name);
+    }
+
     /**
      * @param ContainerInterface $container
      * @return self
