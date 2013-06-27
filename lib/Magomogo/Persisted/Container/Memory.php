@@ -1,6 +1,7 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
+use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Exception\NotFound;
 
@@ -22,54 +23,54 @@ class Memory implements ContainerInterface
     protected $manyToManyReferences = array();
 
     /**
-     * @param string $type
-     * @param string $id
-     * @return null|PropertyBag
+     * @param ModelInterface $model
+     * @return PropertyBag
      */
-    public function query($type, $id)
+    public function exposeProperties($model)
     {
-        if (!array_key_exists($type, $this->storage)
-            || !array_key_exists($id, $this->storage[$type])
-        ) {
-            return null;
-        }
-        return $this->storage[$type][$id];
+        $id = $model->save($this);
+        return $this->storage[$id];
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
-     * @return \Magomogo\Persisted\PropertyBag
+     * @param PropertyBag $propertyBag
+     * @return PropertyBag
      * @throws \Magomogo\Persisted\Exception\NotFound
      */
     public function loadProperties($propertyBag)
     {
-        if (!array_key_exists(get_class($propertyBag), $this->storage)
-            || !array_key_exists($propertyBag->id($this), $this->storage[get_class($propertyBag)])
+        if (!array_key_exists($propertyBag->id($this), $this->storage)
         ) {
             throw new NotFound;
         }
 
         /** @var $properties PropertyBag */
-        $properties = $this->storage[get_class($propertyBag)][$propertyBag->id($this)];
+        $properties = $this->storage[$propertyBag->id($this)];
         $properties->copyTo($propertyBag);
         return $propertyBag;
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
-     * @return \Magomogo\Persisted\PropertyBag
+     * @param PropertyBag $propertyBag
+     * @return PropertyBag
      */
     public function saveProperties($propertyBag)
     {
-        $id = $propertyBag->id($this) ?: self::$autoincrement++;
-        $propertyBag->persisted($id, $this);
-        $this->storage[get_class($propertyBag)][$propertyBag->id($this)] = clone $propertyBag;
+        $this->notifyOnPersistence($propertyBag);
+        $this->storage[$propertyBag->id($this)] = $propertyBag;
+
+        foreach ($this->storage[$propertyBag->id($this)] as $value) {
+            if ($value instanceof ModelInterface) {
+                $value->save($this);
+            }
+        }
+
         return $propertyBag;
     }
 
     /**
      * @param string $referenceName
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
+     * @param PropertyBag $leftProperties
      * @param array $connections
      */
     public function referToMany($referenceName, $leftProperties, array $connections)
@@ -87,7 +88,7 @@ class Memory implements ContainerInterface
 
     /**
      * @param string $referenceName
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
+     * @param PropertyBag $leftProperties
      * @param string $rightPropertiesSample
      * @return array
      */
@@ -110,5 +111,16 @@ class Memory implements ContainerInterface
     {
         $this->storage = array();
         $this->manyToManyReferences = array();
+    }
+
+    /**
+     * @param PropertyBag $propertyBag
+     * @return PropertyBag
+     */
+    private function notifyOnPersistence($propertyBag)
+    {
+        $id = $propertyBag->id($this) ? : self::$autoincrement++;
+        $propertyBag->persisted($id, $this);
+        return $propertyBag;
     }
 }

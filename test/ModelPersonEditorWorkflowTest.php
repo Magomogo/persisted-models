@@ -70,21 +70,20 @@ class ModelEditorWorkflowTest extends \PHPUnit_Framework_TestCase
 
 class PersonEditor extends Memory
 {
-    private $idInMemory;
+    private $properties;
 
     /**
      * @param Person\Model|null $person
      */
     public function __construct($person = null)
     {
-        $this->idInMemory = $person ? $person->save($this) : self::newPerson()->save($this);
+        $this->properties = $this->exposeProperties($person ?: self::newPerson());
     }
 
     public function edit($data)
     {
-        $properties = $this->query('Test\\Person\\Properties', $this->idInMemory);
         foreach ($data as $name => $value) {
-            $properties->$name = $value;
+            $this->properties->$name = $value;
         }
     }
 
@@ -94,7 +93,7 @@ class PersonEditor extends Memory
      */
     public function saveTo($container)
     {
-        return $this->query('Test\\Person\\Properties', $this->idInMemory)->putIn($container);
+        return $this->properties->putIn($container);
     }
 
     private static function newPerson()

@@ -2,6 +2,7 @@
 namespace Magomogo\Persisted\Container;
 
 use Magomogo\Persisted\ModelInterface;
+use Test\Person;
 use Test\Company;
 use Test\Keymarker;
 use Test\ObjectMother;
@@ -91,22 +92,10 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Memory;
         $properties = ObjectMother\Person::maximProperties();
-        $id = $properties->putIn($container);
-        $this->assertEquals(
-            $properties,
-            $container->query('Test\\Person\\Properties', $id)
-        );
-        $this->assertNull($container->query('wrong_type', $id));
-        $this->assertNull($container->query('Test\\Person\\Properties', 'wrong_id'));
-    }
-
-    public function testQueryExposesStoredPropertiesInstance() {
-        $container = new Memory;
-        $id = ObjectMother\Person::maxim()->save($container);
-
+        $properties->putIn($container);
         $this->assertSame(
-            $container->query('Test\\Person\\Properties', $id),
-            $container->query('Test\\Person\\Properties', $id)
+            $properties,
+            $container->exposeProperties(new Person\Model($properties))
         );
     }
 
@@ -130,4 +119,19 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testProvidesCorrectInstanceOfAggregatedProperties()
+    {
+        $container = new Memory;
+        $person = ObjectMother\Person::maxim();
+        $person->save($container);
+
+        $personProperties = $container->exposeProperties($person);
+        $creditCardProperties = $container->exposeProperties($personProperties->creditCard);
+        $creditCardProperties->system = 'I\'ve updated it!';
+
+        $this->assertSame(
+            'I\'ve updated it!',
+            $personProperties->creditCard->paymentSystem()
+        );
+    }
 }
