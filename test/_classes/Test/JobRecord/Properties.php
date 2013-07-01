@@ -21,4 +21,12 @@ class Properties extends PropertyBag
             'previousCompany' => new Company\Properties
         );
     }
+
+    public function putIn($container, $currentCompanyProps, $previousCompanyProps)
+    {
+        $this->foreign()->currentCompany = $currentCompanyProps;
+        $this->foreign()->previousCompany = $previousCompanyProps;
+        return parent::putIn($container);
+    }
+
 }

@@ -8,11 +8,6 @@ use Test\Company;
 class Model implements ModelInterface
 {
     /**
-     * @var Properties
-     */
-    private $properties;
-
-    /**
      * @var Company\Model
      */
     private $previousCompany;
@@ -40,7 +35,12 @@ class Model implements ModelInterface
 
     public function save($container)
     {
-        return $this->properties->putIn($container);
+        $properties = new Properties();
+        return $properties->putIn(
+            $container,
+            $this->currentCompany->propertiesToBeConnectedWith($properties),
+            $this->previousCompany->propertiesToBeConnectedWith($properties)
+        );
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -52,9 +52,8 @@ class Model implements ModelInterface
      */
     public function __construct($currentCompany, $previousCompany)
     {
-        $this->properties = new Properties();
-        $this->currentCompany = $currentCompany->connectToAJobRecord($this->properties, 'currentCompany');
-        $this->previousCompany = $previousCompany->connectToAJobRecord($this->properties, 'previousCompany');
+        $this->currentCompany = $currentCompany;
+        $this->previousCompany = $previousCompany;
     }
 
     public function description()

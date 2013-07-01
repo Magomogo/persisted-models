@@ -43,12 +43,10 @@ class Model implements ModelInterface
 
     /**
      * @param JobRecord\Properties $jobRecordProperties
-     * @param string $type
-     * @return $this
+     * @return Properties
      */
-    public function connectToAJobRecord($jobRecordProperties, $type)
+    public function propertiesToBeConnectedWith($jobRecordProperties)
     {
-        $jobRecordProperties->foreign()->$type = $this->properties;
-        return $this;
+        return $this->properties;
     }
 }
