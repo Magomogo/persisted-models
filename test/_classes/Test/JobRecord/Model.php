@@ -13,12 +13,12 @@ class Model implements ModelInterface
     private $properties;
 
     /**
-     * @var \Test\Company\Model
+     * @var Company\Model
      */
     private $previousCompany;
 
     /**
-     * @var \Test\Company\Model
+     * @var Company\Model
      */
     private $currentCompany;
 
@@ -47,8 +47,8 @@ class Model implements ModelInterface
 //----------------------------------------------------------------------------------------------------------------------
 
     /**
-     * @param \Test\Company\Model $currentCompany
-     * @param \Test\Company\Model $previousCompany
+     * @param Company\Model $currentCompany
+     * @param Company\Model $previousCompany
      * @param Properties $properties
      * @return \Test\JobRecord\Model
      */
