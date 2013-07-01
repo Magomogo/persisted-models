@@ -218,7 +218,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     {
         $props = ObjectMother\Employee::maximProperties();
         $props->foreign()->company->putIn($container);
-        $props->putIn($container);
+        $props->putIn($container, $props->foreign()->company);
         return new Employee\Model(new Company\Model($props->foreign()->company), $props);
     }
 

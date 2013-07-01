@@ -4,6 +4,7 @@ namespace Test\Company;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
 use Test\JobRecord;
+use Test\Person;
 
 class Model implements ModelInterface
 {
@@ -42,10 +43,10 @@ class Model implements ModelInterface
     }
 
     /**
-     * @param JobRecord\Properties $jobRecordProperties
+     * @param JobRecord\Properties | Person\Properties $properties
      * @return Properties
      */
-    public function propertiesToBeConnectedWith($jobRecordProperties)
+    public function propertiesToBeConnectedWith($properties)
     {
         return $this->properties;
     }

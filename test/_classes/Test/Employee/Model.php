@@ -25,6 +25,14 @@ class Model extends Person
         return new self(new Company\Model($p->foreign()->company), $p, $p->tags);
     }
 
+    public function save($container)
+    {
+        return $this->properties->putIn(
+            $container,
+            $this->company->propertiesToBeConnectedWith($this->properties)
+        );
+    }
+
     /**
      * @param Company\Model $company
      * @param Properties $properties

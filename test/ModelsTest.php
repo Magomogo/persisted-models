@@ -30,7 +30,7 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
     {
         $props = ObjectMother\Employee::maximProperties();
         $props->foreign()->company->putIn($this->dbContainer());
-        $id = $props->putIn($this->dbContainer());
+        $id = $props->putIn($this->dbContainer(), $props->foreign()->company);
 
         $this->assertEquals(
             new Employee\Model(new Company\Model($props->foreign()->company), $props, $props->tags),

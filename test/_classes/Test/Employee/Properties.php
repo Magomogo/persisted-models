@@ -1,6 +1,7 @@
 <?php
 namespace Test\Employee;
 
+use Test\Keymarker;
 use Test\Person;
 use Test\Company;
 
@@ -19,5 +20,11 @@ class Properties extends Person\Properties
         return array(
             'company' => new Company\Properties
         );
+    }
+
+    public function putIn($container, $companyProperties)
+    {
+        $this->foreign()->company = $companyProperties;
+        return parent::putIn($container);
     }
 }

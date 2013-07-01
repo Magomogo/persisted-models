@@ -10,7 +10,7 @@ class Model implements ModelInterface
     /**
      * @var Properties
      */
-    private $properties;
+    protected $properties;
 
     /**
      * @param ContainerInterface $container
