@@ -34,8 +34,7 @@ class Model implements ModelInterface
         $p->loadFrom($container);
         return new self(
             new Company\Model($p->foreign()->currentCompany),
-            new Company\Model($p->foreign()->previousCompany),
-            $p
+            new Company\Model($p->foreign()->previousCompany)
         );
     }
 
@@ -49,14 +48,13 @@ class Model implements ModelInterface
     /**
      * @param Company\Model $currentCompany
      * @param Company\Model $previousCompany
-     * @param Properties $properties
-     * @return \Test\JobRecord\Model
+     * @return Model
      */
-    public function __construct($currentCompany, $previousCompany, $properties)
+    public function __construct($currentCompany, $previousCompany)
     {
-        $this->currentCompany = $currentCompany;
-        $this->previousCompany = $previousCompany;
-        $this->properties = $properties;
+        $this->properties = new Properties();
+        $this->currentCompany = $currentCompany->connectToAJobRecord($this->properties, 'currentCompany');
+        $this->previousCompany = $previousCompany->connectToAJobRecord($this->properties, 'previousCompany');
     }
 
     public function description()

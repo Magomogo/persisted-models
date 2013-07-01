@@ -1,6 +1,7 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
+use Magomogo\Persisted\ModelInterface;
 use Test\DbFixture;
 use Test\ObjectMother;
 use Magomogo\Persisted\Container\Db;
@@ -134,20 +135,20 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testCanSaveAndLoadAJobRecord()
     {
-        $jobRecordProps = new JobRecord\Properties();
-        $jobRecordProps->foreign()->currentCompany = new Company\Properties(array('name' => 'XIAG'));
-        $jobRecordProps->foreign()->currentCompany->putIn($this->sqliteContainer());
-        $jobRecordProps->foreign()->previousCompany = new Company\Properties(array('name' => 'NSTU'));
-        $jobRecordProps->foreign()->previousCompany->putIn($this->sqliteContainer());
+        $prop1 = new Company\Properties(array('name' => 'XIAG'));
+        $prop1->putIn($this->sqliteContainer());
+        $prop2 = new Company\Properties(array('name' => 'NSTU'));
+        $prop2->putIn($this->sqliteContainer());
 
-        $id = $jobRecordProps->putIn($this->sqliteContainer());
+        $jobRecord = new JobRecord\Model(
+            new Company\Model($prop1),
+            new Company\Model($prop2)
+        );
 
-        $this->assertEquals(
-            new JobRecord\Model(
-                new Company\Model($jobRecordProps->foreign()->currentCompany),
-                new Company\Model($jobRecordProps->foreign()->previousCompany),
-                $jobRecordProps
-            ),
+        $id = $jobRecord->save($this->sqliteContainer());
+
+        $this->assertModelsAreEqual(
+            $jobRecord,
             JobRecord\Model::load($this->sqliteContainer(), $id)
         );
     }
@@ -224,5 +225,18 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     private function sqliteContainer()
     {
         return new Db($this->fixture->db, 'Test\\');
+    }
+
+    /**
+     * @param ModelInterface $model1
+     * @param ModelInterface $model2
+     */
+    private function assertModelsAreEqual($model1, $model2)
+    {
+        $container = new Memory();
+        $this->assertEquals(
+            $container->exposeProperties($model1)->resetPersistency(),
+            $container->exposeProperties($model2)->resetPersistency()
+        );
     }
 }

@@ -93,6 +93,14 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset(self::bag()->not_existing));
     }
 
+    public function testPersistencyCanBeReset()
+    {
+        $bag = self::bag();
+        $bag->persisted(88, new \stdClass());
+        $this->assertEquals(88, $bag->id(new \stdClass()));
+        $this->assertNull($bag->resetPersistency()->id(new \stdClass()));
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function bag()

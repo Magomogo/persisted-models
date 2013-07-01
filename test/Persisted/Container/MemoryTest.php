@@ -103,18 +103,11 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Memory;
 
-        $jobRecordProps = new JobRecord\Properties();
-        $jobRecordProps->foreign()->currentCompany = new Company\Properties(array('name' => 'XIAG'));
-        $jobRecordProps->foreign()->previousCompany = new Company\Properties(array('name' => 'NSTU'));
+        $jobRecord = new JobRecord\Model(ObjectMother\Company::xiag(), ObjectMother\Company::nstu());
+        $id = $jobRecord->save($container);
 
-        $id = $jobRecordProps->putIn($container);
-
-        $this->assertEquals(
-            new JobRecord\Model(
-                new Company\Model($jobRecordProps->foreign()->currentCompany),
-                new Company\Model($jobRecordProps->foreign()->previousCompany),
-                $jobRecordProps
-            ),
+        $this->assertModelsAreEqual(
+            $jobRecord,
             JobRecord\Model::load($container, $id)
         );
     }
@@ -126,12 +119,26 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $person->save($container);
 
         $personProperties = $container->exposeProperties($person);
+        $personProperties->creditCard->save($container);
         $creditCardProperties = $container->exposeProperties($personProperties->creditCard);
         $creditCardProperties->system = 'I\'ve updated it!';
 
         $this->assertSame(
             'I\'ve updated it!',
             $personProperties->creditCard->paymentSystem()
+        );
+    }
+
+    /**
+     * @param ModelInterface $model1
+     * @param ModelInterface $model2
+     */
+    private function assertModelsAreEqual($model1, $model2)
+    {
+        $container = new Memory();
+        $this->assertEquals(
+            $container->exposeProperties($model1)->resetPersistency(),
+            $container->exposeProperties($model2)->resetPersistency()
         );
     }
 }

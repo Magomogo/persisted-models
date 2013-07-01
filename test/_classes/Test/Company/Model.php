@@ -3,6 +3,7 @@ namespace Test\Company;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
+use Test\JobRecord;
 
 class Model implements ModelInterface
 {
@@ -38,5 +39,16 @@ class Model implements ModelInterface
     public function name()
     {
         return $this->properties->name;
+    }
+
+    /**
+     * @param JobRecord\Properties $jobRecordProperties
+     * @param string $type
+     * @return $this
+     */
+    public function connectToAJobRecord($jobRecordProperties, $type)
+    {
+        $jobRecordProperties->foreign()->$type = $this->properties;
+        return $this;
     }
 }

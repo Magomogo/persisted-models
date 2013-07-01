@@ -16,6 +16,6 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     private static function jobRecord()
     {
-        return new Model(Company::xiag(), Company::nstu(), new Properties());
+        return new Model(Company::xiag(), Company::nstu());
     }
 }
