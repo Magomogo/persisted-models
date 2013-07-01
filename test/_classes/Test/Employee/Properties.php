@@ -1,6 +1,7 @@
 <?php
 namespace Test\Employee;
 
+use Magomogo\Persisted\PossessionInterface;
 use Test\Keymarker;
 use Test\Person;
 use Test\Company;
@@ -13,7 +14,7 @@ use Test\Company;
  * @property string $email
  * @property \Test\CreditCard\Model $creditCard
  */
-class Properties extends Person\Properties
+class Properties extends Person\Properties implements PossessionInterface
 {
     protected function foreigners()
     {
@@ -22,9 +23,9 @@ class Properties extends Person\Properties
         );
     }
 
-    public function putIn($container, $companyProperties)
+    public function isOwnedBy($companyProperties, $relationName = null)
     {
         $this->foreign()->company = $companyProperties;
-        return parent::putIn($container);
+        return $this;
     }
 }

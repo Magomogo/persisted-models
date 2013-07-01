@@ -3,10 +3,12 @@ namespace Test\Company;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
+use Magomogo\Persisted\OwnerInterface;
+use Magomogo\Persisted\PossessionInterface;
 use Test\JobRecord;
 use Test\Person;
 
-class Model implements ModelInterface
+class Model implements ModelInterface, OwnerInterface
 {
     /**
      * @var Properties
@@ -43,11 +45,12 @@ class Model implements ModelInterface
     }
 
     /**
-     * @param JobRecord\Properties | Person\Properties $properties
+     * @param PossessionInterface $properties
+     * @param null|string $relationName
      * @return Properties
      */
-    public function propertiesToBeConnectedWith($properties)
+    public function isOwner($properties, $relationName = null)
     {
-        return $this->properties;
+        return $properties->isOwnedBy($this->properties, $relationName);
     }
 }

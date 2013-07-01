@@ -36,11 +36,9 @@ class Model implements ModelInterface
     public function save($container)
     {
         $properties = new Properties();
-        return $properties->putIn(
-            $container,
-            $this->currentCompany->propertiesToBeConnectedWith($properties),
-            $this->previousCompany->propertiesToBeConnectedWith($properties)
-        );
+        $this->currentCompany->isOwner($properties, 'currentCompany');
+        $this->previousCompany->isOwner($properties, 'previousCompany');
+        return $properties->putIn($container);
     }
 
 //----------------------------------------------------------------------------------------------------------------------

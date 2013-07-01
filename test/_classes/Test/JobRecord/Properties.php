@@ -1,13 +1,14 @@
 <?php
 namespace Test\JobRecord;
 
+use Magomogo\Persisted\PossessionInterface;
 use Magomogo\Persisted\PropertyBag;
 use Test\Company;
 
 /**
  * @property string $id
  */
-class Properties extends PropertyBag
+class Properties extends PropertyBag implements PossessionInterface
 {
     protected function properties()
     {
@@ -22,11 +23,14 @@ class Properties extends PropertyBag
         );
     }
 
-    public function putIn($container, $currentCompanyProps, $previousCompanyProps)
+    /**
+     * @param PropertyBag $properties
+     * @param null|string $relationName
+     * @return mixed
+     */
+    public function isOwnedBy($properties, $relationName = null)
     {
-        $this->foreign()->currentCompany = $currentCompanyProps;
-        $this->foreign()->previousCompany = $previousCompanyProps;
-        return parent::putIn($container);
+        $this->foreign()->$relationName = $properties;
+        return $this;
     }
-
 }

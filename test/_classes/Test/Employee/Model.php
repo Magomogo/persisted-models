@@ -8,6 +8,11 @@ use Test\Company;
 class Model extends Person
 {
     /**
+     * @var Properties
+     */
+    protected $properties;
+
+    /**
      * @var Company\Model
      */
     private $company;
@@ -27,10 +32,8 @@ class Model extends Person
 
     public function save($container)
     {
-        return $this->properties->putIn(
-            $container,
-            $this->company->propertiesToBeConnectedWith($this->properties)
-        );
+        $this->company->isOwner($this->properties);
+        return $this->properties->putIn($container);
     }
 
     /**
