@@ -16,16 +16,23 @@ use Test\Company;
  */
 class Properties extends Person\Properties implements PossessionInterface
 {
-    protected function foreigners()
+    private $ownerCompanyProperties;
+
+    public function init()
     {
-        return array(
-            'company' => new Company\Properties
-        );
+        $this->ownerCompanyProperties = new Company\Properties;
+    }
+
+    public function foreign()
+    {
+        $foreign = new \stdClass();
+        $foreign->company = $this->ownerCompanyProperties;
+        return $foreign;
     }
 
     public function isOwnedBy($companyProperties, $relationName = null)
     {
-        $this->foreign()->company = $companyProperties;
+        $this->ownerCompanyProperties = $companyProperties;
         return $this;
     }
 }

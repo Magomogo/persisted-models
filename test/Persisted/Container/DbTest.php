@@ -1,6 +1,7 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
+use Magomogo\Persisted\PossessionInterface;
 use Mockery as m;
 use Test\ObjectMother\Person as TestPerson;
 use Magomogo\Persisted\PropertyBag;
@@ -115,19 +116,42 @@ class TestType2 extends PropertyBag
 }
 
 
-class TestType3 extends PropertyBag
+class TestType3 extends PropertyBag implements PossessionInterface
 {
+    private $ref1;
+    private $ref2;
+
+    public function __construct($valuesToSet = null)
+    {
+        parent::__construct($valuesToSet);
+        $this->ref1 = new TestType1(null);
+        $this->ref2 = new TestType2(null);
+    }
+
     protected function properties()
     {
         return array();
     }
 
-    protected function foreigners()
+    /**
+     * @return \stdClass $relationName => Properties
+     */
+    public function foreign()
     {
-        return array(
-            'ref1' => new TestType1(null),
-            'ref2' => new TestType2(null),
-        );
+        $f = new \stdClass();
+        $f->ref1 = $this->ref1;
+        $f->ref2 = $this->ref2;
+        return $f;
+    }
+
+    /**
+     * @param PropertyBag $properties
+     * @param null|string $relationName
+     * @return mixed
+     */
+    public function isOwnedBy($properties, $relationName = null)
+    {
+        // TODO: Implement isOwnedBy() method.
     }
 }
 

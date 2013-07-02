@@ -10,17 +10,33 @@ use Test\Company;
  */
 class Properties extends PropertyBag implements PossessionInterface
 {
+    /**
+     * @var Company\Properties
+     */
+    private $currentCompanyProps;
+
+    /**
+     * @var Company\Properties
+     */
+    private $previousCompanyProps;
+
     protected function properties()
     {
         return array();
     }
 
-    protected function foreigners()
+    public function init()
     {
-        return array(
-            'currentCompany' => new Company\Properties,
-            'previousCompany' => new Company\Properties
-        );
+        $this->currentCompanyProps = new Company\Properties;
+        $this->previousCompanyProps = new Company\Properties;
+    }
+
+    public function foreign()
+    {
+        $foreign = new \stdClass();
+        $foreign->currentCompany = $this->currentCompanyProps;
+        $foreign->previousCompany = $this->previousCompanyProps;
+        return $foreign;
     }
 
     /**

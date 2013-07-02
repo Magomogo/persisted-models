@@ -11,26 +11,26 @@ abstract class PropertyBag implements \IteratorAggregate
 {
     private $idInContainer = array();
     private $properties;
-    private $foreigners;
 
     public function __construct($valuesToSet = null)
     {
         $this->properties = (object)$this->properties();
-        $this->foreigners = (object)$this->foreigners();
 
         if (!is_null($valuesToSet)) {
             foreach ($valuesToSet as $name => $value) {
                 $this->$name = $value;
             }
         }
+
+        $this->init();
+    }
+
+    protected function init()
+    {
+
     }
 
     protected abstract function properties();
-
-    protected function foreigners()
-    {
-        return array();
-    }
 
     /**
      * @param ContainerInterface $container|null
@@ -81,22 +81,18 @@ abstract class PropertyBag implements \IteratorAggregate
         return new \ArrayIterator($this->properties);
     }
 
-    public function foreign()
-    {
-        return $this->foreigners;
-    }
-
     public function __clone()
     {
         $this->properties = clone $this->properties;
-        $this->foreigners = clone $this->foreigners;
 
         foreach ($this->properties as $name => $value) {
             $this->$name = is_object($value) ? clone $value : $value;
         }
 
-        foreach ($this->foreigners as $name => $value) {
-            $this->foreigners->$name = clone $value;
+        if ($this instanceof PossessionInterface) {
+            foreach ($this->foreign() as $name => $value) {
+                $this->foreign()->$name = clone $value;
+            }
         }
     }
 
@@ -142,9 +138,11 @@ abstract class PropertyBag implements \IteratorAggregate
             $propertyBag->$name = $property;
         }
 
-        foreach($this->foreign() as $referenceName => $referenceProperties) {
-            foreach ($referenceProperties as $name => $property) {
-                $propertyBag->foreign()->$referenceName->$name = $property;
+        if (($this instanceof PossessionInterface) && ($propertyBag instanceof PossessionInterface)) {
+            foreach($this->foreign() as $referenceName => $referenceProperties) {
+                foreach ($referenceProperties as $name => $property) {
+                    $propertyBag->foreign()->$referenceName->$name = $property;
+                }
             }
         }
 

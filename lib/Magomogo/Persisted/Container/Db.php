@@ -3,6 +3,7 @@ namespace Magomogo\Persisted\Container;
 
 use Doctrine\DBAL\Connection;
 use Magomogo\Persisted\ModelInterface;
+use Magomogo\Persisted\PossessionInterface;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Exception;
 
@@ -39,7 +40,9 @@ class Db implements ContainerInterface
         foreach ($propertyBag as $name => &$property) {
             $property = array_key_exists($name, $row) ? $this->fromDbValue($property, $row[$name]) : null;
         }
-        $this->collectReferences($row, $propertyBag->foreign());
+        if ($propertyBag instanceof PossessionInterface) {
+            $this->collectReferences($row, $propertyBag->foreign());
+        }
 
         return $propertyBag;
     }
@@ -50,7 +53,10 @@ class Db implements ContainerInterface
      */
     public function saveProperties($propertyBag)
     {
-        $row = $this->foreignKeys($propertyBag->foreign());
+        $row = array();
+        if ($propertyBag instanceof PossessionInterface) {
+            $row = $this->foreignKeys($propertyBag->foreign());
+        }
         if (!is_null($propertyBag->id($this))) {
             $row['id'] = $propertyBag->id($this);
         }

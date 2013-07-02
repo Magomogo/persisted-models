@@ -54,11 +54,6 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         self::bag()->not_configured = 12;
     }
 
-    public function testReferencesCanBeExposed()
-    {
-        $this->assertInstanceOf('Magomogo\\Persisted\\PropertyBag', self::bag()->foreign()->company);
-    }
-
     public function testAllowsDefineAPropertyHavingNullDefaultValue()
     {
         $properties = self::bag();
@@ -123,7 +118,7 @@ class TestProperties extends PropertyBag
         );
     }
 
-    protected function foreigners()
+    protected function owners()
     {
         return array(
             'company' => new CompanyProperties
