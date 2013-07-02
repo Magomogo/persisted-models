@@ -3,12 +3,11 @@ namespace Test\Company;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
-use Magomogo\Persisted\OwnerInterface;
 use Magomogo\Persisted\PossessionInterface;
 use Test\JobRecord;
 use Test\Person;
 
-class Model implements ModelInterface, OwnerInterface
+class Model implements ModelInterface
 {
     /**
      * @var Properties
