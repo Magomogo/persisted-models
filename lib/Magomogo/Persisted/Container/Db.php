@@ -113,8 +113,7 @@ class Db implements ContainerInterface
         $connections = array();
         while ($id = $statement->fetchColumn()) {
             $props = clone $rightPropertiesSample;
-            $props->persisted($id, $this);
-            $connections[] = $props->loadFrom($this);
+            $connections[] = $props->loadFrom($this, $id);
         }
 
         return $connections;
@@ -208,8 +207,7 @@ class Db implements ContainerInterface
     {
         /* @var PropertyBag $properties */
         foreach ($references as $referenceName => $properties) {
-            $properties->persisted($row[$referenceName], $this);
-            $properties->loadFrom($this);
+            $properties->loadFrom($this, $row[$referenceName]);
         }
         return $references;
     }

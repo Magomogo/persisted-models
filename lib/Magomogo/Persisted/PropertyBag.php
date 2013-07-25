@@ -102,11 +102,13 @@ abstract class PropertyBag implements \IteratorAggregate
     }
 
     /**
-     * @param ContainerInterface $container
+     * @param \Magomogo\Persisted\Container\ContainerInterface $container
+     * @param mixed $id properties identifier in the given container
      * @return self
      */
-    public function loadFrom($container)
+    public function loadFrom($container, $id)
     {
+        $this->persisted($id, $container);
         return $container->loadProperties($this);
     }
 

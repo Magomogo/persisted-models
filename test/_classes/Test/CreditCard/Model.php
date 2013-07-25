@@ -20,8 +20,7 @@ class Model implements ModelInterface
     public static function load($container, $id)
     {
         $p = new Properties();
-        $p->persisted($id, $container);
-        return new self($p->loadFrom($container));
+        return new self($p->loadFrom($container, $id));
     }
 
     public function save($container)

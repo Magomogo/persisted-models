@@ -25,8 +25,7 @@ class Model implements ModelInterface
     public static function load($container, $id)
     {
         $p = new Properties();
-        $p->persisted($id, $container);
-        $p->loadFrom($container);
+        $p->loadFrom($container, $id);
         return new self(
             new Company\Model($p->foreign()->currentCompany),
             new Company\Model($p->foreign()->previousCompany)
