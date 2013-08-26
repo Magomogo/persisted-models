@@ -71,6 +71,12 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $container->loadProperties($notFoundProperties);
     }
 
+    public function testExceptionOnLoadingWhenIdInThisContainerIsUndefined()
+    {
+        $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
+        self::container()->loadProperties(new Person\Properties);
+    }
+
     public function testCanDeleteProperties()
     {
         $db = m::mock();

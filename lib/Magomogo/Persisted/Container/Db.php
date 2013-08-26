@@ -156,13 +156,11 @@ class Db implements ContainerInterface
             $row = $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($propertyBag->id($this)));
 
             if (is_array($row)) {
-                $propertyBag->persisted($propertyBag->id($this), $this);
                 return $row;
-            } else {
-                throw new Exception\NotFound;
             }
         }
-        return array();
+
+        throw new Exception\NotFound;
     }
 
     /**
