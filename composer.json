@@ -1,8 +1,8 @@
 {
     "name": "magomogo/domain-model",
     "license": "MIT",
-    "description": "Domain model",
-    "homepage": "https://github.com/Magomogo/best-domain-model/",
+    "description": "A way to make domain-specific models persistent",
+    "homepage": "https://github.com/Magomogo/persisted-models",
     "repositories": [
         {
             "type": "package",
