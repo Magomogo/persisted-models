@@ -5,6 +5,7 @@ use Mockery as m;
 use Magomogo\Persisted\Container\Db;
 use Magomogo\Persisted\Container\Memory;
 use Test\Company\Properties as CompanyProperties;
+use Test\DbNames;
 use Test\ObjectMother\Employee;
 use Test\Employee\Properties as EmployeeProperties;
 
@@ -38,7 +39,7 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
     public function testPropertiesBagCanHaveDifferentIdsInDifferentContainers()
     {
         $bag = self::bag();
-        $container1 = new Db(m::mock());
+        $container1 = new Db(m::mock(), new DbNames());
         $container2 = new Memory();
 
         $bag->persisted('888', $container1);

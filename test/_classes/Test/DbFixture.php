@@ -4,6 +4,9 @@ namespace Test;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
+use Magomogo\Persisted\Container\Db\SchemaCreator;
+use Test\JobRecord\Model;
+use Test\ObjectMother;
 
 class DbFixture
 {
@@ -34,6 +37,23 @@ class DbFixture
 
     private static function installSchema(Connection $db)
     {
+        $creator = new SchemaCreator($db->getSchemaManager(), new DbNames());
+        $creator->schemaFor(ObjectMother\Company::xiag());
+        $creator->schemaFor(new JobRecord\Model(ObjectMother\Company::xiag(), ObjectMother\Company::nstu()));
+        $creator->schemaFor(ObjectMother\Keymarker::IT());
+        $creator->schemaFor(ObjectMother\CreditCard::datatransTesting());
+
+        $taggedPerson = ObjectMother\Person::maxim();
+        $taggedPerson->tag(ObjectMother\Keymarker::IT());
+        $creator->schemaFor($taggedPerson);
+
+        $creator->schemaFor(ObjectMother\Employee::maxim());
+
+        //print_r($db->fetchAll('select * from sqlite_master'));
+
+/*
+
+
         $db->exec(<<<SQL
 
 CREATE TABLE company_properties (
@@ -100,6 +120,6 @@ CREATE TABLE person2keymarker (
   CONSTRAINT pk_person_2_keymarker PRIMARY KEY (person_properties, employee_properties, keymarker_properties)
 );
 SQL
-        );
+        );*/
     }
 }

@@ -3,6 +3,7 @@ namespace Magomogo\Persisted\Container;
 
 use Magomogo\Persisted\PossessionInterface;
 use Mockery as m;
+use Test\DbNames;
 use Test\ObjectMother\Person as TestPerson;
 use Magomogo\Persisted\PropertyBag;
 use Test\Person;
@@ -17,8 +18,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testFollowsTableNamingConvention()
     {
         $db = m::mock();
-        $db->shouldReceive('insert')->with('test_person_properties', typeOf('array'))->once();
-        $db->shouldReceive('insert')->with('test_creditcard_properties', typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('person', typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('creditcard', typeOf('array'))->once();
         $db->shouldIgnoreMissing();
         $properties = new Person\Properties;
         $properties->putIn(self::container($db));
@@ -44,7 +45,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testSavesReferencesAsForeignKeys()
     {
         $db = m::mock();
-        $db->shouldReceive('insert')->with('container_testtype3',
+        $db->shouldReceive('insert')->with('magomogo_persisted_container_testtype3',
             array(
                 'ref1' => 4,
                 'ref2' => 5,
@@ -80,8 +81,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testCanDeleteProperties()
     {
         $db = m::mock();
-        $db->shouldReceive('delete')->with('container_testtype1', array('id' => 3))->once();
-        $db->shouldReceive('delete')->with('container_testtype2', array('id' => 45))->once();
+        $db->shouldReceive('delete')->with('magomogo_persisted_container_testtype1', array('id' => 3))->once();
+        $db->shouldReceive('delete')->with('magomogo_persisted_container_testtype2', array('id' => 45))->once();
 
         $persistedProperties1 = new TestType1();
         $persistedProperties1->persisted(3, self::container($db));
@@ -100,7 +101,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     private static function container($db = null)
     {
-        return new Db($db ?: m::mock(array('fetchAssoc' => array())), 'Magomogo\\Persisted\\');
+        return new Db($db ?: m::mock(array('fetchAssoc' => array())), new DbNames());
     }
 }
 

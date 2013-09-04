@@ -2,6 +2,7 @@
 namespace Magomogo\Persisted\Container;
 
 use Doctrine\DBAL\Connection;
+use Magomogo\Persisted\Container\Db\NamesInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
 use Magomogo\Persisted\PropertyBag;
@@ -12,7 +13,7 @@ class Db implements ContainerInterface
     /**
      * @var string
      */
-    private $modelsNamespace;
+    private $names;
 
     /**
      * @var Connection
@@ -21,12 +22,12 @@ class Db implements ContainerInterface
 
     /**
      * @param Connection $db
-     * @param string $modelsNamespace
+     * @param NamesInterface $names
      */
-    public function __construct($db, $modelsNamespace = '')
+    public function __construct($db, $names)
     {
         $this->db = $db;
-        $this->modelsNamespace = $modelsNamespace;
+        $this->names = $names;
     }
 
     /**
@@ -73,7 +74,7 @@ class Db implements ContainerInterface
     public function deleteProperties(array $propertyBags)
     {
         foreach ($propertyBags as $bag) {
-            $this->db->delete($this->classToName($bag), array('id' => $bag->id($this)));
+            $this->db->delete($this->names->containmentTableName($bag), array('id' => $bag->id($this)));
         }
     }
 
@@ -84,13 +85,13 @@ class Db implements ContainerInterface
      */
     public function referToMany($referenceName, $leftProperties, array $connections)
     {
-        $this->db->delete($referenceName, array($this->classToName($leftProperties) => $leftProperties->id($this)));
+        $this->db->delete($referenceName, array($this->names->referencedColumnName($leftProperties) => $leftProperties->id($this)));
 
         /** @var PropertyBag $rightProperties */
         foreach ($connections as $rightProperties) {
             $this->db->insert($referenceName, array(
-                $this->classToName($leftProperties) => $leftProperties->id($this),
-                $this->classToName($rightProperties) => $rightProperties->id($this),
+                $this->names->referencedColumnName($leftProperties) => $leftProperties->id($this),
+                $this->names->referencedColumnName($rightProperties) => $rightProperties->id($this),
             ));
         }
     }
@@ -103,10 +104,10 @@ class Db implements ContainerInterface
      */
     public function listReferences($referenceName, $leftProperties, $rightPropertiesSample)
     {
-        $rightPropertiesName = $this->classToName($rightPropertiesSample);
+        $rightPropertiesName = $this->names->containmentTableName($rightPropertiesSample);
 
         $statement = $this->db->executeQuery(
-            "SELECT $rightPropertiesName FROM $referenceName WHERE " . $this->classToName($leftProperties) . '=?',
+            "SELECT $rightPropertiesName FROM $referenceName WHERE " . $this->names->referencedColumnName($leftProperties) . '=?',
             array($leftProperties->id($this))
         );
 
@@ -152,7 +153,7 @@ class Db implements ContainerInterface
     private function begin($propertyBag)
     {
         if (!is_null($propertyBag->id($this))) {
-            $table = $this->classToName($propertyBag);
+            $table = $this->names->containmentTableName($propertyBag);
             $row = $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($propertyBag->id($this)));
 
             if (is_array($row)) {
@@ -173,10 +174,10 @@ class Db implements ContainerInterface
         $this->confirmPersistency($properties);
 
         if (!$properties->id($this)) {
-            $this->db->insert($this->classToName($properties), $row);
+            $this->db->insert($this->names->containmentTableName($properties), $row);
             $properties->persisted($properties->naturalKey() ?: $this->db->lastInsertId(), $this);
         } else {
-            $this->db->update($this->classToName($properties), $row, array('id' => $properties->id($this)));
+            $this->db->update($this->names->containmentTableName($properties), $row, array('id' => $properties->id($this)));
         }
 
         return $properties;
@@ -188,17 +189,10 @@ class Db implements ContainerInterface
     private function confirmPersistency($properties)
     {
         if ($properties->id($this) && $this->db->fetchColumn(
-            'SELECT 1 FROM ' . $this->classToName($properties) . ' WHERE id=?', array($properties->id($this))
+            'SELECT 1 FROM ' . $this->names->containmentTableName($properties) . ' WHERE id=?', array($properties->id($this))
         )) {
             $properties->persisted($properties->id($this), $this);
         }
-    }
-
-    private function classToName($class)
-    {
-        $name = strtolower(str_replace('\\', '_', get_class($class)));
-        $namespacePart = strtolower(str_replace('\\', '_', $this->modelsNamespace));
-        return preg_replace('/^' . preg_quote($namespacePart) . '/', '', $name);
     }
 
     private function collectReferences(array $row, $references)

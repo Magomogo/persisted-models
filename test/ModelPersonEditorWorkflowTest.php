@@ -6,6 +6,7 @@ use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\Container\Db;
 use Magomogo\Persisted\Container\Memory;
 use Test\DbFixture;
+use Test\DbNames;
 use Test\ObjectMother;
 use Test\Person;
 
@@ -61,7 +62,7 @@ class ModelEditorWorkflowTest extends \PHPUnit_Framework_TestCase
 
     private function dbContainer()
     {
-        return new Db($this->fixture->db, 'Test\\');
+        return new Db($this->fixture->db, new DbNames);
     }
 }
 
