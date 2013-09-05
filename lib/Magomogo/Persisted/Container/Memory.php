@@ -89,10 +89,9 @@ class Memory implements ContainerInterface
     /**
      * @param string $referenceName
      * @param PropertyBag $leftProperties
-     * @param string $rightPropertiesSample
      * @return array
      */
-    public function listReferences($referenceName, $leftProperties, $rightPropertiesSample)
+    public function listReferences($referenceName, $leftProperties)
     {
         $connections = array();
         foreach ($this->manyToManyReferences[$referenceName] as $pair) {

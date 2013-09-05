@@ -11,4 +11,10 @@ interface NamesInterface
      * @return string
      */
     public function classToName($propertyBag);
+
+    /**
+     * @param string $name
+     * @return PropertyBag
+     */
+    public function nameToClass($name);
 }

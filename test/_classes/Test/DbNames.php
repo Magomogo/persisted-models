@@ -17,6 +17,16 @@ class DbNames implements NamesInterface
         return self::personAndEmployeeShareSameTable(self::uniqueName($propertyBag));
     }
 
+    /**
+     * @param string $name
+     * @return PropertyBag
+     */
+    public function nameToClass($name)
+    {
+        $className = '\\Test\\' . ucfirst($name) . '\\Properties';
+        return new $className;
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -33,4 +43,5 @@ class DbNames implements NamesInterface
     {
         return $name === 'employee' ? 'person' : $name;
     }
+
 }

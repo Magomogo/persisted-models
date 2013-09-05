@@ -33,8 +33,7 @@ interface ContainerInterface
     /**
      * @param string $referenceName
      * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @param string $rightPropertiesSample
      * @return array of \Magomogo\Model\PropertyBag
      */
-    public function listReferences($referenceName, $leftProperties, $rightPropertiesSample);
+    public function listReferences($referenceName, $leftProperties);
 }

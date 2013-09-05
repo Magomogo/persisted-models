@@ -100,22 +100,27 @@ class Db implements ContainerInterface
     /**
      * @param string $referenceName
      * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @param \Magomogo\Persisted\PropertyBag $rightPropertiesSample
      * @return array
      */
-    public function listReferences($referenceName, $leftProperties, $rightPropertiesSample)
+    public function listReferences($referenceName, $leftProperties)
     {
-        $rightPropertiesName = $this->names->classToName($rightPropertiesSample);
+        $leftPropertiesName = $this->names->classToName($leftProperties);
 
-        $statement = $this->db->executeQuery(
-            "SELECT $rightPropertiesName FROM $referenceName WHERE " . $this->names->classToName($leftProperties) . '=?',
+        $list = $this->db->fetchAll(
+            "SELECT * FROM $referenceName WHERE " . $leftPropertiesName . '=?',
             array($leftProperties->id($this))
         );
 
         $connections = array();
-        while ($id = $statement->fetchColumn()) {
-            $props = clone $rightPropertiesSample;
-            $connections[] = $props->loadFrom($this, $id);
+
+        if (!empty($list)) {
+            $rightPropertiesName = self::rightPropertiesName($list[0], $leftPropertiesName);
+
+            foreach ($list as $row) {
+                $row = array_change_key_case($row, CASE_LOWER);
+                $props = $this->names->nameToClass($rightPropertiesName);
+                $connections[] = $props->loadFrom($this, $row[strtolower($rightPropertiesName)]);
+            }
         }
 
         return $connections;
@@ -216,5 +221,13 @@ class Db implements ContainerInterface
         }
 
         return $keys;
+    }
+
+    private function rightPropertiesName($row, $leftPropertiesName)
+    {
+        $row = array_change_key_case($row, CASE_LOWER);
+        unset($row[strtolower($leftPropertiesName)]);
+        reset($row);
+        return key($row);
     }
 }
