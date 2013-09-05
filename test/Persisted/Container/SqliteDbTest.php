@@ -2,15 +2,15 @@
 namespace Magomogo\Persisted\Container;
 
 use Magomogo\Persisted\ModelInterface;
-use Test\DbFixture;
-use Test\DbNames;
-use Test\ObjectMother;
+use Magomogo\Persisted\Test\DbFixture;
+use Magomogo\Persisted\Test\DbNames;
+use Magomogo\Persisted\Test\ObjectMother;
 use Magomogo\Persisted\Container\Db;
-use Test\CreditCard;
-use Test\Person;
-use Test\JobRecord;
-use Test\Company;
-use Test\Employee;
+use Magomogo\Persisted\Test\CreditCard;
+use Magomogo\Persisted\Test\Person;
+use Magomogo\Persisted\Test\JobRecord;
+use Magomogo\Persisted\Test\Company;
+use Magomogo\Persisted\Test\Employee;
 
 class SqliteDbTest extends \PHPUnit_Framework_TestCase
 {

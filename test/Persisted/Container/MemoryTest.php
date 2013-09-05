@@ -2,13 +2,13 @@
 namespace Magomogo\Persisted\Container;
 
 use Magomogo\Persisted\ModelInterface;
-use Test\Person;
-use Test\Company;
-use Test\Keymarker;
-use Test\ObjectMother;
-use Test\Employee\Model as Employee;
-use Test\CreditCard\Model as CreditCard;
-use Test\JobRecord;
+use Magomogo\Persisted\Test\Person;
+use Magomogo\Persisted\Test\Company;
+use Magomogo\Persisted\Test\Keymarker;
+use Magomogo\Persisted\Test\ObjectMother;
+use Magomogo\Persisted\Test\Employee\Model as Employee;
+use Magomogo\Persisted\Test\CreditCard\Model as CreditCard;
+use Magomogo\Persisted\Test\JobRecord;
 
 class MemoryTest extends \PHPUnit_Framework_TestCase
 {

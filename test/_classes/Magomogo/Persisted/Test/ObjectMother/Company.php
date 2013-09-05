@@ -1,8 +1,8 @@
 <?php
-namespace Test\ObjectMother;
+namespace Magomogo\Persisted\Test\ObjectMother;
 
-use Test\Company\Model;
-use Test\Company\Properties;
+use Magomogo\Persisted\Test\Company\Model;
+use Magomogo\Persisted\Test\Company\Properties;
 
 class Company
 {

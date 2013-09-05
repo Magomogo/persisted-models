@@ -1,8 +1,8 @@
 <?php
-namespace Test\ObjectMother;
+namespace Magomogo\Persisted\Test\ObjectMother;
 
-use Test\CreditCard\Model;
-use Test\CreditCard\Properties;
+use Magomogo\Persisted\Test\CreditCard\Model;
+use Magomogo\Persisted\Test\CreditCard\Properties;
 
 class CreditCard
 {

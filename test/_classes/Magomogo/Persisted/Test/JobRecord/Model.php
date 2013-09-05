@@ -1,9 +1,9 @@
 <?php
-namespace Test\JobRecord;
+namespace Magomogo\Persisted\Test\JobRecord;
 
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\Container\ContainerInterface;
-use Test\Company;
+use Magomogo\Persisted\Test\Company;
 
 class Model implements ModelInterface
 {

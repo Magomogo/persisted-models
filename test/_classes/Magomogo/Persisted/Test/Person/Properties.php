@@ -1,10 +1,10 @@
 <?php
-namespace Test\Person;
+namespace Magomogo\Persisted\Test\Person;
 
 use Magomogo\Persisted\PropertyBag;
-use Test\CreditCard\Model as CreditCard;
-use Test\CreditCard\Properties as CreditCardProperties;
-use Test\Keymarker;
+use Magomogo\Persisted\Test\CreditCard\Model as CreditCard;
+use Magomogo\Persisted\Test\CreditCard\Properties as CreditCardProperties;
+use Magomogo\Persisted\Test\Keymarker;
 
 /**
  * @property string $title

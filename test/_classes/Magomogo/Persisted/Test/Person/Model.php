@@ -1,9 +1,9 @@
 <?php
-namespace Test\Person;
+namespace Magomogo\Persisted\Test\Person;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
-use Test\Keymarker\Model as Keymarker;
+use Magomogo\Persisted\Test\Keymarker\Model as Keymarker;
 
 class Model implements ModelInterface
 {

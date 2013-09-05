@@ -1,5 +1,5 @@
 <?php
-namespace Test\CreditCard;
+namespace Magomogo\Persisted\Test\CreditCard;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {

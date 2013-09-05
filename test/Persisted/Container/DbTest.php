@@ -3,10 +3,10 @@ namespace Magomogo\Persisted\Container;
 
 use Magomogo\Persisted\PossessionInterface;
 use Mockery as m;
-use Test\DbNames;
-use Test\ObjectMother\Person as TestPerson;
+use Magomogo\Persisted\Test\DbNames;
+use Magomogo\Persisted\Test\ObjectMother\Person as TestPerson;
 use Magomogo\Persisted\PropertyBag;
-use Test\Person;
+use Magomogo\Persisted\Test\Person;
 
 class DbTest extends \PHPUnit_Framework_TestCase
 {

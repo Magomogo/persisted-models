@@ -1,9 +1,9 @@
 <?php
-namespace Test\ObjectMother;
+namespace Magomogo\Persisted\Test\ObjectMother;
 
-use Test\Employee\Properties as EmployeeProperties;
-use Test\Employee\Model as EmployeeModel;
-use Test\Company\Model as CompanyModel;
+use Magomogo\Persisted\Test\Employee\Properties as EmployeeProperties;
+use Magomogo\Persisted\Test\Employee\Model as EmployeeModel;
+use Magomogo\Persisted\Test\Company\Model as CompanyModel;
 
 class Employee
 {

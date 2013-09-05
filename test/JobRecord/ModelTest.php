@@ -1,8 +1,8 @@
 <?php
 
-namespace Test\JobRecord;
+namespace Magomogo\Persisted\Test\JobRecord;
 
-use Test\ObjectMother\Company;
+use Magomogo\Persisted\Test\ObjectMother\Company;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {

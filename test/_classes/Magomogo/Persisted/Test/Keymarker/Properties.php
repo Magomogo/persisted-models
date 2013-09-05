@@ -1,5 +1,5 @@
 <?php
-namespace Test\Keymarker;
+namespace Magomogo\Persisted\Test\Keymarker;
 
 use Magomogo\Persisted\PropertyBag;
 

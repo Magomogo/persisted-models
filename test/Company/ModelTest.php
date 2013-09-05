@@ -1,7 +1,7 @@
 <?php
-namespace Test\Company;
+namespace Magomogo\Persisted\Test\Company;
 
-use Test\ObjectMother\Company as CompanyMother;
+use Magomogo\Persisted\Test\ObjectMother\Company as CompanyMother;
 use Mockery as m;
 
 class CompanyTest extends \PHPUnit_Framework_TestCase

@@ -5,10 +5,10 @@ namespace Magomogo\Persisted;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\Container\Db;
 use Magomogo\Persisted\Container\Memory;
-use Test\DbFixture;
-use Test\DbNames;
-use Test\ObjectMother;
-use Test\Person;
+use Magomogo\Persisted\Test\DbFixture;
+use Magomogo\Persisted\Test\DbNames;
+use Magomogo\Persisted\Test\ObjectMother;
+use Magomogo\Persisted\Test\Person;
 
 class ModelEditorWorkflowTest extends \PHPUnit_Framework_TestCase
 {

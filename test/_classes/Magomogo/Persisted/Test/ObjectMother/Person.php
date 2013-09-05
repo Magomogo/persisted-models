@@ -1,8 +1,8 @@
 <?php
-namespace Test\ObjectMother;
+namespace Magomogo\Persisted\Test\ObjectMother;
 
-use Test\Person\Properties;
-use Test\Person\Model;
+use Magomogo\Persisted\Test\Person\Properties;
+use Magomogo\Persisted\Test\Person\Model;
 
 class Person
 {

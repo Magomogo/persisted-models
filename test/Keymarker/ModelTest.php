@@ -1,7 +1,7 @@
 <?php
-namespace Test\Keymarker;
+namespace Magomogo\Persisted\Test\Keymarker;
 
-use Test\ObjectMother\Keymarker;
+use Magomogo\Persisted\Test\ObjectMother\Keymarker;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {

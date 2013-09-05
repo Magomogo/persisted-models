@@ -1,10 +1,10 @@
 <?php
-namespace Test\Employee;
+namespace Magomogo\Persisted\Test\Employee;
 
 use Magomogo\Persisted\PossessionInterface;
-use Test\Keymarker;
-use Test\Person;
-use Test\Company;
+use Magomogo\Persisted\Test\Keymarker;
+use Magomogo\Persisted\Test\Person;
+use Magomogo\Persisted\Test\Company;
 
 /**
  * @property string $title

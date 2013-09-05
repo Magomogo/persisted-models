@@ -1,11 +1,11 @@
 <?php
-namespace Test\Company;
+namespace Magomogo\Persisted\Test\Company;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
-use Test\JobRecord;
-use Test\Person;
+use Magomogo\Persisted\Test\JobRecord;
+use Magomogo\Persisted\Test\Person;
 
 class Model implements ModelInterface
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Test\CreditCard;
+namespace Magomogo\Persisted\Test\CreditCard;
 
 use Magomogo\Persisted\PropertyBag;
 

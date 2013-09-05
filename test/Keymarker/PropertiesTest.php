@@ -1,5 +1,5 @@
 <?php
-namespace Test\Keymarker;
+namespace Magomogo\Persisted\Test\Keymarker;
 
 class PropertiesTest extends \PHPUnit_Framework_TestCase
 {

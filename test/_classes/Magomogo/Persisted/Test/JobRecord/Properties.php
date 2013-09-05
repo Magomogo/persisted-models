@@ -1,9 +1,9 @@
 <?php
-namespace Test\JobRecord;
+namespace Magomogo\Persisted\Test\JobRecord;
 
 use Magomogo\Persisted\PossessionInterface;
 use Magomogo\Persisted\PropertyBag;
-use Test\Company;
+use Magomogo\Persisted\Test\Company;
 
 /**
  * @property string $id

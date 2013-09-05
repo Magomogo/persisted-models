@@ -1,7 +1,7 @@
 <?php
-namespace Test\Employee;
+namespace Magomogo\Persisted\Test\Employee;
 
-use Test\ObjectMother\Employee as EmployeeMother;
+use Magomogo\Persisted\Test\ObjectMother\Employee as EmployeeMother;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {

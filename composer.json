@@ -40,7 +40,7 @@
     "autoload": {
         "psr-0": {
             "Magomogo\\Persisted": ["lib/"],
-            "": ["test/_classes"]
+            "Magomogo\\Persisted\\Test": ["test/_classes"]
         }
     }
 }

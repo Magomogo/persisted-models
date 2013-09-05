@@ -1,12 +1,12 @@
 <?php
 namespace Magomogo\Persisted;
 
-use Test\DbFixture;
+use Magomogo\Persisted\Test\DbFixture;
 use Magomogo\Persisted\Container\Db;
-use Test\DbNames;
-use Test\ObjectMother;
-use Test\Company;
-use Test\Employee;
+use Magomogo\Persisted\Test\DbNames;
+use Magomogo\Persisted\Test\ObjectMother;
+use Magomogo\Persisted\Test\Company;
+use Magomogo\Persisted\Test\Employee;
 
 class ModelsTest extends \PHPUnit_Framework_TestCase
 {

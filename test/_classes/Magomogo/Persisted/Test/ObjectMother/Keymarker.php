@@ -1,8 +1,8 @@
 <?php
-namespace Test\ObjectMother;
+namespace Magomogo\Persisted\Test\ObjectMother;
 
-use Test\Keymarker\Model;
-use Test\Keymarker\Properties;
+use Magomogo\Persisted\Test\Keymarker\Model;
+use Magomogo\Persisted\Test\Keymarker\Properties;
 
 class Keymarker
 {

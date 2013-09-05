@@ -1,6 +1,6 @@
 <?php
 
-namespace Test;
+namespace Magomogo\Persisted\Test;
 
 use Magomogo\Persisted\Container\Db\NamesInterface;
 use Magomogo\Persisted\PropertyBag;
@@ -23,7 +23,7 @@ class DbNames implements NamesInterface
      */
     public function nameToClass($name)
     {
-        $className = '\\Test\\' . ucfirst($name) . '\\Properties';
+        $className = '\\Magomogo\\Persisted\\Test\\' . ucfirst($name) . '\\Properties';
         return new $className;
     }
 
@@ -36,7 +36,7 @@ class DbNames implements NamesInterface
     private function uniqueName($propertyBag)
     {
         $name = strtolower(str_replace('\\', '_', get_class($propertyBag)));
-        return preg_replace('/^test_([a-z]+)_properties$/i', '$1', $name);
+        return preg_replace('/^magomogo_persisted_test_([a-z]+)_properties$/i', '$1', $name);
     }
 
     private function personAndEmployeeShareSameTable($name)

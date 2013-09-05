@@ -1,8 +1,8 @@
 <?php
-namespace Test\Person;
+namespace Magomogo\Persisted\Test\Person;
 
 use Mockery as m;
-use Test\ObjectMother;
+use Magomogo\Persisted\Test\ObjectMother;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {

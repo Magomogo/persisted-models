@@ -1,12 +1,12 @@
 <?php
-namespace Test;
+namespace Magomogo\Persisted\Test;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
 use Magomogo\Persisted\Container\Db\SchemaCreator;
-use Test\JobRecord\Model;
-use Test\ObjectMother;
+use Magomogo\Persisted\Test\JobRecord\Model;
+use Magomogo\Persisted\Test\ObjectMother;
 
 class DbFixture
 {

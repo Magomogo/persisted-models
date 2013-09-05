@@ -6,9 +6,9 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Mockery as m;
-use Test\DbNames;
-use Test\ObjectMother\Keymarker;
-use Test\ObjectMother\Person;
+use Magomogo\Persisted\Test\DbNames;
+use Magomogo\Persisted\Test\ObjectMother\Keymarker;
+use Magomogo\Persisted\Test\ObjectMother\Person;
 
 class SchemaCreatorTest extends \PHPUnit_Framework_TestCase
 {

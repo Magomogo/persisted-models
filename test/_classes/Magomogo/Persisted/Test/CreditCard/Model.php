@@ -1,9 +1,9 @@
 <?php
-namespace Test\Keymarker;
+namespace Magomogo\Persisted\Test\CreditCard;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
-use Test\Person;
+use Magomogo\Persisted\PropertyBag;
 
 class Model implements ModelInterface
 {
@@ -28,27 +28,30 @@ class Model implements ModelInterface
         return $this->properties->putIn($container);
     }
 
+    public function deleteFrom($container)
+    {
+        $this->properties->deleteFrom($container);
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
-    /**
-     * @param Properties $properties
-     */
     public function __construct($properties)
     {
         $this->properties = $properties;
     }
 
-    public function __toString()
+    public function maskedPan()
     {
-        return $this->properties->id;
+        return substr($this->properties->pan, 0, 4) . ' **** **** ' . substr($this->properties->pan, 12, 4);
     }
 
-    /**
-     * @param Person\Properties $personProperties
-     * @return array of Properties
-     */
-    public function propertiesToBeConnectedWith($personProperties)
+    public function paymentSystem()
     {
-        return $this->properties;
+        return $this->properties->system;
+    }
+
+    public function payFor($something)
+    {
+
     }
 }

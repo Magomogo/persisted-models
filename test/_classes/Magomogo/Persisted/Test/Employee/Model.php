@@ -1,9 +1,9 @@
 <?php
-namespace Test\Employee;
+namespace Magomogo\Persisted\Test\Employee;
 
 use Magomogo\Persisted\Container\ContainerInterface;
-use Test\Person\Model as Person;
-use Test\Company;
+use Magomogo\Persisted\Test\Person\Model as Person;
+use Magomogo\Persisted\Test\Company;
 
 class Model extends Person
 {
