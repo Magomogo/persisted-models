@@ -1,3 +1,5 @@
 /.idea
 /vendor
 /composer.lock
+pgsql.conf.php
+mysql.conf.php

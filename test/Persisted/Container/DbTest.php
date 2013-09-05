@@ -17,17 +17,16 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     public function testFollowsTableNamingConvention()
     {
-        $db = m::mock();
+        $db = self::dbMock();
         $db->shouldReceive('insert')->with('person', typeOf('array'))->once();
         $db->shouldReceive('insert')->with('creditcard', typeOf('array'))->once();
-        $db->shouldIgnoreMissing();
         $properties = new Person\Properties;
         $properties->putIn(self::container($db));
     }
 
     public function testLoadsReferencesAccordingToReferenceName()
     {
-        $db = m::mock();
+        $db = self::dbMock();
         $db->shouldReceive('fetchAssoc')->andReturn(
             array('ref1' => 4, 'ref2' => 5),
             array()
@@ -44,14 +43,13 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     public function testSavesReferencesAsForeignKeys()
     {
-        $db = m::mock();
+        $db = self::dbMock();
         $db->shouldReceive('insert')->with('magomogo_persisted_container_testtype3',
             array(
                 'ref1' => 4,
                 'ref2' => 5,
             )
         )->once();
-        $db->shouldIgnoreMissing();
 
         $properties = new TestType3();
         $properties->foreign()->ref1->persisted(4, self::container($db));
@@ -64,7 +62,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
 
-        $container = self::container(m::mock(array('fetchAssoc' => false)));
+        $container = self::container(m::mock(array('fetchAssoc' => false, 'quoteIdentifier' => 'table')));
 
         $notFoundProperties = new TestType1();
         $notFoundProperties->persisted(11, $container);
@@ -80,7 +78,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     public function testCanDeleteProperties()
     {
-        $db = m::mock();
+        $db = self::dbMock();
         $db->shouldReceive('delete')->with('magomogo_persisted_container_testtype1', array('id' => 3))->once();
         $db->shouldReceive('delete')->with('magomogo_persisted_container_testtype2', array('id' => 45))->once();
 
@@ -95,6 +93,14 @@ class DbTest extends \PHPUnit_Framework_TestCase
                 $persistedProperties2
             )
         );
+    }
+
+    private static function dbMock()
+    {
+        $db = m::mock();
+        $db->shouldReceive('quoteIdentifier')->andReturnUsing(function($arg) {return $arg;});
+        $db->shouldIgnoreMissing();
+        return $db;
     }
 
 //----------------------------------------------------------------------------------------------------------------------

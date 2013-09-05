@@ -83,7 +83,7 @@ class SchemaCreator implements ContainerInterface
     {
         if (!empty($connections)) {
             $rightProperties = reset($connections);
-            $table = new Table($referenceName);
+            $table = new Table($this->quoteIdentifier($referenceName));
             $this->addForeignReferenceColumn(
                 $table, $this->names->classToName($leftProperties), $leftProperties
             );
@@ -107,6 +107,11 @@ class SchemaCreator implements ContainerInterface
 
 //----------------------------------------------------------------------------------------------------------------------
 
+    private function quoteIdentifier($str)
+    {
+        return $this->manager->getDatabasePlatform()->quoteIdentifier($str);
+    }
+
     /**
      * @param Table $table
      * @param string $fieldName
@@ -116,18 +121,18 @@ class SchemaCreator implements ContainerInterface
      */
     private function defineSchemaForField($table, $fieldName, $fieldValue) {
         if (is_string($fieldValue)) {
-            $table->addColumn($fieldName, 'text', array('notNull' => false));
+            $table->addColumn($this->quoteIdentifier($fieldName), 'text', array('notNull' => false));
         } elseif ($fieldValue instanceof ModelInterface) {
-            $table->addColumn($fieldName, 'integer', array('unsigned' => true, 'notNull' => false));
+            $table->addColumn($this->quoteIdentifier($fieldName), 'integer', array('unsigned' => true, 'notNull' => false));
             $relatedTable = $fieldValue->save($this);
             $table->addForeignKeyConstraint(
-                $relatedTable,
-                array($fieldName),
+                $this->quoteIdentifier($relatedTable),
+                array($this->quoteIdentifier($fieldName)),
                 array('id'),
                 array('onUpdate' => 'RESTRICT', 'onDelete' => 'SET NULL')
             );
         } elseif ($fieldValue instanceof \DateTime) {
-            $table->addColumn($fieldName, 'datetimetz', array('notNull' => false));
+            $table->addColumn($this->quoteIdentifier($fieldName), 'datetimetz', array('notNull' => false));
         } else {
             throw new Exception\Type;
         }
@@ -140,7 +145,7 @@ class SchemaCreator implements ContainerInterface
      */
     private function newTableObject($propertyBag, $tableName)
     {
-        $table = new Table($tableName);
+        $table = new Table($this->quoteIdentifier($tableName));
 
         if (!isset($propertyBag->id)) {
             $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
@@ -168,13 +173,13 @@ class SchemaCreator implements ContainerInterface
     private function addForeignReferenceColumn($table, $columnName, $leftProperties)
     {
         $table->addColumn(
-            $columnName,
+            $this->quoteIdentifier($columnName),
             is_null($leftProperties->naturalKey()) || is_integer($leftProperties->naturalKey()) ? 'integer' : 'text',
             array('unsigned' => true, 'notNull' => false)
         );
         $table->addForeignKeyConstraint(
-            $this->names->classToName($leftProperties),
-            array($columnName),
+            $this->quoteIdentifier($this->names->classToName($leftProperties)),
+            array($this->quoteIdentifier($columnName)),
             array('id'),
             array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE')
         );

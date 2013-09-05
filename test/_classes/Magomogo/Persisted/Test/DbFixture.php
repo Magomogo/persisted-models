@@ -18,7 +18,7 @@ class DbFixture
     public function __construct()
     {
         $this->db = self::memoryDb();
-//        $this->db = self::postgresDb();
+        //$this->db = self::postgresDb();
     }
 
     public function install()
@@ -65,21 +65,18 @@ SQL
         );
     }
 
+    /**
+     * @return Connection
+     */
     private static function postgresDb()
     {
-        $conn = DriverManager::getConnection(
-            array(
-                'user' => 'postgres',
-                'password' => '',
-                'driver' => 'pdo_pgsql',
-                'host' => '',
-                'port' => '',
-                'dbname' => ''
-            ),
-            new Configuration
-        );
-        $conn->exec("SET TIME ZONE '+7'");
-        return $conn;
+        if (file_exists(__DIR__ . '/pgsql.conf.php')) {
+            $conn = DriverManager::getConnection(include __DIR__ . '/pgsql.conf.php', new Configuration);
+            $conn->exec("SET TIME ZONE '+7'");
+            return $conn;
+        }
+
+        return null;
     }
 
 }

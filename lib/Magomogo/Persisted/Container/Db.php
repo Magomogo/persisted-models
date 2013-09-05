@@ -39,8 +39,7 @@ class Db implements ContainerInterface
         $row = $this->begin($propertyBag);
 
         foreach ($propertyBag as $name => &$property) {
-            $property = array_key_exists(strtolower($name), $row) ?
-                $this->fromDbValue($property, $row[strtolower($name)]) : null;
+            $property = array_key_exists($name, $row) ? $this->fromDbValue($property, $row[$name]) : null;
         }
         if ($propertyBag instanceof PossessionInterface) {
             $this->collectReferences($row, $propertyBag->foreign());
@@ -63,7 +62,7 @@ class Db implements ContainerInterface
             $row['id'] = $propertyBag->id($this);
         }
         foreach ($propertyBag as $name => $property) {
-            $row[$name] = $this->toDbValue($property);
+            $row[$this->db->quoteIdentifier($name)] = $this->toDbValue($property);
         }
 
         return $this->commit($row, $propertyBag);
@@ -86,14 +85,20 @@ class Db implements ContainerInterface
      */
     public function referToMany($referenceName, $leftProperties, array $connections)
     {
-        $this->db->delete($referenceName, array($this->names->classToName($leftProperties) => $leftProperties->id($this)));
+        $this->db->delete(
+            $this->db->quoteIdentifier($referenceName),
+            array($this->db->quoteIdentifier($this->names->classToName($leftProperties)) => $leftProperties->id($this))
+        );
 
         /** @var PropertyBag $rightProperties */
         foreach ($connections as $rightProperties) {
-            $this->db->insert($referenceName, array(
-                $this->names->classToName($leftProperties) => $leftProperties->id($this),
-                $this->names->classToName($rightProperties) => $rightProperties->id($this),
-            ));
+            $this->db->insert(
+                $this->db->quoteIdentifier($referenceName),
+                array(
+                    $this->db->quoteIdentifier($this->names->classToName($leftProperties)) => $leftProperties->id($this),
+                    $this->db->quoteIdentifier($this->names->classToName($rightProperties)) => $rightProperties->id($this),
+                )
+            );
         }
     }
 
@@ -107,7 +112,8 @@ class Db implements ContainerInterface
         $leftPropertiesName = $this->names->classToName($leftProperties);
 
         $list = $this->db->fetchAll(
-            "SELECT * FROM $referenceName WHERE " . $leftPropertiesName . '=?',
+            'SELECT * FROM ' . $this->db->quoteIdentifier($referenceName)
+            . ' WHERE ' . $this->db->quoteIdentifier($leftPropertiesName) . '=?',
             array($leftProperties->id($this))
         );
 
@@ -117,9 +123,8 @@ class Db implements ContainerInterface
             $rightPropertiesName = self::rightPropertiesName($list[0], $leftPropertiesName);
 
             foreach ($list as $row) {
-                $row = array_change_key_case($row, CASE_LOWER);
                 $props = $this->names->nameToClass($rightPropertiesName);
-                $connections[] = $props->loadFrom($this, $row[strtolower($rightPropertiesName)]);
+                $connections[] = $props->loadFrom($this, $row[$rightPropertiesName]);
             }
         }
 
@@ -159,11 +164,14 @@ class Db implements ContainerInterface
     private function begin($propertyBag)
     {
         if (!is_null($propertyBag->id($this))) {
-            $table = $this->names->classToName($propertyBag);
-            $row = $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($propertyBag->id($this)));
+
+            $row = $this->db->fetchAssoc(
+                'SELECT * FROM ' . $this->db->quoteIdentifier($this->names->classToName($propertyBag)) . ' WHERE id=?',
+                array($propertyBag->id($this))
+            );
 
             if (is_array($row)) {
-                return array_change_key_case($row, CASE_LOWER);
+                return $row;
             }
         }
 
@@ -182,10 +190,10 @@ class Db implements ContainerInterface
         $tableName = $this->names->classToName($properties);
 
         if (!$properties->id($this)) {
-            $this->db->insert($tableName, $row);
+            $this->db->insert($this->db->quoteIdentifier($tableName), $row);
             $properties->persisted($properties->naturalKey() ?: $this->db->lastInsertId($tableName . '_id_seq'), $this);
         } else {
-            $this->db->update($tableName, $row, array('id' => $properties->id($this)));
+            $this->db->update($this->db->quoteIdentifier($tableName), $row, array('id' => $properties->id($this)));
         }
 
         return $properties;
@@ -196,9 +204,14 @@ class Db implements ContainerInterface
      */
     private function confirmPersistency($properties)
     {
-        if ($properties->id($this) && $this->db->fetchColumn(
-            'SELECT 1 FROM ' . $this->names->classToName($properties) . ' WHERE id=?', array($properties->id($this))
-        )) {
+        if (
+            $properties->id($this)
+            &&
+            $this->db->fetchColumn(
+                'SELECT 1 FROM ' . $this->db->quoteIdentifier($this->names->classToName($properties)) . ' WHERE id=?',
+                array($properties->id($this))
+            )
+        ) {
             $properties->persisted($properties->id($this), $this);
         }
     }
@@ -207,7 +220,7 @@ class Db implements ContainerInterface
     {
         /* @var PropertyBag $properties */
         foreach ($references as $referenceName => $properties) {
-            $properties->loadFrom($this, $row[strtolower($referenceName)]);
+            $properties->loadFrom($this, $row[$referenceName]);
         }
         return $references;
     }
@@ -217,7 +230,7 @@ class Db implements ContainerInterface
         $keys = array();
         /* @var PropertyBag $properties */
         foreach ($references as $referenceName => $properties) {
-            $keys[$referenceName] = $properties->id($this);
+            $keys[$this->db->quoteIdentifier($referenceName)] = $properties->id($this);
         }
 
         return $keys;
@@ -225,8 +238,7 @@ class Db implements ContainerInterface
 
     private function rightPropertiesName($row, $leftPropertiesName)
     {
-        $row = array_change_key_case($row, CASE_LOWER);
-        unset($row[strtolower($leftPropertiesName)]);
+        unset($row[$leftPropertiesName]);
         reset($row);
         return key($row);
     }
