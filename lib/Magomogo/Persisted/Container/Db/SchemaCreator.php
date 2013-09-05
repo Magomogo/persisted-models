@@ -55,31 +55,9 @@ class SchemaCreator implements ContainerInterface
         $tableName = $this->names->containmentTableName($propertyBag);
 
         if (!in_array($tableName, $this->manager->listTableNames())) {
-            $table = new Table($tableName);
-
-            if (!isset($propertyBag->id)) {
-                $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
-            }
-
-            foreach ($propertyBag as $name  => $value) {
-                $this->defineSchemaForField($table, $name, $value);
-            }
-            $table->setPrimaryKey(array('id'));
-
-            if ($propertyBag instanceof PossessionInterface) {
-                foreach ($propertyBag->foreign() as $propertyName => $foreignProperties) {
-
-                    $table->addColumn($propertyName, 'integer', array('unsigned' => true, 'notNull' => true));
-                    $table->addForeignKeyConstraint(
-                        $this->names->containmentTableName($foreignProperties),
-                        array($propertyName),
-                        array('id'),
-                        array('onUpdate' => 'RESTRICT', 'onDelete' => 'CASCADE')
-                    );
-                }
-            }
-
-            $this->manager->createTable($table);
+            $this->manager->createTable(
+                $this->newTableObject($propertyBag, $tableName)
+            );
         }
 
         $propertyBag->persisted($tableName, $this);
@@ -106,19 +84,11 @@ class SchemaCreator implements ContainerInterface
         if (!empty($connections)) {
             $rightProperties = reset($connections);
             $table = new Table($referenceName);
-            $table->addColumn($this->names->referencedColumnName($leftProperties), 'integer', array('notNull' => true));
-            $table->addColumn($this->names->referencedColumnName($rightProperties), 'integer', array('notNull' => true));
-            $table->addForeignKeyConstraint(
-                $this->names->containmentTableName($leftProperties),
-                array($this->names->referencedColumnName($leftProperties)),
-                array('id'),
-                array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE')
+            $this->addForeignReferenceColumn(
+                $table, $this->names->referencedColumnName($leftProperties), $leftProperties
             );
-            $table->addForeignKeyConstraint(
-                $this->names->containmentTableName($rightProperties),
-                array($this->names->referencedColumnName($rightProperties)),
-                array('id'),
-                array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE')
+            $this->addForeignReferenceColumn(
+                $table, $this->names->referencedColumnName($rightProperties), $rightProperties
             );
             $this->manager->createTable($table);
         }
@@ -157,10 +127,57 @@ class SchemaCreator implements ContainerInterface
                 array('onUpdate' => 'RESTRICT', 'onDelete' => 'SET NULL')
             );
         } elseif ($fieldValue instanceof \DateTime) {
-            $table->addColumn($fieldName, 'datetime', array('notNull' => false));
+            $table->addColumn($fieldName, 'datetimetz', array('notNull' => false));
         } else {
             throw new Exception\Type;
         }
+    }
+
+    /**
+     * @param PropertyBag $propertyBag
+     * @param string $tableName
+     * @return \Doctrine\DBAL\Schema\Table
+     */
+    private function newTableObject($propertyBag, $tableName)
+    {
+        $table = new Table($tableName);
+
+        if (!isset($propertyBag->id)) {
+            $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
+        }
+
+        foreach ($propertyBag as $name => $value) {
+            $this->defineSchemaForField($table, $name, $value);
+        }
+
+        $table->setPrimaryKey(array('id'));
+
+        if ($propertyBag instanceof PossessionInterface) {
+            foreach ($propertyBag->foreign() as $propertyName => $foreignProperties) {
+                $this->addForeignReferenceColumn($table, $propertyName, $foreignProperties);
+            }
+        }
+
+        return $table;
+    }
+
+    /**
+     * @param Table $table
+     * @param PropertyBag $leftProperties
+     */
+    private function addForeignReferenceColumn($table, $columnName, $leftProperties)
+    {
+        $table->addColumn(
+            $columnName,
+            is_null($leftProperties->naturalKey()) || is_integer($leftProperties->naturalKey()) ? 'integer' : 'text',
+            array('unsigned' => true, 'notNull' => false)
+        );
+        $table->addForeignKeyConstraint(
+            $this->names->containmentTableName($leftProperties),
+            array($columnName),
+            array('id'),
+            array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE')
+        );
     }
 
 }

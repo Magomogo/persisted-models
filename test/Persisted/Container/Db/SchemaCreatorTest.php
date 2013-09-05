@@ -91,7 +91,7 @@ SQL
         self::schema($this->connection->getSchemaManager())->schemaFor($taggedPerson);
 
         $this->assertSame(
-            'CREATE TABLE person2keymarker (person INTEGER NOT NULL, keymarker INTEGER NOT NULL)',
+            'CREATE TABLE person2keymarker (person INTEGER DEFAULT NULL, keymarker CLOB DEFAULT NULL)',
             $this->connection->fetchColumn("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'person2keymarker'")
         );
 

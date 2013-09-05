@@ -14,8 +14,7 @@ class DbNames implements NamesInterface
      */
     public function referencedColumnName($propertyBag)
     {
-        $name = $this->containmentTableName($propertyBag);
-        return $name === 'employee' ? 'person' : $name;
+        return self::personAndEmployeeShareSameTable(self::uniqueName($propertyBag));
     }
 
     /**
@@ -24,7 +23,23 @@ class DbNames implements NamesInterface
      */
     public function containmentTableName($propertyBag)
     {
+        return self::personAndEmployeeShareSameTable(self::uniqueName($propertyBag));
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @param PropertyBag $propertyBag
+     * @return string
+     */
+    private function uniqueName($propertyBag)
+    {
         $name = strtolower(str_replace('\\', '_', get_class($propertyBag)));
         return preg_replace('/^test_([a-z]+)_properties$/i', '$1', $name);
+    }
+
+    private function personAndEmployeeShareSameTable($name)
+    {
+        return $name === 'employee' ? 'person' : $name;
     }
 }

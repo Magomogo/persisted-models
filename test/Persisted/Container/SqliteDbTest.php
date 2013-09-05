@@ -36,9 +36,9 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     {
         ObjectMother\CreditCard::datatransTesting()->save($this->sqliteContainer());
 
-        $this->assertEquals(
+        $this->assertArraysEqualKeyCaseInsensitive(
             array(
-                'id' => '1',
+                'id' => 1,
                 'system' => 'VISA',
                 'pan' => '9500000000000001',
                 'validMonth' => '12',
@@ -54,23 +54,24 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     {
         ObjectMother\Person::maxim()->save($this->sqliteContainer());
 
-        $this->assertEquals(
+        $this->assertArraysEqualKeyCaseInsensitive(
             array(
-                'id' => '1',
+                'id' => 1,
+                'company' => null,
                 'title' => 'Mr.',
                 'firstName' => 'Maxim',
                 'lastName' => 'Gnatenko',
-                'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
-                'creditCard' => '1',
-                'birthDay' => '1975-07-07T00:00:00+07:00'
+                'email' => 'maxim@xiag.ch',
+                'creditCard' => 1,
+                'birthDay' => '1975-07-07T00:00:00+07:00',
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM person")
         );
 
-        $this->assertEquals(
+        $this->assertArraysEqualKeyCaseInsensitive(
             array(
-                'id' => '1',
+                'id' => 1,
                 'system' => 'VISA',
                 'pan' => '9500000000000001',
                 'validMonth' => '12',
@@ -109,19 +110,19 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     {
         $this->putEmployeeIn($this->sqliteContainer());
 
-        $this->assertEquals(
+        $this->assertArraysEqualKeyCaseInsensitive(
             array(
-                'id' => '1',
+                'id' => 1,
+                'company' => 1,
                 'title' => 'Mr.',
                 'firstName' => 'Maxim',
                 'lastName' => 'Gnatenko',
-                'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
-                'creditCard' => '1',
-                'company' => '1',
+                'email' => 'maxim@xiag.ch',
+                'creditCard' => 1,
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM employee")
+            $this->fixture->db->fetchAssoc("SELECT * FROM person")
         );
     }
 
@@ -238,6 +239,13 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             $container->exposeProperties($model1)->resetPersistency(),
             $container->exposeProperties($model2)->resetPersistency()
+        );
+    }
+
+    private function assertArraysEqualKeyCaseInsensitive($arr1, $arr2)
+    {
+        $this->assertEquals(
+            array_change_key_case($arr1), array_change_key_case($arr2)
         );
     }
 }

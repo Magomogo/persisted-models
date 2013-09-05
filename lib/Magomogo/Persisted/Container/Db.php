@@ -39,7 +39,8 @@ class Db implements ContainerInterface
         $row = $this->begin($propertyBag);
 
         foreach ($propertyBag as $name => &$property) {
-            $property = array_key_exists($name, $row) ? $this->fromDbValue($property, $row[$name]) : null;
+            $property = array_key_exists(strtolower($name), $row) ?
+                $this->fromDbValue($property, $row[strtolower($name)]) : null;
         }
         if ($propertyBag instanceof PossessionInterface) {
             $this->collectReferences($row, $propertyBag->foreign());
@@ -157,7 +158,7 @@ class Db implements ContainerInterface
             $row = $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($propertyBag->id($this)));
 
             if (is_array($row)) {
-                return $row;
+                return array_change_key_case($row, CASE_LOWER);
             }
         }
 
@@ -173,11 +174,13 @@ class Db implements ContainerInterface
     {
         $this->confirmPersistency($properties);
 
+        $tableName = $this->names->containmentTableName($properties);
+
         if (!$properties->id($this)) {
-            $this->db->insert($this->names->containmentTableName($properties), $row);
-            $properties->persisted($properties->naturalKey() ?: $this->db->lastInsertId(), $this);
+            $this->db->insert($tableName, $row);
+            $properties->persisted($properties->naturalKey() ?: $this->db->lastInsertId($tableName . '_id_seq'), $this);
         } else {
-            $this->db->update($this->names->containmentTableName($properties), $row, array('id' => $properties->id($this)));
+            $this->db->update($tableName, $row, array('id' => $properties->id($this)));
         }
 
         return $properties;
@@ -199,7 +202,7 @@ class Db implements ContainerInterface
     {
         /* @var PropertyBag $properties */
         foreach ($references as $referenceName => $properties) {
-            $properties->loadFrom($this, $row[$referenceName]);
+            $properties->loadFrom($this, $row[strtolower($referenceName)]);
         }
         return $references;
     }
