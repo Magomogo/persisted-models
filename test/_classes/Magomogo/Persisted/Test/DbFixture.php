@@ -19,6 +19,7 @@ class DbFixture
     {
         $this->db = self::memoryDb();
         //$this->db = self::postgresDb();
+        //$this->db = self::mysqlDb();
     }
 
     public function install()
@@ -73,6 +74,19 @@ SQL
         if (file_exists(__DIR__ . '/pgsql.conf.php')) {
             $conn = DriverManager::getConnection(include __DIR__ . '/pgsql.conf.php', new Configuration);
             $conn->exec("SET TIME ZONE '+7'");
+            return $conn;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Connection
+     */
+    private static function mysqlDb()
+    {
+        if (file_exists(__DIR__ . '/mysql.conf.php')) {
+            $conn = DriverManager::getConnection(include __DIR__ . '/mysql.conf.php', new Configuration);
             return $conn;
         }
 

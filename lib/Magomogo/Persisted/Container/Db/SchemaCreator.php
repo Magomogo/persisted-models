@@ -152,7 +152,11 @@ class SchemaCreator implements ContainerInterface
         }
 
         foreach ($propertyBag as $name => $value) {
-            $this->defineSchemaForField($table, $name, $value);
+            if (($name === 'id') && is_string($value)) {
+                $table->addColumn('id', 'string', array('length' => 1024));
+            } else {
+                $this->defineSchemaForField($table, $name, $value);
+            }
         }
 
         $table->setPrimaryKey(array('id'));
