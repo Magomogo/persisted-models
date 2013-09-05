@@ -75,7 +75,7 @@ class Db implements ContainerInterface
     public function deleteProperties(array $propertyBags)
     {
         foreach ($propertyBags as $bag) {
-            $this->db->delete($this->names->containmentTableName($bag), array('id' => $bag->id($this)));
+            $this->db->delete($this->names->classToName($bag), array('id' => $bag->id($this)));
         }
     }
 
@@ -86,13 +86,13 @@ class Db implements ContainerInterface
      */
     public function referToMany($referenceName, $leftProperties, array $connections)
     {
-        $this->db->delete($referenceName, array($this->names->referencedColumnName($leftProperties) => $leftProperties->id($this)));
+        $this->db->delete($referenceName, array($this->names->classToName($leftProperties) => $leftProperties->id($this)));
 
         /** @var PropertyBag $rightProperties */
         foreach ($connections as $rightProperties) {
             $this->db->insert($referenceName, array(
-                $this->names->referencedColumnName($leftProperties) => $leftProperties->id($this),
-                $this->names->referencedColumnName($rightProperties) => $rightProperties->id($this),
+                $this->names->classToName($leftProperties) => $leftProperties->id($this),
+                $this->names->classToName($rightProperties) => $rightProperties->id($this),
             ));
         }
     }
@@ -105,10 +105,10 @@ class Db implements ContainerInterface
      */
     public function listReferences($referenceName, $leftProperties, $rightPropertiesSample)
     {
-        $rightPropertiesName = $this->names->containmentTableName($rightPropertiesSample);
+        $rightPropertiesName = $this->names->classToName($rightPropertiesSample);
 
         $statement = $this->db->executeQuery(
-            "SELECT $rightPropertiesName FROM $referenceName WHERE " . $this->names->referencedColumnName($leftProperties) . '=?',
+            "SELECT $rightPropertiesName FROM $referenceName WHERE " . $this->names->classToName($leftProperties) . '=?',
             array($leftProperties->id($this))
         );
 
@@ -154,7 +154,7 @@ class Db implements ContainerInterface
     private function begin($propertyBag)
     {
         if (!is_null($propertyBag->id($this))) {
-            $table = $this->names->containmentTableName($propertyBag);
+            $table = $this->names->classToName($propertyBag);
             $row = $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($propertyBag->id($this)));
 
             if (is_array($row)) {
@@ -174,7 +174,7 @@ class Db implements ContainerInterface
     {
         $this->confirmPersistency($properties);
 
-        $tableName = $this->names->containmentTableName($properties);
+        $tableName = $this->names->classToName($properties);
 
         if (!$properties->id($this)) {
             $this->db->insert($tableName, $row);
@@ -192,7 +192,7 @@ class Db implements ContainerInterface
     private function confirmPersistency($properties)
     {
         if ($properties->id($this) && $this->db->fetchColumn(
-            'SELECT 1 FROM ' . $this->names->containmentTableName($properties) . ' WHERE id=?', array($properties->id($this))
+            'SELECT 1 FROM ' . $this->names->classToName($properties) . ' WHERE id=?', array($properties->id($this))
         )) {
             $properties->persisted($properties->id($this), $this);
         }

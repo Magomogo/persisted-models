@@ -52,7 +52,7 @@ class SchemaCreator implements ContainerInterface
      */
     public function saveProperties($propertyBag)
     {
-        $tableName = $this->names->containmentTableName($propertyBag);
+        $tableName = $this->names->classToName($propertyBag);
 
         if (!in_array($tableName, $this->manager->listTableNames())) {
             $this->manager->createTable(
@@ -85,10 +85,10 @@ class SchemaCreator implements ContainerInterface
             $rightProperties = reset($connections);
             $table = new Table($referenceName);
             $this->addForeignReferenceColumn(
-                $table, $this->names->referencedColumnName($leftProperties), $leftProperties
+                $table, $this->names->classToName($leftProperties), $leftProperties
             );
             $this->addForeignReferenceColumn(
-                $table, $this->names->referencedColumnName($rightProperties), $rightProperties
+                $table, $this->names->classToName($rightProperties), $rightProperties
             );
             $this->manager->createTable($table);
         }
@@ -173,7 +173,7 @@ class SchemaCreator implements ContainerInterface
             array('unsigned' => true, 'notNull' => false)
         );
         $table->addForeignKeyConstraint(
-            $this->names->containmentTableName($leftProperties),
+            $this->names->classToName($leftProperties),
             array($columnName),
             array('id'),
             array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE')

@@ -12,16 +12,7 @@ class DbNames implements NamesInterface
      * @param PropertyBag $propertyBag
      * @return string
      */
-    public function referencedColumnName($propertyBag)
-    {
-        return self::personAndEmployeeShareSameTable(self::uniqueName($propertyBag));
-    }
-
-    /**
-     * @param PropertyBag $propertyBag
-     * @return string
-     */
-    public function containmentTableName($propertyBag)
+    public function classToName($propertyBag)
     {
         return self::personAndEmployeeShareSameTable(self::uniqueName($propertyBag));
     }

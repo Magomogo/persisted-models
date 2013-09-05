@@ -10,11 +10,5 @@ interface NamesInterface
      * @param PropertyBag $propertyBag
      * @return string
      */
-    public function containmentTableName($propertyBag);
-
-    /**
-     * @param PropertyBag $propertyBag
-     * @return string
-     */
-    public function referencedColumnName($propertyBag);
+    public function classToName($propertyBag);
 }
