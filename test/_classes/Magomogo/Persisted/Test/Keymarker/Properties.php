@@ -13,7 +13,7 @@ class Properties extends PropertyBag
     {
         return array(
             'id' => '',
-            'created' => new \DateTime
+            'created' => new \DateTime(date('c'))
         );
     }
 

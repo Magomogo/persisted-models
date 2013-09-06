@@ -2,8 +2,9 @@
 namespace Magomogo\Persisted;
 
 use Magomogo\Persisted\Test\DbFixture;
-use Magomogo\Persisted\Container\Db;
+use Magomogo\Persisted\Container\SqlDb;
 use Magomogo\Persisted\Test\DbNames;
+use Magomogo\Persisted\Test\Keymarker;
 use Magomogo\Persisted\Test\ObjectMother;
 use Magomogo\Persisted\Test\Company;
 use Magomogo\Persisted\Test\Employee;
@@ -17,7 +18,7 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->fixture = new DbFixture();
+        $this->fixture = DbFixture::inMemory();
         $this->fixture->install();
     }
 
@@ -32,12 +33,22 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
 
     public function testEmployeeModel()
     {
-        $props = ObjectMother\Employee::maximProperties();
-        $props->foreign()->company->putIn($this->dbContainer());
-        $id = $props->putIn($this->dbContainer(), $props->foreign()->company);
+        $company = ObjectMother\Company::xiag();
+        $company->save($this->dbContainer());
+
+        $keymarker = new Keymarker\Model(new Keymarker\Properties(array('id' => 'test')));
+        $keymarker->save($this->dbContainer());
+
+        $employee = new Employee\Model(
+            $company,
+            new Employee\Properties(array('firstName' => 'John')),
+            array($keymarker)
+        );
+
+        $id = $employee->save($this->dbContainer());
 
         $this->assertEquals(
-            new Employee\Model(new Company\Model($props->foreign()->company), $props, $props->tags),
+            $employee,
             Employee\Model::load($this->dbContainer(), $id)
         );
     }
@@ -55,6 +66,6 @@ class ModelsTest extends \PHPUnit_Framework_TestCase
 
     private function dbContainer()
     {
-        return new Db($this->fixture->db, new DbNames);
+        return new SqlDb($this->fixture->db, new DbNames);
     }
 }

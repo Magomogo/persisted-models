@@ -8,7 +8,7 @@ use Magomogo\Persisted\Test\ObjectMother\Person as TestPerson;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Test\Person;
 
-class DbTest extends \PHPUnit_Framework_TestCase
+class SqlDbTest extends \PHPUnit_Framework_TestCase
 {
     public function testImplementsContainerInterface()
     {
@@ -107,7 +107,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     private static function container($db = null)
     {
-        return new Db($db ?: m::mock(array('fetchAssoc' => array())), new DbNames());
+        return new SqlDb($db ?: m::mock(array('fetchAssoc' => array())), new DbNames());
     }
 }
 

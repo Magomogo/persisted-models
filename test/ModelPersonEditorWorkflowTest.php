@@ -3,7 +3,7 @@
 namespace Magomogo\Persisted;
 
 use Magomogo\Persisted\Container\ContainerInterface;
-use Magomogo\Persisted\Container\Db;
+use Magomogo\Persisted\Container\SqlDb;
 use Magomogo\Persisted\Container\Memory;
 use Magomogo\Persisted\Test\DbFixture;
 use Magomogo\Persisted\Test\DbNames;
@@ -18,7 +18,7 @@ class ModelEditorWorkflowTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->fixture = new DbFixture();
+        $this->fixture = DbFixture::inMemory();
         $this->fixture->install();
 
         $this->propertiesId = ObjectMother\Person::maxim()->save($this->dbContainer());
@@ -62,7 +62,7 @@ class ModelEditorWorkflowTest extends \PHPUnit_Framework_TestCase
 
     private function dbContainer()
     {
-        return new Db($this->fixture->db, new DbNames);
+        return new SqlDb($this->fixture->db, new DbNames);
     }
 }
 

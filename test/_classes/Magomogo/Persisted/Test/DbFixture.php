@@ -4,7 +4,7 @@ namespace Magomogo\Persisted\Test;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Connection;
-use Magomogo\Persisted\Container\Db\SchemaCreator;
+use Magomogo\Persisted\Container\SqlDb\SchemaCreator;
 use Magomogo\Persisted\Test\JobRecord\Model;
 use Magomogo\Persisted\Test\ObjectMother;
 
@@ -15,11 +15,43 @@ class DbFixture
      */
     public $db;
 
-    public function __construct()
+    /**
+     * @return self
+     */
+    public static function inMemory()
     {
-        $this->db = self::memoryDb();
-        //$this->db = self::postgresDb();
-        //$this->db = self::mysqlDb();
+        return new self(
+            DriverManager::getConnection(
+                array(
+                    'memory' => true,
+                    'user' => '',
+                    'password' => '',
+                    'driver' => 'pdo_sqlite',
+                ),
+                new Configuration
+            )
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function inPostgres()
+    {
+        return new self(self::postgresDb());
+    }
+
+    /**
+     * @return self
+     */
+    public static function inMysql()
+    {
+        return new self(self::postgresDb());
+    }
+
+    public function __construct($db)
+    {
+        $this->db = $db;
     }
 
     public function install()
@@ -48,22 +80,6 @@ SQL
         $taggedEmployee = ObjectMother\Employee::maxim();
         $taggedEmployee->tag(ObjectMother\Keymarker::IT());
         $creator->schemaFor($taggedEmployee);
-    }
-
-    /**
-     * @return Connection
-     */
-    private static function memoryDb()
-    {
-        return DriverManager::getConnection(
-            array(
-                'memory' => true,
-                'user' => '',
-                'password' => '',
-                'driver' => 'pdo_sqlite',
-            ),
-            new Configuration
-        );
     }
 
     /**

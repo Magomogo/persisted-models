@@ -2,13 +2,13 @@
 namespace Magomogo\Persisted\Container;
 
 use Doctrine\DBAL\Connection;
-use Magomogo\Persisted\Container\Db\NamesInterface;
+use Magomogo\Persisted\Container\SqlDb\NamesInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Exception;
 
-class Db implements ContainerInterface
+class SqlDb implements ContainerInterface
 {
     /**
      * @var string

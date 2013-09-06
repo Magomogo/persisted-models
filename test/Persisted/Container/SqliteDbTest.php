@@ -5,7 +5,7 @@ use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\Test\DbFixture;
 use Magomogo\Persisted\Test\DbNames;
 use Magomogo\Persisted\Test\ObjectMother;
-use Magomogo\Persisted\Container\Db;
+use Magomogo\Persisted\Container\SqlDb;
 use Magomogo\Persisted\Test\CreditCard;
 use Magomogo\Persisted\Test\Person;
 use Magomogo\Persisted\Test\JobRecord;
@@ -22,7 +22,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->fixture = new DbFixture();
+        $this->fixture = DbFixture::inMemory();
         $this->fixture->install();
     }
 
@@ -196,10 +196,8 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $vova = new Person\Model($personProperties);
         $id = $vova->save($this->sqliteContainer());
 
-        $lastNameCol = $this->fixture->db->quoteIdentifier('lastName');
-
         $this->assertNull(
-            $this->fixture->db->fetchColumn("SELECT $lastNameCol FROM person WHERE id = ?", array($id))
+            $this->fixture->db->fetchColumn("SELECT lastName FROM person WHERE id = ?", array($id))
         );
 
         $person = Person\Model::load($this->sqliteContainer(), $id);
@@ -221,15 +219,18 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private function putEmployeeIn($container)
     {
-        $props = ObjectMother\Employee::maximProperties();
-        $props->foreign()->company->putIn($container);
-        $props->putIn($container, $props->foreign()->company);
-        return new Employee\Model(new Company\Model($props->foreign()->company), $props);
+        $company = ObjectMother\Company::xiag();
+        $company->save($container);
+
+        $employee = new Employee\Model($company, ObjectMother\Employee::maximProperties());
+
+        $employee->save($container);
+        return $employee;
     }
 
     private function sqliteContainer()
     {
-        return new Db($this->fixture->db, new DbNames);
+        return new SqlDb($this->fixture->db, new DbNames);
     }
 
     /**

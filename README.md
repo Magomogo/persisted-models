@@ -28,13 +28,13 @@ source: [Person\Model](//github.com/Magomogo/persisted-models/blob/master/test/_
 To achieve persistency we not need to store **A model**, it is necessary to store its properties.
 
     // save/update
-    $dbContainer = new Persisted\Container\Db($connection);
+    $dbContainer = new Persisted\Container\SqlDb($connection);
     $person->save($dbContainer);
 
     // load
     $persistedPerson = Person\Model::load($dbContainer, $id);
 
-source: [Persisted\Container\Db](//github.com/Magomogo/persisted-models/blob/master/lib/Magomogo/Persisted/Container/Db.php "Database container")
+source: [Persisted\Container\SqlDb](//github.com/Magomogo/persisted-models/blob/master/lib/Magomogo/Persisted/Container/SqlDb.php "Database container")
 
 
 Handling user input with **'Forms'**, **'A Form'** is kind of a Container.

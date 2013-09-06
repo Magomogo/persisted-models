@@ -12,7 +12,7 @@ use Magomogo\Persisted\Test\Keymarker;
  * @property string $lastName
  * @property string $phone
  * @property string $email
- * @property \Test\CreditCard\Model $creditCard
+ * @property \Magomogo\Persisted\Test\CreditCard\Model $creditCard
  */
 class Properties extends PropertyBag
 {
@@ -30,7 +30,7 @@ class Properties extends PropertyBag
             'phone' => '',
             'email' => '',
             'creditCard' => new CreditCard(new CreditCardProperties),
-            'birthDay' => new \DateTime('1970-01-01')
+            'birthDay' => new \DateTime('1970-01-01T00:00+00:00')
         );
     }
 

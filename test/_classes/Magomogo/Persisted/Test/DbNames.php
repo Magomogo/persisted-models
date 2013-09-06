@@ -2,7 +2,7 @@
 
 namespace Magomogo\Persisted\Test;
 
-use Magomogo\Persisted\Container\Db\NamesInterface;
+use Magomogo\Persisted\Container\SqlDb\NamesInterface;
 use Magomogo\Persisted\PropertyBag;
 
 class DbNames implements NamesInterface

@@ -2,7 +2,7 @@
 namespace Magomogo\Persisted;
 
 use Mockery as m;
-use Magomogo\Persisted\Container\Db;
+use Magomogo\Persisted\Container\SqlDb;
 use Magomogo\Persisted\Container\Memory;
 use Magomogo\Persisted\Test\Company\Properties as CompanyProperties;
 use Magomogo\Persisted\Test\DbNames;
@@ -39,7 +39,7 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
     public function testPropertiesBagCanHaveDifferentIdsInDifferentContainers()
     {
         $bag = self::bag();
-        $container1 = new Db(m::mock(), new DbNames());
+        $container1 = new SqlDb(m::mock(), new DbNames());
         $container2 = new Memory();
 
         $bag->persisted('888', $container1);
@@ -66,7 +66,7 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
     public function testPropertiesCanBeCopiedToAnotherBag()
     {
         $properties = Employee::maximProperties();
-        $properties->persisted('1', m::mock('Magomogo\\Persisted\\Container\\Db'));
+        $properties->persisted('1', m::mock('Magomogo\\Persisted\\Container\\SqlDb'));
         $properties->persisted('123123132', m::mock('Magomogo\\Persisted\\Container\\Memory'));
 
         $anotherProperties = new EmployeeProperties();

@@ -1,6 +1,6 @@
 <?php
 
-namespace Magomogo\Persisted\Container\Db;
+namespace Magomogo\Persisted\Container\SqlDb;
 
 use Magomogo\Persisted\PropertyBag;
 

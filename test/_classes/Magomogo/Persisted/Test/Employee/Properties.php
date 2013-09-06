@@ -12,7 +12,7 @@ use Magomogo\Persisted\Test\Company;
  * @property string $lastName
  * @property string $phone
  * @property string $email
- * @property \Test\CreditCard\Model $creditCard
+ * @property \Magomogo\Persisted\Test\CreditCard\Model $creditCard
  */
 class Properties extends Person\Properties implements PossessionInterface
 {
