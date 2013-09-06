@@ -59,14 +59,18 @@ class DbFixture
      */
     public function install()
     {
+        $dbName = $this->db->getDatabase();
+
         $platformSpecificCleanUp = array(
             'postgresql' => <<<SQL
-DROP TABLE IF EXISTS creditcard, person, company, jobrecord, keymarker, person2keymarker CASCADE
+drop schema public cascade;
+create schema public;
 SQL
             ,
             'mysql' => <<<SQL
-DELETE FROM keymarker;
-DROP TABLE IF EXISTS creditcard, person, company, jobrecord, keymarker, person2keymarker;
+DROP DATABASE IF EXISTS $dbName;
+CREATE DATABASE $dbName;
+USE $dbName;
 SQL
 
         );
