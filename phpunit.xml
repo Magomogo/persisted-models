@@ -15,8 +15,12 @@
     </listeners>
 
     <testsuites>
-        <testsuite>
+        <testsuite name="Unit">
             <directory>test</directory>
+            <exclude>test/ModelsPersistencyTest.php</exclude>
+        </testsuite>
+        <testsuite name="Integration">
+            <file>test/ModelsPersistencyTest.php</file>
         </testsuite>
     </testsuites>
 

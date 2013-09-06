@@ -37,7 +37,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     {
         ObjectMother\CreditCard::datatransTesting()->save($this->sqliteContainer());
 
-        $this->assertArraysEqualKeyCaseInsensitive(
+        $this->assertEquals(
             array(
                 'id' => 1,
                 'system' => 'VISA',
@@ -55,7 +55,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     {
         ObjectMother\Person::maxim()->save($this->sqliteContainer());
 
-        $this->assertArraysEqualKeyCaseInsensitive(
+        $this->assertEquals(
             array(
                 'id' => 1,
                 'company' => null,
@@ -70,7 +70,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
             self::smoothBirthDayFormatDifference($this->fixture->db->fetchAssoc("SELECT * FROM person"))
         );
 
-        $this->assertArraysEqualKeyCaseInsensitive(
+        $this->assertEquals(
             array(
                 'id' => 1,
                 'system' => 'VISA',
@@ -81,15 +81,6 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'cardholderName' => 'Maxim Gnatenko'
             ),
             $this->fixture->db->fetchAssoc("SELECT * FROM creditcard")
-        );
-    }
-
-    public function testReadsModelFromTheDatabase()
-    {
-        $maximId = ObjectMother\Person::maxim()->save($this->sqliteContainer());
-        $this->assertEquals(
-            ObjectMother\Person::maxim($maximId)->politeTitle(),
-            Person\Model::load($this->sqliteContainer(), $maximId)->politeTitle()
         );
     }
 
@@ -111,7 +102,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     {
         $this->putEmployeeIn($this->sqliteContainer());
 
-        $this->assertArraysEqualKeyCaseInsensitive(
+        $this->assertEquals(
             array(
                 'id' => 1,
                 'company' => 1,
@@ -124,35 +115,6 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'birthDay' => '1975-07-07'
             ),
             self::smoothBirthDayFormatDifference($this->fixture->db->fetchAssoc("SELECT * FROM person"))
-        );
-    }
-
-    public function testReadsEmployeeModel()
-    {
-        $employee = $this->putEmployeeIn($this->sqliteContainer());
-        $this->assertEquals(
-            $employee,
-            $employee::load($this->sqliteContainer(), 1)
-        );
-    }
-
-    public function testCanSaveAndLoadAJobRecord()
-    {
-        $prop1 = new Company\Properties(array('name' => 'XIAG'));
-        $prop1->putIn($this->sqliteContainer());
-        $prop2 = new Company\Properties(array('name' => 'NSTU'));
-        $prop2->putIn($this->sqliteContainer());
-
-        $jobRecord = new JobRecord\Model(
-            new Company\Model($prop1),
-            new Company\Model($prop2)
-        );
-
-        $id = $jobRecord->save($this->sqliteContainer());
-
-        $this->assertModelsAreEqual(
-            $jobRecord,
-            JobRecord\Model::load($this->sqliteContainer(), $id)
         );
     }
 
@@ -169,22 +131,6 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $persistedKeymarker2 = ObjectMother\Keymarker::IT();
         $persistedKeymarker2->save($this->sqliteContainer());
         return array($persistedKeymarker1, $persistedKeymarker2);
-    }
-
-    public function testStoresPersonKeymarkers()
-    {
-        list ($persistedKeymarker1, $persistedKeymarker2) = $this->persistTwoKeymarkers();
-
-        $person = ObjectMother\Person::maxim();
-        $person->tag($persistedKeymarker1);
-        $person->tag($persistedKeymarker2);
-
-        $id = $person->save($this->sqliteContainer());
-
-        $this->assertEquals(
-            $person,
-            $person::load($this->sqliteContainer(), $id)
-        );
     }
 
     public function testWorksWithNulls()
@@ -204,17 +150,6 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($person->lastName());
     }
 
-    public function testAModelCanBeDeletedFromContainer()
-    {
-        $cc = ObjectMother\CreditCard::datatransTesting();
-        $id = $cc->save($this->sqliteContainer());
-
-        $cc->deleteFrom($this->sqliteContainer());
-
-        $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-        CreditCard\Model::load($this->sqliteContainer(), $id);
-    }
-
 //----------------------------------------------------------------------------------------------------------------------
 
     private function putEmployeeIn($container)
@@ -231,26 +166,6 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     private function sqliteContainer()
     {
         return new SqlDb($this->fixture->db, new DbNames);
-    }
-
-    /**
-     * @param ModelInterface $model1
-     * @param ModelInterface $model2
-     */
-    private function assertModelsAreEqual($model1, $model2)
-    {
-        $container = new Memory();
-        $this->assertEquals(
-            $container->exposeProperties($model1)->resetPersistency(),
-            $container->exposeProperties($model2)->resetPersistency()
-        );
-    }
-
-    private function assertArraysEqualKeyCaseInsensitive($arr1, $arr2)
-    {
-        $this->assertEquals(
-            array_change_key_case($arr1), array_change_key_case($arr2)
-        );
     }
 
     private static function smoothBirthDayFormatDifference($row)
