@@ -24,4 +24,7 @@
         </testsuite>
     </testsuites>
 
+    <php>
+        <ini name="date.timezone" value="Asia/Novosibirsk"/>
+    </php>
 </phpunit>
