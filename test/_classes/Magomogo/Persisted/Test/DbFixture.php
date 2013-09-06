@@ -87,6 +87,7 @@ SQL
     {
         if (file_exists(__DIR__ . '/mysql.conf.php')) {
             $conn = DriverManager::getConnection(include __DIR__ . '/mysql.conf.php', new Configuration);
+            $conn->exec('SET time_zone = \'+07:00\'');
             return $conn;
         }
 

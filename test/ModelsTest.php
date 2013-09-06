@@ -10,6 +10,9 @@ use Magomogo\Persisted\Test\Employee;
 
 class ModelsTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var DbFixture
+     */
     private $fixture;
 
     protected function setUp()

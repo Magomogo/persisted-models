@@ -65,7 +65,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'phone' => '+7923-117-2801',
                 'email' => 'maxim@xiag.ch',
                 'creditCard' => 1,
-                'birthDay' => '1975-07-07T00:00:00+07:00',
+                'birthDay' => '1975-07-07',
             ),
             self::smoothBirthDayFormatDifference($this->fixture->db->fetchAssoc("SELECT * FROM person"))
         );
@@ -121,7 +121,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'phone' => '+7923-117-2801',
                 'email' => 'maxim@xiag.ch',
                 'creditCard' => 1,
-                'birthDay' => '1975-07-07T00:00:00+07:00'
+                'birthDay' => '1975-07-07'
             ),
             self::smoothBirthDayFormatDifference($this->fixture->db->fetchAssoc("SELECT * FROM person"))
         );
@@ -196,8 +196,10 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $vova = new Person\Model($personProperties);
         $id = $vova->save($this->sqliteContainer());
 
+        $lastNameCol = $this->fixture->db->quoteIdentifier('lastName');
+
         $this->assertNull(
-            $this->fixture->db->fetchColumn('SELECT "lastName" FROM person WHERE id = ?', array($id))
+            $this->fixture->db->fetchColumn("SELECT $lastNameCol FROM person WHERE id = ?", array($id))
         );
 
         $person = Person\Model::load($this->sqliteContainer(), $id);
@@ -252,10 +254,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     private static function smoothBirthDayFormatDifference($row)
     {
-        $row['birthDay'][10] = 'T';
-        $row['birthDay'][22] = ':';
-        $row['birthDay'][23] = '0';
-        $row['birthDay'][24] = '0';
+        $row['birthDay'] = substr($row['birthDay'], 0, 10);
         return $row;
     }
 }

@@ -81,7 +81,7 @@ class SchemaCreator implements ContainerInterface
      */
     public function referToMany($referenceName, $leftProperties, array $connections)
     {
-        if (!empty($connections)) {
+        if (!empty($connections) && !in_array($referenceName, $this->manager->listTableNames())) {
             $rightProperties = reset($connections);
             $table = new Table($this->quoteIdentifier($referenceName));
             $this->addForeignReferenceColumn(
@@ -153,7 +153,7 @@ class SchemaCreator implements ContainerInterface
 
         foreach ($propertyBag as $name => $value) {
             if (($name === 'id') && is_string($value)) {
-                $table->addColumn('id', 'string', array('length' => 1024));
+                $table->addColumn('id', 'string', array('length' => 255, 'notnull' => true));
             } else {
                 $this->defineSchemaForField($table, $name, $value);
             }
@@ -172,15 +172,20 @@ class SchemaCreator implements ContainerInterface
 
     /**
      * @param Table $table
+     * @param string $columnName
      * @param PropertyBag $leftProperties
      */
     private function addForeignReferenceColumn($table, $columnName, $leftProperties)
     {
-        $table->addColumn(
-            $this->quoteIdentifier($columnName),
-            is_null($leftProperties->naturalKey()) || is_integer($leftProperties->naturalKey()) ? 'integer' : 'text',
-            array('unsigned' => true, 'notNull' => false)
-        );
+        if ($leftProperties->naturalKey() && is_string($leftProperties->naturalKey())) {
+            $table->addColumn($this->quoteIdentifier($columnName), 'string', array('length' => 255, 'notnull' => false));
+        } else {
+            $table->addColumn(
+                $this->quoteIdentifier($columnName),
+                'integer',
+                array('unsigned' => true, 'notNull' => false)
+            );
+        }
         $table->addForeignKeyConstraint(
             $this->quoteIdentifier($this->names->classToName($leftProperties)),
             array($this->quoteIdentifier($columnName)),
