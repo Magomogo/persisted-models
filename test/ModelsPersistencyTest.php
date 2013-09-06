@@ -2,6 +2,7 @@
 namespace Magomogo\Persisted;
 
 use Magomogo\Persisted\Container\ContainerInterface;
+use Magomogo\Persisted\Container\Memory;
 use Magomogo\Persisted\Test\DbFixture;
 use Magomogo\Persisted\Container\SqlDb;
 use Magomogo\Persisted\Test\DbNames;
@@ -27,57 +28,110 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider modelsProvider
      *
-     * @param ModelInterface|callable $model
+     * @param callable|ModelInterface $model
+     * @param callable|ContainerInterface $container
      */
-    public function testCanBePutInAndLoadedFrom($model)
+    public function testCanBePutInAndLoadedFrom($model, $container)
     {
+        if (is_callable($container)) {
+            $container = $container();
+        }
+        if (is_null($container)) {
+            $this->markTestSkipped('Not configured');
+        }
         if (is_callable($model)) {
-            $model = $model($this->dbContainer());
+            $model = $model($container);
         }
 
-        $id = $model->save($this->dbContainer());
-        $this->assertEquals($model, $model::load($this->dbContainer(), $id));
+        $id = $model->save($container);
+        $this->assertEquals($model, $model::load($container, $id));
     }
 
     /**
      * @dataProvider modelsProvider
      *
-     * @param ModelInterface|callable $model
+     * @param callable|ModelInterface $model
+     * @param callable|ContainerInterface $container
      */
-    public function testAModelCanBeDeletedFromContainer($model)
+    public function testAModelCanBeDeletedFromContainer($model, $container)
     {
+        if (is_callable($container)) {
+            $container = $container();
+        }
+        if (is_null($container)) {
+            $this->markTestSkipped('Not configured');
+        }
         if (is_callable($model)) {
-            $model = $model($this->dbContainer());
+            $model = $model($container);
         }
 
         if (method_exists($model, 'deleteFrom')) {
-            $id = $model->save($this->dbContainer());
-            $model->deleteFrom($this->dbContainer());
+            $id = $model->save($container);
+            $model->deleteFrom($container);
 
             $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
-            $model::load($this->dbContainer(), $id);
+            $model::load($container, $id);
         }
     }
 
     public static function modelsProvider()
     {
         return array(
-            array(ObjectMother\CreditCard::datatransTesting()),
-            array(ObjectMother\Person::maxim()),
-            array(ObjectMother\Person::maximWithoutCC()),
-            array(ObjectMother\Company::xiag()),
-            array(ObjectMother\Keymarker::friend()),
-            array(array(__CLASS__, 'employeeModel')),
-            array(array(__CLASS__, 'jobRecord')),
-            array(array(__CLASS__, 'personHavingKeymarkers')),
+            array(ObjectMother\CreditCard::datatransTesting(), new Memory()),
+            array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'sqliteContainer')),
+            array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'postgresContainer')),
+            array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'mysqlContainer')),
+
+            array(ObjectMother\Person::maxim(), new Memory()),
+            array(ObjectMother\Person::maxim(), array(__CLASS__, 'sqliteContainer')),
+            array(ObjectMother\Person::maxim(), array(__CLASS__, 'postgresContainer')),
+            array(ObjectMother\Person::maxim(), array(__CLASS__, 'mysqlContainer')),
+
+            array(ObjectMother\Person::maximWithoutCC(), new Memory()),
+            array(ObjectMother\Person::maximWithoutCC(), array(__CLASS__, 'sqliteContainer')),
+            array(ObjectMother\Person::maximWithoutCC(), array(__CLASS__, 'postgresContainer')),
+            array(ObjectMother\Person::maximWithoutCC(), array(__CLASS__, 'mysqlContainer')),
+
+            array(ObjectMother\Company::xiag(), new Memory()),
+            array(ObjectMother\Company::xiag(), array(__CLASS__, 'sqliteContainer')),
+            array(ObjectMother\Company::xiag(), array(__CLASS__, 'postgresContainer')),
+            array(ObjectMother\Company::xiag(), array(__CLASS__, 'mysqlContainer')),
+
+            array(ObjectMother\Keymarker::friend(), new Memory()),
+            array(ObjectMother\Keymarker::friend(), array(__CLASS__, 'sqliteContainer')),
+            array(ObjectMother\Keymarker::friend(), array(__CLASS__, 'postgresContainer')),
+            array(ObjectMother\Keymarker::friend(), array(__CLASS__, 'mysqlContainer')),
+
+            array(array(__CLASS__, 'employeeModel'), array(__CLASS__, 'sqliteContainer')),
+            array(array(__CLASS__, 'employeeModel'), array(__CLASS__, 'postgresContainer')),
+            array(array(__CLASS__, 'employeeModel'), array(__CLASS__, 'mysqlContainer')),
+
+            array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'sqliteContainer')),
+            array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'postgresContainer')),
+            array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'mysqlContainer')),
+
+            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'sqliteContainer')),
+            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'postgresContainer')),
+            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'mysqlContainer')),
+
         );
     }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-    private function dbContainer()
+    private static function sqliteContainer()
     {
-        return new SqlDb($this->fixture->db, new DbNames);
+        return new SqlDb(DbFixture::inMemory()->install()->db, new DbNames);
+    }
+
+    private static function postgresContainer()
+    {
+        return new SqlDb(DbFixture::inPostgres()->install()->db, new DbNames);
+    }
+
+    private static function mysqlContainer()
+    {
+        return new SqlDb(DbFixture::inMysql()->install()->db, new DbNames);
     }
 
     /**

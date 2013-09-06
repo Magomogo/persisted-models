@@ -30,7 +30,7 @@ class Properties extends PropertyBag
             'phone' => '',
             'email' => '',
             'creditCard' => new CreditCard(new CreditCardProperties),
-            'birthDay' => new \DateTime('1970-01-01T00:00+00:00')
+            'birthDay' => new \DateTime('1970-01-01T00:00:00+07:00')
         );
     }
 
@@ -48,7 +48,7 @@ class Properties extends PropertyBag
         foreach ($container->listReferences('person2keymarker', $this)
                  as $keymarkerProperties) {
             /** @var Keymarker\Properties $keymarkerProperties */
-            $this->tags[] = new Keymarker\Model($keymarkerProperties);
+            $this->tags[$keymarkerProperties->id] = new Keymarker\Model($keymarkerProperties);
         }
         return $this;
     }

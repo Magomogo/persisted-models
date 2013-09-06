@@ -3,7 +3,13 @@ php:
   - "5.3"
   - "5.4"
 
+services:
+  - MySQL
+  - PostgreSQL
+
 before_script:
   - composer install --dev
+  - mysql -e 'create database magomogo_persisted_models;'
+  - psql -c 'create database magomogo_persisted_models;' -U postgres
 
 script: phpunit

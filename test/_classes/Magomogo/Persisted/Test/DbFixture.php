@@ -46,7 +46,7 @@ class DbFixture
      */
     public static function inMysql()
     {
-        return new self(self::postgresDb());
+        return new self(self::mysqlDb());
     }
 
     public function __construct($db)
@@ -54,17 +54,29 @@ class DbFixture
         $this->db = $db;
     }
 
+    /**
+     * @return $this
+     */
     public function install()
     {
-        if ($this->db->getDatabasePlatform()->getName() !== 'sqlite') {
-            $this->db->exec(
-                <<<SQL
-DROP TABLE IF EXISTS creditcard, person, company, employee, jobrecord, keymarker, person2keymarker CASCADE
+        $platformSpecificCleanUp = array(
+            'postgresql' => <<<SQL
+DROP TABLE IF EXISTS creditcard, person, company, jobrecord, keymarker, person2keymarker CASCADE
 SQL
-            );
+            ,
+            'mysql' => <<<SQL
+DELETE FROM keymarker;
+DROP TABLE IF EXISTS creditcard, person, company, jobrecord, keymarker, person2keymarker;
+SQL
+
+        );
+
+        if (array_key_exists($this->db->getDatabasePlatform()->getName(), $platformSpecificCleanUp)) {
+            $this->db->exec($platformSpecificCleanUp[$this->db->getDatabasePlatform()->getName()]);
         }
 
         self::installSchema($this->db);
+        return $this;
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -87,13 +99,12 @@ SQL
      */
     private static function postgresDb()
     {
-        if (file_exists(__DIR__ . '/pgsql.conf.php')) {
-            $conn = DriverManager::getConnection(include __DIR__ . '/pgsql.conf.php', new Configuration);
-            $conn->exec("SET TIME ZONE '+7'");
-            return $conn;
-        }
-
-        return null;
+        $conn = DriverManager::getConnection(
+            file_exists(__DIR__ . '/pgsql.conf.php') ? include __DIR__ . '/pgsql.conf.php' : self::travisCiPostgres(),
+            new Configuration
+        );
+        $conn->exec("SET TIME ZONE '+7'");
+        return $conn;
     }
 
     /**
@@ -101,13 +112,33 @@ SQL
      */
     private static function mysqlDb()
     {
-        if (file_exists(__DIR__ . '/mysql.conf.php')) {
-            $conn = DriverManager::getConnection(include __DIR__ . '/mysql.conf.php', new Configuration);
-            $conn->exec('SET time_zone = \'+07:00\'');
-            return $conn;
-        }
-
-        return null;
+        $conn = DriverManager::getConnection(
+            file_exists(__DIR__ . '/mysql.conf.php') ? include __DIR__ . '/mysql.conf.php' : self::travisCiMysql(),
+            new Configuration
+        );
+        $conn->exec('SET time_zone = \'+07:00\'');
+        return $conn;
     }
 
+    private static function travisCiMysql()
+    {
+        return array(
+            'user' => 'travis',
+            'password' => '',
+            'driver' => 'pdo_mysql',
+            'host' => '127.0.0.1',
+            'dbname' => 'magomogo_persisted_models'
+        );
+    }
+
+    private static function travisCiPostgres()
+    {
+        return array(
+            'user' => 'postgres',
+            'password' => '',
+            'driver' => 'pdo_pgsql',
+            'host' => '127.0.0.1',
+            'dbname' => 'magomogo_persisted_models'
+        );
+    }
 }

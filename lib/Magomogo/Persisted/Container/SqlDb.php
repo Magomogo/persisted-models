@@ -133,14 +133,19 @@ class SqlDb implements ContainerInterface
 
 //----------------------------------------------------------------------------------------------------------------------
 
-    private function fromDbValue($property, $column)
+    private function fromDbValue($property, $value)
     {
         if ($property instanceof ModelInterface) {
-            return is_null($column) ? null : $property::load($this, $column);
+            return is_null($value) ? null : $property::load($this, $value);
         } elseif($property instanceof \DateTime) {
-            return new \DateTime($column);
+            return self::dateInIso8601($value);
         }
-        return $column;
+        return $value;
+    }
+
+    private static function dateInIso8601($str)
+    {
+        return new \DateTime(date('c', strtotime($str)));
     }
 
     private function toDbValue($property)

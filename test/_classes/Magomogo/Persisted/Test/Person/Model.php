@@ -38,7 +38,9 @@ class Model implements ModelInterface
     public function __construct($properties, array $tags = array())
     {
         $this->properties = $properties;
-        $this->properties->tags = $tags;
+        foreach ($tags as $tag) {
+            $this->tag($tag);
+        }
     }
 
     public function politeTitle()
@@ -74,7 +76,7 @@ class Model implements ModelInterface
 
     public function tag(Keymarker $keymarker)
     {
-        $this->properties->tags[] = $keymarker;
+        $this->properties->tags[strval($keymarker)] = $keymarker;
     }
 
     public function taggedAs()
