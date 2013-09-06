@@ -6,8 +6,8 @@ use Magomogo\Persisted\Container\SqlDb;
 use Magomogo\Persisted\Container\Memory;
 use Magomogo\Persisted\Test\Company\Properties as CompanyProperties;
 use Magomogo\Persisted\Test\DbNames;
-use Magomogo\Persisted\Test\ObjectMother\Employee;
-use Magomogo\Persisted\Test\Employee\Properties as EmployeeProperties;
+use Magomogo\Persisted\Test\ObjectMother;
+use Magomogo\Persisted\Test\Person;
 
 class PropertyBagTest extends \PHPUnit_Framework_TestCase
 {
@@ -65,11 +65,11 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
     public function testPropertiesCanBeCopiedToAnotherBag()
     {
-        $properties = Employee::maximProperties();
+        $properties = ObjectMother\Person::maximProperties();
         $properties->persisted('1', m::mock('Magomogo\\Persisted\\Container\\SqlDb'));
         $properties->persisted('123123132', m::mock('Magomogo\\Persisted\\Container\\Memory'));
 
-        $anotherProperties = new EmployeeProperties();
+        $anotherProperties = new Person\Properties();
         $properties->copyTo($anotherProperties);
 
         $this->assertNotSame($properties, $anotherProperties);

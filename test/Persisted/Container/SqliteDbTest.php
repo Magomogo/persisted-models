@@ -1,7 +1,6 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
-use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\Test\DbFixture;
 use Magomogo\Persisted\Test\DbNames;
 use Magomogo\Persisted\Test\ObjectMother;
@@ -157,8 +156,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $company = ObjectMother\Company::xiag();
         $company->save($container);
 
-        $employee = new Employee\Model($company, ObjectMother\Employee::maximProperties());
-
+        $employee = ObjectMother\Employee::maxim($company);
         $employee->save($container);
         return $employee;
     }
