@@ -34,13 +34,13 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
     public function testCanBePutInAndLoadedFrom($model, $container)
     {
         if (is_callable($container)) {
-            $container = $container();
+            $container = call_user_func($container);
         }
         if (is_null($container)) {
             $this->markTestSkipped('Not configured');
         }
         if (is_callable($model)) {
-            $model = $model($container);
+            $model = call_user_func($model, $container);
         }
 
         $id = $model->save($container);
@@ -56,13 +56,13 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
     public function testAModelCanBeDeletedFromContainer($model, $container)
     {
         if (is_callable($container)) {
-            $container = $container();
+            $container = call_user_func($container);
         }
         if (is_null($container)) {
             $this->markTestSkipped('Not configured');
         }
         if (is_callable($model)) {
-            $model = $model($container);
+            $model = call_user_func($model, $container);
         }
 
         if (method_exists($model, 'deleteFrom')) {
