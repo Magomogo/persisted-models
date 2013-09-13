@@ -29,12 +29,6 @@ class Model extends Person
         return new self(new Company\Model($p->foreign()->company), $p, $p->tags);
     }
 
-    public function save($container)
-    {
-        $this->company->isOwner($this->properties);
-        return $this->properties->putIn($container);
-    }
-
     /**
      * @param Company\Model $company
      * @param Properties $properties
@@ -45,6 +39,7 @@ class Model extends Person
     {
         parent::__construct($properties, $tags);
         $this->company = $company;
+        $this->company->isOwner($this->properties);
     }
 
     public function greeting()

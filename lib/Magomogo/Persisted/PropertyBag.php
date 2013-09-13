@@ -142,9 +142,7 @@ abstract class PropertyBag implements \IteratorAggregate
 
         if (($this instanceof PossessionInterface) && ($propertyBag instanceof PossessionInterface)) {
             foreach($this->foreign() as $referenceName => $referenceProperties) {
-                foreach ($referenceProperties as $name => $property) {
-                    $propertyBag->foreign()->$referenceName->$name = $property;
-                }
+                $referenceProperties->copyTo($propertyBag->foreign()->$referenceName);
             }
         }
 
