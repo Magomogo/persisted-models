@@ -44,7 +44,7 @@ class Properties extends PropertyBag implements PossessionInterface
      * @param null|string $relationName
      * @return mixed
      */
-    public function isOwnedBy($properties, $relationName = null)
+    public function ownedBy($properties, $relationName = null)
     {
         $this->{$relationName . 'Props'} = $properties;
         return $this;

@@ -49,6 +49,6 @@ class Model implements ModelInterface
      */
     public function isOwner($properties, $relationName = null)
     {
-        return $properties->isOwnedBy($this->properties, $relationName);
+        return $properties->ownedBy($this->properties, $relationName);
     }
 }

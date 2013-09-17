@@ -162,9 +162,9 @@ class TestType3 extends PropertyBag implements PossessionInterface
      * @param null|string $relationName
      * @return mixed
      */
-    public function isOwnedBy($properties, $relationName = null)
+    public function ownedBy($properties, $relationName = null)
     {
-        // TODO: Implement isOwnedBy() method.
+        // TODO: Implement ownedBy() method.
     }
 }
 

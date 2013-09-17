@@ -30,7 +30,7 @@ class Properties extends Person\Properties implements PossessionInterface
         return $foreign;
     }
 
-    public function isOwnedBy($companyProperties, $relationName = null)
+    public function ownedBy($companyProperties, $relationName = null)
     {
         $this->ownerCompanyProperties = $companyProperties;
         return $this;

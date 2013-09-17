@@ -14,5 +14,5 @@ interface PossessionInterface
      * @param null|string $relationName
      * @return mixed
      */
-    public function isOwnedBy($properties, $relationName = null);
+    public function ownedBy($properties, $relationName = null);
 }
