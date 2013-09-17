@@ -190,8 +190,6 @@ class SqlDb implements ContainerInterface
      */
     private function commit(array $row, $properties)
     {
-        $this->confirmPersistency($properties);
-
         $tableName = $this->names->classToName($properties);
 
         if (!$properties->id($this)) {
@@ -202,23 +200,6 @@ class SqlDb implements ContainerInterface
         }
 
         return $properties;
-    }
-
-    /**
-     * @param \Magomogo\Persisted\PropertyBag $properties
-     */
-    private function confirmPersistency($properties)
-    {
-        if (
-            $properties->id($this)
-            &&
-            $this->db->fetchColumn(
-                'SELECT 1 FROM ' . $this->db->quoteIdentifier($this->names->classToName($properties)) . ' WHERE id=?',
-                array($properties->id($this))
-            )
-        ) {
-            $properties->persisted($properties->id($this), $this);
-        }
     }
 
     private function collectReferences(array $row, $references)
