@@ -21,13 +21,9 @@ abstract class PropertyBagCollection implements \ArrayAccess, \IteratorAggregate
     public function loadFrom($container, $owner)
     {
         $this->items = array();
-        foreach ($container->listReferences($this, $owner) as $properties) {
-            /** @var PropertyBag $properties */
-            if ($properties->id($container)) {
-                $this->items[$properties->id($container)] = $properties;
-            } else {
-                $this->items[] = $properties;
-            }
+        foreach ($container->listReferences($this, $owner) as $propertyBag) {
+            /** @var PropertyBag $propertyBag */
+            $this->appendPropertyBag($propertyBag, $propertyBag->id($container));
         }
         return $this;
     }

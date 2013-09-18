@@ -91,10 +91,10 @@ class SqlDb implements ContainerInterface
     /**
      * @param PropertyBagCollection $collectionBag
      * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @param $connections
+     * @param array $propertyBags
      * @internal param array $connections
      */
-    public function referToMany($collectionBag, $leftProperties, array $connections)
+    public function referToMany($collectionBag, $leftProperties, array $propertyBags)
     {
         $referenceName = $this->names->manyToManyRelationName($collectionBag, $leftProperties);
 
@@ -104,7 +104,7 @@ class SqlDb implements ContainerInterface
         );
 
         /** @var PropertyBag $rightProperties */
-        foreach ($connections as $rightProperties) {
+        foreach ($propertyBags as $rightProperties) {
             $this->db->insert(
                 $this->db->quoteIdentifier($referenceName),
                 array(
@@ -131,18 +131,18 @@ class SqlDb implements ContainerInterface
             array($leftProperties->id($this))
         );
 
-        $connections = array();
+        $propertyBags = array();
 
         if (!empty($list)) {
             $rightPropertiesName = self::rightPropertiesName($list[0], $leftPropertiesName);
 
             foreach ($list as $row) {
                 $props = $this->names->nameToClass($rightPropertiesName);
-                $connections[] = $props->loadFrom($this, $row[$rightPropertiesName]);
+                $propertyBags[] = $props->loadFrom($this, $row[$rightPropertiesName]);
             }
         }
 
-        return $connections;
+        return $propertyBags;
     }
 
 //----------------------------------------------------------------------------------------------------------------------

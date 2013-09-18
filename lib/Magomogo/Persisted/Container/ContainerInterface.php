@@ -26,10 +26,10 @@ interface ContainerInterface
     /**
      * @param PropertyBagCollection $collectionBag
      * @param \Magomogo\Persisted\CollectionOwnerInterface $leftProperties
-     * @param array $connections array of \Magomogo\Model\PropertyBag
+     * @param array $propertyBags array of \Magomogo\Model\PropertyBag
      * @return void
      */
-    public function referToMany($collectionBag, $leftProperties, array $connections);
+    public function referToMany($collectionBag, $leftProperties, array $propertyBags);
 
     /**
      * @param PropertyBagCollection $collectionBag

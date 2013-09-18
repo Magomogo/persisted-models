@@ -86,15 +86,15 @@ class SchemaCreator implements ContainerInterface
     /**
      * @param PropertyBagCollection $collectionBag
      * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @param array $connections array of \Magomogo\Model\PropertyBag
+     * @param array $propertyBags array of \Magomogo\Model\PropertyBag
      * @return void
      */
-    public function referToMany($collectionBag, $leftProperties, array $connections)
+    public function referToMany($collectionBag, $leftProperties, array $propertyBags)
     {
         $referenceName = $this->names->manyToManyRelationName($collectionBag, $leftProperties);
 
-        if (!empty($connections) && !in_array($referenceName, $this->manager->listTableNames())) {
-            $rightProperties = reset($connections);
+        if (!empty($propertyBags) && !in_array($referenceName, $this->manager->listTableNames())) {
+            $rightProperties = reset($propertyBags);
             $table = new Table($this->quoteIdentifier($referenceName));
             $this->addForeignReferenceColumn(
                 $table, $this->names->classToName($leftProperties), $leftProperties

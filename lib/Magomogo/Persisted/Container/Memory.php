@@ -82,14 +82,14 @@ class Memory implements ContainerInterface
     /**
      * @param PropertyBagCollection $collectionBag
      * @param CollectionOwnerInterface $leftProperties
-     * @param array $connections
+     * @param array $propertyBags
      */
-    public function referToMany($collectionBag, $leftProperties, array $connections)
+    public function referToMany($collectionBag, $leftProperties, array $propertyBags)
     {
         $refName = $this->manyToManyRefName($collectionBag, $leftProperties);
 
         $this->manyToManyReferences[$refName] = array();
-        foreach ($connections as $rightProperties) {
+        foreach ($propertyBags as $rightProperties) {
             $this->manyToManyReferences[$refName][] = array(
                 'left' => $leftProperties->id($this),
                 'right' => $rightProperties,
