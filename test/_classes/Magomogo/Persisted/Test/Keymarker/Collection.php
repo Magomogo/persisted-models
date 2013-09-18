@@ -6,11 +6,6 @@ use Magomogo\Persisted\PropertyBagCollection;
 
 class Collection extends PropertyBagCollection
 {
-    public function __construct($owner)
-    {
-        $this->owner = $owner;
-    }
-
     /**
      * @param Properties $propertyBag
      * @return Model

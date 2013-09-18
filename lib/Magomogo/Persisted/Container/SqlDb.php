@@ -47,7 +47,7 @@ class SqlDb implements ContainerInterface
             $this->collectReferences($row, $propertyBag->foreign());
         }
         if ($propertyBag instanceof CollectionOwnerInterface) {
-            $this->collectCollections($propertyBag);
+            $this->loadCollections($propertyBag);
         }
 
         return $propertyBag;
@@ -90,17 +90,17 @@ class SqlDb implements ContainerInterface
 
     /**
      * @param PropertyBagCollection $collectionBag
-     * @param \Magomogo\Persisted\PropertyBag $ownerProperties
+     * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @param $connections
      * @internal param array $connections
      */
-    public function referToMany($collectionBag, $ownerProperties, array $connections)
+    public function referToMany($collectionBag, $leftProperties, array $connections)
     {
-        $referenceName = $this->names->manyToManyRelationName($collectionBag, $ownerProperties);
+        $referenceName = $this->names->manyToManyRelationName($collectionBag, $leftProperties);
 
         $this->db->delete(
             $this->db->quoteIdentifier($referenceName),
-            array($this->db->quoteIdentifier($this->names->classToName($ownerProperties)) => $ownerProperties->id($this))
+            array($this->db->quoteIdentifier($this->names->classToName($leftProperties)) => $leftProperties->id($this))
         );
 
         /** @var PropertyBag $rightProperties */
@@ -108,7 +108,7 @@ class SqlDb implements ContainerInterface
             $this->db->insert(
                 $this->db->quoteIdentifier($referenceName),
                 array(
-                    $this->db->quoteIdentifier($this->names->classToName($ownerProperties)) => $ownerProperties->id($this),
+                    $this->db->quoteIdentifier($this->names->classToName($leftProperties)) => $leftProperties->id($this),
                     $this->db->quoteIdentifier($this->names->classToName($rightProperties)) => $rightProperties->id($this),
                 )
             );
@@ -117,18 +117,18 @@ class SqlDb implements ContainerInterface
 
     /**
      * @param PropertyBagCollection $collectionBag
-     * @param \Magomogo\Persisted\PropertyBag $ownerProperties
+     * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @return array
      */
-    public function listReferences($collectionBag, $ownerProperties)
+    public function listReferences($collectionBag, $leftProperties)
     {
-        $referenceName = $this->names->manyToManyRelationName($collectionBag, $ownerProperties);
-        $leftPropertiesName = $this->names->classToName($ownerProperties);
+        $referenceName = $this->names->manyToManyRelationName($collectionBag, $leftProperties);
+        $leftPropertiesName = $this->names->classToName($leftProperties);
 
         $list = $this->db->fetchAll(
             'SELECT * FROM ' . $this->db->quoteIdentifier($referenceName)
             . ' WHERE ' . $this->db->quoteIdentifier($leftPropertiesName) . '=?',
-            array($ownerProperties->id($this))
+            array($leftProperties->id($this))
         );
 
         $connections = array();
@@ -228,11 +228,11 @@ class SqlDb implements ContainerInterface
     /**
      * @param CollectionOwnerInterface $propertyBag
      */
-    private function collectCollections($propertyBag)
+    private function loadCollections($propertyBag)
     {
         /** @var PropertyBagCollection $collection */
-        foreach ($propertyBag->collections() as $collectionName => $collection) {
-            $collection->loadFrom($this);
+        foreach ($propertyBag->collections() as $collection) {
+            $collection->loadFrom($this, $propertyBag);
         }
     }
 
@@ -242,8 +242,8 @@ class SqlDb implements ContainerInterface
     private function saveCollections($propertyBag)
     {
         /** @var PropertyBagCollection $collection */
-        foreach ($propertyBag->collections() as $collectionName => $collection) {
-            $collection->putIn($this);
+        foreach ($propertyBag->collections() as $collection) {
+            $collection->putIn($this, $propertyBag);
         }
     }
 

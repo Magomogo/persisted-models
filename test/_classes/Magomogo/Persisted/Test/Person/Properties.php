@@ -37,7 +37,7 @@ class Properties extends PropertyBag implements CollectionOwnerInterface
 
     protected function init()
     {
-        $this->tags = new Keymarker\Collection($this);
+        $this->tags = new Keymarker\Collection();
     }
 
     public function collections()

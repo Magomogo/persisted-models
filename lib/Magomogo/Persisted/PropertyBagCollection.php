@@ -5,42 +5,45 @@ namespace Magomogo\Persisted;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\CollectableModelInterface;
+use Magomogo\Persisted\CollectionOwnerInterface;
 
 abstract class PropertyBagCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
-    /**
-     * @var PropertyBag
-     */
-    protected $owner;
-
     protected $items = array();
 
     abstract protected function constructModel($propertyBag);
 
     /**
      * @param ContainerInterface $container
+     * @param CollectionOwnerInterface $owner
      * @return $this
      */
-    public function loadFrom($container)
+    public function loadFrom($container, $owner)
     {
-        foreach ($container->listReferences($this, $this->owner) as $properties) {
+        $this->items = array();
+        foreach ($container->listReferences($this, $owner) as $properties) {
             /** @var PropertyBag $properties */
-            $this->items[] = $properties;
+            if ($properties->id($container)) {
+                $this->items[$properties->id($container)] = $properties;
+            } else {
+                $this->items[] = $properties;
+            }
         }
         return $this;
     }
 
     /**
      * @param ContainerInterface $container
+     * @param CollectionOwnerInterface $owner
      * @return $this
      */
-    public function putIn($container)
+    public function putIn($container, $owner)
     {
-        $container->referToMany($this, $this->owner, $this->items);
+        $container->referToMany($this, $owner, $this->items);
         return $this;
     }
 
-    public function appendPropertyBag($propertyBag, $offset)
+    public function appendPropertyBag($propertyBag, $offset = null)
     {
         if (is_null($offset)) {
             $this->items[] = $propertyBag;

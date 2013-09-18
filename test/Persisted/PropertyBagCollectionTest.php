@@ -44,7 +44,7 @@ class PropertyBagCollectionTest extends \PHPUnit_Framework_TestCase
                     return (count($arg) == 1) && ($arg[0] instanceof Keymarker\Properties);
                 }))
             ->once();
-        $collection->putIn($container);
+        $collection->putIn($container, m::mock());
     }
 
     /**
@@ -58,7 +58,8 @@ class PropertyBagCollectionTest extends \PHPUnit_Framework_TestCase
                 array(
                     'listReferences' => array(new Keymarker\Properties, new Keymarker\Properties)
                 )
-            )
+            ),
+            m::mock()
         );
         return $collection;
     }

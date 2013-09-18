@@ -1,9 +1,11 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
+use Magomogo\Persisted\CollectionOwnerInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Exception\NotFound;
+use Magomogo\Persisted\PropertyBagCollection;
 
 /**
  * This container can keep one model and all its references in memory.
@@ -47,6 +49,11 @@ class Memory implements ContainerInterface
         /** @var $properties PropertyBag */
         $properties = $this->storage[$propertyBag->id($this)];
         $properties->copyTo($propertyBag);
+
+        if ($propertyBag instanceof CollectionOwnerInterface) {
+            $this->loadCollections($propertyBag);
+        }
+
         return $propertyBag;
     }
 
@@ -65,22 +72,26 @@ class Memory implements ContainerInterface
             }
         }
 
+        if ($propertyBag instanceof CollectionOwnerInterface) {
+            $this->saveCollections($propertyBag);
+        }
+
         return $propertyBag;
     }
 
     /**
-     * @param CollectionBag $collectionBag
-     * @param PropertyBag $ownerProperties
-     * @param $connections
-     * @internal param array $connections
+     * @param PropertyBagCollection $collectionBag
+     * @param CollectionOwnerInterface $leftProperties
+     * @param array $connections
      */
-    public function referToMany($collectionBag, $ownerProperties, array $connections)
+    public function referToMany($collectionBag, $leftProperties, array $connections)
     {
-        $this->saveProperties($ownerProperties);
-        $this->manyToManyReferences[$collectionBag] = array();
+        $refName = $this->manyToManyRefName($collectionBag, $leftProperties);
+
+        $this->manyToManyReferences[$refName] = array();
         foreach ($connections as $rightProperties) {
-            $this->manyToManyReferences[$collectionBag][] = array(
-                'left' => $ownerProperties->id($this),
+            $this->manyToManyReferences[$refName][] = array(
+                'left' => $leftProperties->id($this),
                 'right' => $rightProperties,
             );
             $this->saveProperties($rightProperties);
@@ -89,14 +100,15 @@ class Memory implements ContainerInterface
 
     /**
      * @param string $collectionBag
-     * @param PropertyBag $ownerProperties
+     * @param PropertyBag $leftProperties
      * @return array
      */
-    public function listReferences($collectionBag, $ownerProperties)
+    public function listReferences($collectionBag, $leftProperties)
     {
+        $refName = $this->manyToManyRefName($collectionBag, $leftProperties);
         $connections = array();
-        foreach ($this->manyToManyReferences[$collectionBag] as $pair) {
-            if ($ownerProperties->id($this) === $pair['left']) {
+        foreach ($this->manyToManyReferences[$refName] as $pair) {
+            if ($leftProperties->id($this) === $pair['left']) {
                 $connections[] = $pair['right'];
             }
         }
@@ -119,8 +131,35 @@ class Memory implements ContainerInterface
      */
     private function notifyOnPersistence($propertyBag)
     {
-        $id = $propertyBag->id($this) ? : self::$autoincrement++;
+        $id = $propertyBag->id($this) ?: $propertyBag->naturalKey() ?: self::$autoincrement++;
         $propertyBag->persisted($id, $this);
         return $propertyBag;
+    }
+
+    /**
+     * @param CollectionOwnerInterface $propertyBag
+     */
+    private function loadCollections($propertyBag)
+    {
+        /** @var PropertyBagCollection $collection */
+        foreach ($propertyBag->collections() as $collection) {
+            $collection->loadFrom($this, $propertyBag);
+        }
+    }
+
+    /**
+     * @param CollectionOwnerInterface $propertyBag
+     */
+    private function saveCollections($propertyBag)
+    {
+        /** @var PropertyBagCollection $collection */
+        foreach ($propertyBag->collections() as $collection) {
+            $collection->putIn($this, $propertyBag);
+        }
+    }
+
+    private function manyToManyRefName($collection, $owner)
+    {
+        return get_class($collection) . '-' . get_class($owner);
     }
 }

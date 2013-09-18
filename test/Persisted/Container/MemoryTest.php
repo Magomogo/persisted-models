@@ -13,11 +13,6 @@ use Magomogo\Persisted\Test\JobRecord;
 class MemoryTest extends \PHPUnit_Framework_TestCase
 {
 
-    protected function setUp()
-    {
-        $this->markTestIncomplete();
-    }
-
     /**
      * @dataProvider modelsProvider
      */

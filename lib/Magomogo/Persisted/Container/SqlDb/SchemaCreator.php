@@ -64,7 +64,7 @@ class SchemaCreator implements ContainerInterface
             if ($propertyBag instanceof CollectionOwnerInterface) {
                 /** @var PropertyBagCollection $collection */
                 foreach ($propertyBag->collections() as $collectionName => $collection) {
-                    $collection->putIn($this);
+                    $collection->putIn($this, $propertyBag);
                 }
             }
 
@@ -85,19 +85,19 @@ class SchemaCreator implements ContainerInterface
 
     /**
      * @param PropertyBagCollection $collectionBag
-     * @param \Magomogo\Persisted\PropertyBag $ownerProperties
+     * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @param array $connections array of \Magomogo\Model\PropertyBag
      * @return void
      */
-    public function referToMany($collectionBag, $ownerProperties, array $connections)
+    public function referToMany($collectionBag, $leftProperties, array $connections)
     {
-        $referenceName = $this->names->manyToManyRelationName($collectionBag, $ownerProperties);
+        $referenceName = $this->names->manyToManyRelationName($collectionBag, $leftProperties);
 
         if (!empty($connections) && !in_array($referenceName, $this->manager->listTableNames())) {
             $rightProperties = reset($connections);
             $table = new Table($this->quoteIdentifier($referenceName));
             $this->addForeignReferenceColumn(
-                $table, $this->names->classToName($ownerProperties), $ownerProperties
+                $table, $this->names->classToName($leftProperties), $leftProperties
             );
             $this->addForeignReferenceColumn(
                 $table, $this->names->classToName($rightProperties), $rightProperties
@@ -108,10 +108,10 @@ class SchemaCreator implements ContainerInterface
 
     /**
      * @param string $collectionBag
-     * @param \Magomogo\Persisted\PropertyBag $ownerProperties
+     * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @return array of \Magomogo\Model\PropertyBag
      */
-    public function listReferences($collectionBag, $ownerProperties)
+    public function listReferences($collectionBag, $leftProperties)
     {
         trigger_error('Incorrect usage', E_USER_ERROR);
     }
