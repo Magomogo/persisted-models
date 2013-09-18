@@ -7,8 +7,10 @@ use Doctrine\DBAL\Schema\Table;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
+use Magomogo\Persisted\PropertyBagCollection;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Exception;
+use Magomogo\Persisted\CollectionOwnerInterface;
 
 class SchemaCreator implements ContainerInterface
 {
@@ -58,6 +60,14 @@ class SchemaCreator implements ContainerInterface
             $this->manager->createTable(
                 $this->newTableObject($propertyBag, $tableName)
             );
+
+            if ($propertyBag instanceof CollectionOwnerInterface) {
+                /** @var PropertyBagCollection $collection */
+                foreach ($propertyBag->collections() as $collectionName => $collection) {
+                    $collection->putIn($this);
+                }
+            }
+
         }
 
         $propertyBag->persisted($tableName, $this);
@@ -74,18 +84,20 @@ class SchemaCreator implements ContainerInterface
     }
 
     /**
-     * @param string $referenceName
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
+     * @param PropertyBagCollection $collectionBag
+     * @param \Magomogo\Persisted\PropertyBag $ownerProperties
      * @param array $connections array of \Magomogo\Model\PropertyBag
      * @return void
      */
-    public function referToMany($referenceName, $leftProperties, array $connections)
+    public function referToMany($collectionBag, $ownerProperties, array $connections)
     {
+        $referenceName = $this->names->manyToManyRelationName($collectionBag, $ownerProperties);
+
         if (!empty($connections) && !in_array($referenceName, $this->manager->listTableNames())) {
             $rightProperties = reset($connections);
             $table = new Table($this->quoteIdentifier($referenceName));
             $this->addForeignReferenceColumn(
-                $table, $this->names->classToName($leftProperties), $leftProperties
+                $table, $this->names->classToName($ownerProperties), $ownerProperties
             );
             $this->addForeignReferenceColumn(
                 $table, $this->names->classToName($rightProperties), $rightProperties
@@ -95,12 +107,11 @@ class SchemaCreator implements ContainerInterface
     }
 
     /**
-     * @param string $referenceName
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @internal param string $rightPropertiesSample
+     * @param string $collectionBag
+     * @param \Magomogo\Persisted\PropertyBag $ownerProperties
      * @return array of \Magomogo\Model\PropertyBag
      */
-    public function listReferences($referenceName, $leftProperties)
+    public function listReferences($collectionBag, $ownerProperties)
     {
         trigger_error('Incorrect usage', E_USER_ERROR);
     }

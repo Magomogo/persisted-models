@@ -43,6 +43,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $container = m::mock();
         $container->shouldReceive('saveProperties')
             ->with(m::on(function($p) use ($container) {$p->persisted(15, $container); return true;}))
+            ->andReturnUsing(function($p) {return $p;})
             ->once();
         $container->shouldIgnoreMissing();
 

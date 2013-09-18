@@ -2,9 +2,11 @@
 namespace Magomogo\Persisted\Container;
 
 use Doctrine\DBAL\Connection;
+use Magomogo\Persisted\CollectionOwnerInterface;
 use Magomogo\Persisted\Container\SqlDb\NamesInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
+use Magomogo\Persisted\PropertyBagCollection;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Exception;
 
@@ -44,6 +46,9 @@ class SqlDb implements ContainerInterface
         if ($propertyBag instanceof PossessionInterface) {
             $this->collectReferences($row, $propertyBag->foreign());
         }
+        if ($propertyBag instanceof CollectionOwnerInterface) {
+            $this->collectCollections($propertyBag);
+        }
 
         return $propertyBag;
     }
@@ -64,8 +69,13 @@ class SqlDb implements ContainerInterface
         foreach ($propertyBag as $name => $property) {
             $row[$this->db->quoteIdentifier($name)] = $this->toDbValue($property);
         }
+        $this->commit($row, $propertyBag);
 
-        return $this->commit($row, $propertyBag);
+        if ($propertyBag instanceof CollectionOwnerInterface) {
+            $this->saveCollections($propertyBag);
+        }
+
+        return $propertyBag;
     }
 
     /**
@@ -79,15 +89,18 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param string $referenceName
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @param array $connections
+     * @param PropertyBagCollection $collectionBag
+     * @param \Magomogo\Persisted\PropertyBag $ownerProperties
+     * @param $connections
+     * @internal param array $connections
      */
-    public function referToMany($referenceName, $leftProperties, array $connections)
+    public function referToMany($collectionBag, $ownerProperties, array $connections)
     {
+        $referenceName = $this->names->manyToManyRelationName($collectionBag, $ownerProperties);
+
         $this->db->delete(
             $this->db->quoteIdentifier($referenceName),
-            array($this->db->quoteIdentifier($this->names->classToName($leftProperties)) => $leftProperties->id($this))
+            array($this->db->quoteIdentifier($this->names->classToName($ownerProperties)) => $ownerProperties->id($this))
         );
 
         /** @var PropertyBag $rightProperties */
@@ -95,7 +108,7 @@ class SqlDb implements ContainerInterface
             $this->db->insert(
                 $this->db->quoteIdentifier($referenceName),
                 array(
-                    $this->db->quoteIdentifier($this->names->classToName($leftProperties)) => $leftProperties->id($this),
+                    $this->db->quoteIdentifier($this->names->classToName($ownerProperties)) => $ownerProperties->id($this),
                     $this->db->quoteIdentifier($this->names->classToName($rightProperties)) => $rightProperties->id($this),
                 )
             );
@@ -103,18 +116,19 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param string $referenceName
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
+     * @param PropertyBagCollection $collectionBag
+     * @param \Magomogo\Persisted\PropertyBag $ownerProperties
      * @return array
      */
-    public function listReferences($referenceName, $leftProperties)
+    public function listReferences($collectionBag, $ownerProperties)
     {
-        $leftPropertiesName = $this->names->classToName($leftProperties);
+        $referenceName = $this->names->manyToManyRelationName($collectionBag, $ownerProperties);
+        $leftPropertiesName = $this->names->classToName($ownerProperties);
 
         $list = $this->db->fetchAll(
             'SELECT * FROM ' . $this->db->quoteIdentifier($referenceName)
             . ' WHERE ' . $this->db->quoteIdentifier($leftPropertiesName) . '=?',
-            array($leftProperties->id($this))
+            array($ownerProperties->id($this))
         );
 
         $connections = array();
@@ -209,6 +223,28 @@ class SqlDb implements ContainerInterface
             $properties->loadFrom($this, $row[$referenceName]);
         }
         return $references;
+    }
+
+    /**
+     * @param CollectionOwnerInterface $propertyBag
+     */
+    private function collectCollections($propertyBag)
+    {
+        /** @var PropertyBagCollection $collection */
+        foreach ($propertyBag->collections() as $collectionName => $collection) {
+            $collection->loadFrom($this);
+        }
+    }
+
+    /**
+     * @param CollectionOwnerInterface $propertyBag
+     */
+    private function saveCollections($propertyBag)
+    {
+        /** @var PropertyBagCollection $collection */
+        foreach ($propertyBag->collections() as $collectionName => $collection) {
+            $collection->putIn($this);
+        }
     }
 
     private function foreignKeys($references)

@@ -17,4 +17,6 @@ interface NamesInterface
      * @return PropertyBag
      */
     public function nameToClass($name);
+
+    public function manyToManyRelationName($collectionBag, $ownerPropertyBag);
 }

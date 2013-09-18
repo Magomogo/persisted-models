@@ -27,6 +27,11 @@ class DbNames implements NamesInterface
         return new $className;
     }
 
+    public function manyToManyRelationName($collectionBag, $ownerPropertyBag)
+    {
+        return 'person2keymarker';
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     /**

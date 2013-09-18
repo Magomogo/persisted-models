@@ -25,7 +25,7 @@ class Properties extends PropertyBag implements PossessionInterface
         return array();
     }
 
-    public function init()
+    protected function init()
     {
         $this->currentCompanyProps = new Company\Properties;
         $this->previousCompanyProps = new Company\Properties;

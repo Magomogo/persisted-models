@@ -69,17 +69,18 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param string $referenceName
-     * @param PropertyBag $leftProperties
-     * @param array $connections
+     * @param CollectionBag $collectionBag
+     * @param PropertyBag $ownerProperties
+     * @param $connections
+     * @internal param array $connections
      */
-    public function referToMany($referenceName, $leftProperties, array $connections)
+    public function referToMany($collectionBag, $ownerProperties, array $connections)
     {
-        $this->saveProperties($leftProperties);
-        $this->manyToManyReferences[$referenceName] = array();
+        $this->saveProperties($ownerProperties);
+        $this->manyToManyReferences[$collectionBag] = array();
         foreach ($connections as $rightProperties) {
-            $this->manyToManyReferences[$referenceName][] = array(
-                'left' => $leftProperties->id($this),
+            $this->manyToManyReferences[$collectionBag][] = array(
+                'left' => $ownerProperties->id($this),
                 'right' => $rightProperties,
             );
             $this->saveProperties($rightProperties);
@@ -87,15 +88,15 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param string $referenceName
-     * @param PropertyBag $leftProperties
+     * @param string $collectionBag
+     * @param PropertyBag $ownerProperties
      * @return array
      */
-    public function listReferences($referenceName, $leftProperties)
+    public function listReferences($collectionBag, $ownerProperties)
     {
         $connections = array();
-        foreach ($this->manyToManyReferences[$referenceName] as $pair) {
-            if ($leftProperties->id($this) === $pair['left']) {
+        foreach ($this->manyToManyReferences[$collectionBag] as $pair) {
+            if ($ownerProperties->id($this) === $pair['left']) {
                 $connections[] = $pair['right'];
             }
         }
