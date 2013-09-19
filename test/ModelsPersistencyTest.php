@@ -1,7 +1,9 @@
 <?php
 namespace Magomogo\Persisted;
 
+use Doctrine\CouchDB\CouchDBClient;
 use Magomogo\Persisted\Container\ContainerInterface;
+use Magomogo\Persisted\Container\CouchDb;
 use Magomogo\Persisted\Container\Memory;
 use Magomogo\Persisted\Test\DbFixture;
 use Magomogo\Persisted\Container\SqlDb;
@@ -70,6 +72,7 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
             array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'sqliteContainer')),
             array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'postgresContainer')),
             array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'mysqlContainer')),
+            array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'couchDbContainer')),
 
             array(ObjectMother\Person::maxim(), new Memory()),
             array(ObjectMother\Person::maxim(), array(__CLASS__, 'sqliteContainer')),
@@ -85,6 +88,7 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
             array(ObjectMother\Company::xiag(), array(__CLASS__, 'sqliteContainer')),
             array(ObjectMother\Company::xiag(), array(__CLASS__, 'postgresContainer')),
             array(ObjectMother\Company::xiag(), array(__CLASS__, 'mysqlContainer')),
+            array(ObjectMother\Company::xiag(), array(__CLASS__, 'couchDbContainer')),
 
             array(ObjectMother\Keymarker::friend(), new Memory()),
             array(ObjectMother\Keymarker::friend(), array(__CLASS__, 'sqliteContainer')),
@@ -124,6 +128,19 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
     private static function mysqlContainer()
     {
         return new SqlDb(DbFixture::inMysql()->install()->db, new DbNames);
+    }
+
+    private static function couchDbContainer()
+    {
+        $client = CouchDBClient::create(
+            array(
+                'dbname' => 'test_persisted_models'
+            )
+        );
+        $client->deleteDatabase('test_persisted_models');
+        $client->createDatabase('test_persisted_models');
+
+        return new CouchDb($client);
     }
 
     /**
