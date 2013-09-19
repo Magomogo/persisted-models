@@ -94,6 +94,12 @@ abstract class AbstractProperties implements \IteratorAggregate
                 $this->foreign()->$name = clone $value;
             }
         }
+
+        if ($this instanceof Collection\OwnerInterface) {
+            foreach ($this->collections() as $name => $value) {
+                $this->collections()->$name = clone $value;
+            }
+        }
     }
 
     public function __isset($name)
