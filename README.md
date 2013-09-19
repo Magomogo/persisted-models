@@ -6,8 +6,8 @@ Persisted models
 Intro
 -----
 
-- I don't like ActiveRecord because of tigth coupling with the database,
-- I not so comfortable with Data mappers becasue a mapper breaks model encapsulation,
+- I don't like ActiveRecord because of tight coupling with the database,
+- I not so comfortable with Data mappers because a mapper breaks model encapsulation,
 - I like the idea to keep **'The State'** separately from the logic.
 
 Here is the way
@@ -16,7 +16,7 @@ Here is the way
 ### Clean models
 
 They have only business logic that realized using model's properties. Constructor signature doesn't allow to create an
-instance that have no sence from the business logic point of view.
+instance that have no sense from the business logic point of view.
 
     $person = new Person\Model($propertiesBag);
     $employee = new Employee\Model($company, $propertiesBag);
