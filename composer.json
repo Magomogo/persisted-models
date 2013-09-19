@@ -29,7 +29,8 @@
         "ext-pdo_sqlite": "*",
         "mockery/mockery": "0.7.2",
         "phpunit/phpunit": "3.7.1",
-        "hamcrest/hamcrest": "1.1.0"
+        "hamcrest/hamcrest": "1.1.0",
+        "doctrine/couchdb": "@dev"
     },
     "authors": [
         {
