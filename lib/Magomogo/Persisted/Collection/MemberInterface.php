@@ -6,7 +6,7 @@ interface MemberInterface
 {
     /**
      * @param AbstractCollection $collection
-     * @param $offset
+     * @param string|null $offset
      */
-    public function appendToCollection($collection, $offset);
+    public function appendToCollection($collection, $offset = null);
 }
