@@ -3,14 +3,14 @@
 namespace Magomogo\Persisted\Test;
 
 use Magomogo\Persisted\Container\SqlDb\NamesInterface;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\AbstractCollection;
 
 class DbNames implements NamesInterface
 {
 
     /**
-     * @param PropertyBag $propertyBag
+     * @param AbstractProperties $propertyBag
      * @return string
      */
     public function propertyBagToName($propertyBag)
@@ -20,7 +20,7 @@ class DbNames implements NamesInterface
 
     /**
      * @param string $name
-     * @return PropertyBag
+     * @return AbstractProperties
      */
     public function nameToPropertyBag($name)
     {
@@ -45,7 +45,7 @@ class DbNames implements NamesInterface
 //----------------------------------------------------------------------------------------------------------------------
 
     /**
-     * @param PropertyBag $propertyBag
+     * @param AbstractProperties $propertyBag
      * @return string
      */
     private function uniqueName($propertyBag)

@@ -8,7 +8,7 @@ use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
 use Magomogo\Persisted\Collection;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Exception;
 
 class SchemaCreator implements ContainerInterface
@@ -39,8 +39,8 @@ class SchemaCreator implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
-     * @return \Magomogo\Persisted\PropertyBag $propertyBag loaded with data
+     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
+     * @return \Magomogo\Persisted\AbstractProperties $propertyBag loaded with data
      */
     public function loadProperties($propertyBag)
     {
@@ -48,8 +48,8 @@ class SchemaCreator implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
-     * @return \Magomogo\Persisted\PropertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
+     * @return \Magomogo\Persisted\AbstractProperties
      */
     public function saveProperties($propertyBag)
     {
@@ -74,7 +74,7 @@ class SchemaCreator implements ContainerInterface
     }
 
     /**
-     * @param array $propertyBags array of \Magomogo\Model\PropertyBag
+     * @param array $propertyBags array of \Magomogo\Model\AbstractProperties
      * @return void
      */
     public function deleteProperties(array $propertyBags)
@@ -84,8 +84,8 @@ class SchemaCreator implements ContainerInterface
 
     /**
      * @param Collection\AbstractCollection $collectionBag
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @param array $propertyBags array of \Magomogo\Model\PropertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $leftProperties
+     * @param array $propertyBags array of \Magomogo\Model\AbstractProperties
      * @return void
      */
     public function referToMany($collectionBag, $leftProperties, array $propertyBags)
@@ -107,8 +107,8 @@ class SchemaCreator implements ContainerInterface
 
     /**
      * @param string $collectionBag
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @return array of \Magomogo\Model\PropertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $leftProperties
+     * @return array of \Magomogo\Model\AbstractProperties
      */
     public function listReferences($collectionBag, $leftProperties)
     {
@@ -149,7 +149,7 @@ class SchemaCreator implements ContainerInterface
     }
 
     /**
-     * @param PropertyBag $propertyBag
+     * @param AbstractProperties $propertyBag
      * @param string $tableName
      * @return \Doctrine\DBAL\Schema\Table
      */
@@ -183,7 +183,7 @@ class SchemaCreator implements ContainerInterface
     /**
      * @param Table $table
      * @param string $columnName
-     * @param PropertyBag $leftProperties
+     * @param AbstractProperties $leftProperties
      */
     private function addForeignReferenceColumn($table, $columnName, $leftProperties)
     {

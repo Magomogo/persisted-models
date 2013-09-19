@@ -3,7 +3,7 @@ namespace Magomogo\Persisted\Container;
 
 use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\ModelInterface;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Exception\NotFound;
 
 /**
@@ -14,7 +14,7 @@ class Memory implements ContainerInterface
     private static $autoincrement = 1;
 
     /**
-     * @var array of PropertyBag
+     * @var array of AbstractProperties
      */
     protected $storage = array();
 
@@ -25,7 +25,7 @@ class Memory implements ContainerInterface
 
     /**
      * @param ModelInterface $model
-     * @return PropertyBag
+     * @return AbstractProperties
      */
     public function exposeProperties($model)
     {
@@ -34,8 +34,8 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param PropertyBag $propertyBag
-     * @return PropertyBag
+     * @param AbstractProperties $propertyBag
+     * @return AbstractProperties
      * @throws \Magomogo\Persisted\Exception\NotFound
      */
     public function loadProperties($propertyBag)
@@ -45,7 +45,7 @@ class Memory implements ContainerInterface
             throw new NotFound;
         }
 
-        /** @var $properties PropertyBag */
+        /** @var $properties AbstractProperties */
         $properties = $this->storage[$propertyBag->id($this)];
         $properties->copyTo($propertyBag);
 
@@ -57,8 +57,8 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param PropertyBag $propertyBag
-     * @return PropertyBag
+     * @param AbstractProperties $propertyBag
+     * @return AbstractProperties
      */
     public function saveProperties($propertyBag)
     {
@@ -99,7 +99,7 @@ class Memory implements ContainerInterface
 
     /**
      * @param string $collectionBag
-     * @param PropertyBag $leftProperties
+     * @param AbstractProperties $leftProperties
      * @return array
      */
     public function listReferences($collectionBag, $leftProperties)
@@ -115,7 +115,7 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param array $propertyBags array of \Magomogo\Model\PropertyBag
+     * @param array $propertyBags array of \Magomogo\Model\AbstractProperties
      * @return void
      */
     public function deleteProperties(array $propertyBags)
@@ -125,8 +125,8 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param PropertyBag $propertyBag
-     * @return PropertyBag
+     * @param AbstractProperties $propertyBag
+     * @return AbstractProperties
      */
     private function notifyOnPersistence($propertyBag)
     {

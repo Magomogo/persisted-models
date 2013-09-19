@@ -106,7 +106,7 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
 }
 
-class TestProperties extends PropertyBag
+class TestProperties extends AbstractProperties
 {
 
     protected function properties()

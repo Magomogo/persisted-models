@@ -6,7 +6,7 @@ use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\Container\SqlDb\NamesInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Exception;
 
 class SqlDb implements ContainerInterface
@@ -32,8 +32,8 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
-     * @return \Magomogo\Persisted\PropertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
+     * @return \Magomogo\Persisted\AbstractProperties
      */
     public function loadProperties($propertyBag)
     {
@@ -53,8 +53,8 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
-     * @return \Magomogo\Persisted\PropertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
+     * @return \Magomogo\Persisted\AbstractProperties
      */
     public function saveProperties($propertyBag)
     {
@@ -89,7 +89,7 @@ class SqlDb implements ContainerInterface
 
     /**
      * @param Collection\AbstractCollection $collectionBag
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
+     * @param \Magomogo\Persisted\AbstractProperties $leftProperties
      * @param array $propertyBags
      * @internal param array $connections
      */
@@ -105,7 +105,7 @@ class SqlDb implements ContainerInterface
             )
         );
 
-        /** @var PropertyBag $rightProperties */
+        /** @var AbstractProperties $rightProperties */
         foreach ($propertyBags as $rightProperties) {
             $this->db->insert(
                 $this->db->quoteIdentifier($referenceName),
@@ -121,7 +121,7 @@ class SqlDb implements ContainerInterface
 
     /**
      * @param Collection\AbstractCollection $collectionBag
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
+     * @param \Magomogo\Persisted\AbstractProperties $leftProperties
      * @return array
      */
     public function listReferences($collectionBag, $leftProperties)
@@ -180,7 +180,7 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
      * @return array
      * @throws \Magomogo\Persisted\Exception\NotFound
      */
@@ -204,8 +204,8 @@ class SqlDb implements ContainerInterface
 
     /**
      * @param array $row
-     * @param \Magomogo\Persisted\PropertyBag $properties
-     * @return \Magomogo\Persisted\PropertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $properties
+     * @return \Magomogo\Persisted\AbstractProperties
      */
     private function commit(array $row, $properties)
     {
@@ -223,7 +223,7 @@ class SqlDb implements ContainerInterface
 
     private function collectReferences(array $row, $references)
     {
-        /* @var PropertyBag $properties */
+        /* @var AbstractProperties $properties */
         foreach ($references as $referenceName => $properties) {
             $properties->loadFrom($this, $row[$referenceName]);
         }
@@ -255,7 +255,7 @@ class SqlDb implements ContainerInterface
     private function foreignKeys($references)
     {
         $keys = array();
-        /* @var PropertyBag $properties */
+        /* @var AbstractProperties $properties */
         foreach ($references as $referenceName => $properties) {
             $keys[$this->db->quoteIdentifier($referenceName)] = $properties->id($this);
         }

@@ -7,7 +7,7 @@ use Magomogo\Persisted\Container\Memory;
 /**
  * @property string $id
  */
-abstract class PropertyBag implements \IteratorAggregate
+abstract class AbstractProperties implements \IteratorAggregate
 {
     private $idInContainer = array();
     private $properties;

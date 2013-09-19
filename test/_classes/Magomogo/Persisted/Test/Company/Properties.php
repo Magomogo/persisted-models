@@ -1,12 +1,12 @@
 <?php
 namespace Magomogo\Persisted\Test\Company;
 
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 
 /**
  * @property string $name
  */
-class Properties extends PropertyBag
+class Properties extends AbstractProperties
 {
     protected function properties()
     {

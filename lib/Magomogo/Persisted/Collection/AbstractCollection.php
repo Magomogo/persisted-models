@@ -3,7 +3,7 @@
 namespace Magomogo\Persisted\Collection;
 
 use Magomogo\Persisted\Container\ContainerInterface;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 
 abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
@@ -20,7 +20,7 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
     {
         $this->items = array();
         foreach ($container->listReferences($this, $owner) as $propertyBag) {
-            /** @var PropertyBag $propertyBag */
+            /** @var AbstractProperties $propertyBag */
             $this->appendPropertyBag($propertyBag, $propertyBag->id($container));
         }
         return $this;

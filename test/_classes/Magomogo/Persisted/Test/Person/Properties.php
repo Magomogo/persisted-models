@@ -2,7 +2,7 @@
 namespace Magomogo\Persisted\Test\Person;
 
 use Magomogo\Persisted\Collection;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Test\CreditCard;
 use Magomogo\Persisted\Test\Keymarker;
 
@@ -14,7 +14,7 @@ use Magomogo\Persisted\Test\Keymarker;
  * @property string $email
  * @property \Magomogo\Persisted\Test\CreditCard\Model $creditCard
  */
-class Properties extends PropertyBag implements Collection\OwnerInterface
+class Properties extends AbstractProperties implements Collection\OwnerInterface
 {
     /**
      * @var Keymarker\Collection
