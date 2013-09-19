@@ -15,17 +15,6 @@ use Magomogo\Persisted\Test\JobRecord;
 class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var DbFixture
-     */
-    private $fixture;
-
-    protected function setUp()
-    {
-        $this->fixture = DbFixture::inMemory();
-        $this->fixture->install();
-    }
-
-    /**
      * @dataProvider modelsProvider
      *
      * @param callable|ModelInterface $model
