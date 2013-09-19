@@ -1,8 +1,9 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
+use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\ModelInterface;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Exception\NotFound;
 
 /**
@@ -13,7 +14,7 @@ class Memory implements ContainerInterface
     private static $autoincrement = 1;
 
     /**
-     * @var array of PropertyBag
+     * @var array of AbstractProperties
      */
     protected $storage = array();
 
@@ -24,7 +25,7 @@ class Memory implements ContainerInterface
 
     /**
      * @param ModelInterface $model
-     * @return PropertyBag
+     * @return AbstractProperties
      */
     public function exposeProperties($model)
     {
@@ -33,52 +34,62 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param PropertyBag $propertyBag
-     * @return PropertyBag
+     * @param AbstractProperties $targetProperties
+     * @return AbstractProperties
      * @throws \Magomogo\Persisted\Exception\NotFound
      */
-    public function loadProperties($propertyBag)
+    public function loadProperties($targetProperties)
     {
-        if (!array_key_exists($propertyBag->id($this), $this->storage)
+        if (!array_key_exists($targetProperties->id($this), $this->storage)
         ) {
             throw new NotFound;
         }
 
-        /** @var $properties PropertyBag */
-        $properties = $this->storage[$propertyBag->id($this)];
-        $properties->copyTo($propertyBag);
-        return $propertyBag;
+        /** @var $properties AbstractProperties */
+        $properties = $this->storage[$targetProperties->id($this)];
+        $properties->copyTo($targetProperties);
+
+        if ($targetProperties instanceof Collection\OwnerInterface) {
+            $this->loadCollections($targetProperties);
+        }
+
+        return $properties;
     }
 
     /**
-     * @param PropertyBag $propertyBag
-     * @return PropertyBag
+     * @param AbstractProperties $properties
+     * @return AbstractProperties
      */
-    public function saveProperties($propertyBag)
+    public function saveProperties($properties)
     {
-        $this->notifyOnPersistence($propertyBag);
-        $this->storage[$propertyBag->id($this)] = $propertyBag;
+        $this->notifyOnPersistence($properties);
+        $this->storage[$properties->id($this)] = $properties;
 
-        foreach ($this->storage[$propertyBag->id($this)] as $value) {
+        foreach ($this->storage[$properties->id($this)] as $value) {
             if ($value instanceof ModelInterface) {
                 $value->save($this);
             }
         }
 
-        return $propertyBag;
+        if ($properties instanceof Collection\OwnerInterface) {
+            $this->saveCollections($properties);
+        }
+
+        return $properties;
     }
 
     /**
-     * @param string $referenceName
-     * @param PropertyBag $leftProperties
-     * @param array $connections
+     * @param Collection\AbstractCollection $collection
+     * @param Collection\OwnerInterface $leftProperties
+     * @param array $manyProperties
      */
-    public function referToMany($referenceName, $leftProperties, array $connections)
+    public function referToMany($collection, $leftProperties, array $manyProperties)
     {
-        $this->saveProperties($leftProperties);
-        $this->manyToManyReferences[$referenceName] = array();
-        foreach ($connections as $rightProperties) {
-            $this->manyToManyReferences[$referenceName][] = array(
+        $refName = $this->manyToManyRefName($collection, $leftProperties);
+
+        $this->manyToManyReferences[$refName] = array();
+        foreach ($manyProperties as $rightProperties) {
+            $this->manyToManyReferences[$refName][] = array(
                 'left' => $leftProperties->id($this),
                 'right' => $rightProperties,
             );
@@ -87,14 +98,15 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param string $referenceName
-     * @param PropertyBag $leftProperties
+     * @param string $collection
+     * @param AbstractProperties $leftProperties
      * @return array
      */
-    public function listReferences($referenceName, $leftProperties)
+    public function listReferences($collection, $leftProperties)
     {
+        $refName = $this->manyToManyRefName($collection, $leftProperties);
         $connections = array();
-        foreach ($this->manyToManyReferences[$referenceName] as $pair) {
+        foreach ($this->manyToManyReferences[$refName] as $pair) {
             if ($leftProperties->id($this) === $pair['left']) {
                 $connections[] = $pair['right'];
             }
@@ -103,23 +115,50 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
+     * @param AbstractProperties $properties
      * @return void
      */
-    public function deleteProperties($propertyBag)
+    public function deleteProperties($properties)
     {
         $this->storage = array();
         $this->manyToManyReferences = array();
     }
 
     /**
-     * @param PropertyBag $propertyBag
-     * @return PropertyBag
+     * @param AbstractProperties $properties
+     * @return AbstractProperties
      */
-    private function notifyOnPersistence($propertyBag)
+    private function notifyOnPersistence($properties)
     {
-        $id = $propertyBag->id($this) ? : self::$autoincrement++;
-        $propertyBag->persisted($id, $this);
-        return $propertyBag;
+        $id = $properties->id($this) ?: $properties->naturalKey() ?: self::$autoincrement++;
+        $properties->persisted($id, $this);
+        return $properties;
+    }
+
+    /**
+     * @param Collection\OwnerInterface $properties
+     */
+    private function loadCollections($properties)
+    {
+        /** @var Collection\AbstractCollection $collection */
+        foreach ($properties->collections() as $collection) {
+            $collection->loadFrom($this, $properties);
+        }
+    }
+
+    /**
+     * @param Collection\OwnerInterface $properties
+     */
+    private function saveCollections($properties)
+    {
+        /** @var Collection\AbstractCollection $collection */
+        foreach ($properties->collections() as $collection) {
+            $collection->putIn($this, $properties);
+        }
+    }
+
+    private function manyToManyRefName($collection, $owner)
+    {
+        return get_class($collection) . '-' . get_class($owner);
     }
 }

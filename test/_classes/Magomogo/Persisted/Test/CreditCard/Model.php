@@ -3,7 +3,7 @@ namespace Magomogo\Persisted\Test\CreditCard;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 
 class Model implements ModelInterface
 {

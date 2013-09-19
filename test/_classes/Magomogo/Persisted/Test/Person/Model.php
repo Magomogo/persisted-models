@@ -21,7 +21,7 @@ class Model implements ModelInterface
     {
         $p = new Properties();
         $p->loadFrom($container, $id);
-        return new self($p, $p->tags);
+        return new self($p, $p->tags->asArray());
     }
 
     public function save($container)
@@ -81,7 +81,7 @@ class Model implements ModelInterface
 
     public function taggedAs()
     {
-        return join(', ', $this->properties->tags);
+        return join(', ', $this->properties->tags->asArray());
     }
 
 }

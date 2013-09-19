@@ -7,7 +7,8 @@ use Doctrine\DBAL\Schema\Table;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\Collection;
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Exception;
 
 class SchemaCreator implements ContainerInterface
@@ -37,66 +38,75 @@ class SchemaCreator implements ContainerInterface
         $model->save($this);
     }
 
-    /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
-     * @return \Magomogo\Persisted\PropertyBag $propertyBag loaded with data
-     */
-    public function loadProperties($propertyBag)
+    public function loadProperties($properties)
     {
         trigger_error('Incorrect usage', E_USER_ERROR);
     }
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
-     * @return \Magomogo\Persisted\PropertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $properties
+     * @return \Magomogo\Persisted\AbstractProperties
      */
-    public function saveProperties($propertyBag)
+    public function saveProperties($properties)
     {
-        $tableName = $this->names->classToName($propertyBag);
+        $tableName = $this->names->propertiesToName($properties);
 
         if (!in_array($tableName, $this->manager->listTableNames())) {
             $this->manager->createTable(
-                $this->newTableObject($propertyBag, $tableName)
+                $this->newTableObject($properties, $tableName)
             );
+
+            if ($properties instanceof Collection\OwnerInterface) {
+                /** @var Collection\AbstractCollection $collection */
+                foreach ($properties->collections() as $collectionName => $collection) {
+                    $collection->putIn($this, $properties);
+                }
+            }
+
         }
 
-        $propertyBag->persisted($tableName, $this);
-        return $propertyBag;
+        $properties->persisted($tableName, $this);
+        return $properties;
     }
 
-    public function deleteProperties($propertyBags)
+    /**
+     * @param \Magomogo\Persisted\AbstractProperties $properties
+     * @return void
+     */
+    public function deleteProperties($properties)
     {
         trigger_error('Incorrect usage', E_USER_ERROR);
     }
 
     /**
-     * @param string $referenceName
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @param array $connections array of \Magomogo\Model\PropertyBag
+     * @param Collection\AbstractCollection $collection
+     * @param \Magomogo\Persisted\AbstractProperties $leftProperties
+     * @param array $manyProperties array of \Magomogo\Model\AbstractProperties
      * @return void
      */
-    public function referToMany($referenceName, $leftProperties, array $connections)
+    public function referToMany($collection, $leftProperties, array $manyProperties)
     {
-        if (!empty($connections) && !in_array($referenceName, $this->manager->listTableNames())) {
-            $rightProperties = reset($connections);
+        $referenceName = $this->names->manyToManyRelationName($collection, $leftProperties);
+
+        if (!empty($manyProperties) && !in_array($referenceName, $this->manager->listTableNames())) {
+            $rightProperties = reset($manyProperties);
             $table = new Table($this->quoteIdentifier($referenceName));
             $this->addForeignReferenceColumn(
-                $table, $this->names->classToName($leftProperties), $leftProperties
+                $table, $this->names->propertiesToName($leftProperties), $leftProperties
             );
             $this->addForeignReferenceColumn(
-                $table, $this->names->classToName($rightProperties), $rightProperties
+                $table, $this->names->propertiesToName($rightProperties), $rightProperties
             );
             $this->manager->createTable($table);
         }
     }
 
     /**
-     * @param string $referenceName
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @internal param string $rightPropertiesSample
-     * @return array of \Magomogo\Model\PropertyBag
+     * @param string $collection
+     * @param \Magomogo\Persisted\AbstractProperties $leftProperties
+     * @return array of \Magomogo\Model\AbstractProperties
      */
-    public function listReferences($referenceName, $leftProperties)
+    public function listReferences($collection, $leftProperties)
     {
         trigger_error('Incorrect usage', E_USER_ERROR);
     }
@@ -135,19 +145,19 @@ class SchemaCreator implements ContainerInterface
     }
 
     /**
-     * @param PropertyBag $propertyBag
+     * @param AbstractProperties $properties
      * @param string $tableName
      * @return \Doctrine\DBAL\Schema\Table
      */
-    private function newTableObject($propertyBag, $tableName)
+    private function newTableObject($properties, $tableName)
     {
         $table = new Table($this->quoteIdentifier($tableName));
 
-        if (!isset($propertyBag->id)) {
+        if (!isset($properties->id)) {
             $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
         }
 
-        foreach ($propertyBag as $name => $value) {
+        foreach ($properties as $name => $value) {
             if (($name === 'id') && is_string($value)) {
                 $table->addColumn('id', 'string', array('length' => 255, 'notnull' => true));
             } else {
@@ -157,8 +167,8 @@ class SchemaCreator implements ContainerInterface
 
         $table->setPrimaryKey(array('id'));
 
-        if ($propertyBag instanceof PossessionInterface) {
-            foreach ($propertyBag->foreign() as $propertyName => $foreignProperties) {
+        if ($properties instanceof PossessionInterface) {
+            foreach ($properties->foreign() as $propertyName => $foreignProperties) {
                 $this->addForeignReferenceColumn($table, $propertyName, $foreignProperties);
             }
         }
@@ -169,7 +179,7 @@ class SchemaCreator implements ContainerInterface
     /**
      * @param Table $table
      * @param string $columnName
-     * @param PropertyBag $leftProperties
+     * @param AbstractProperties $leftProperties
      */
     private function addForeignReferenceColumn($table, $columnName, $leftProperties)
     {
@@ -183,7 +193,7 @@ class SchemaCreator implements ContainerInterface
             );
         }
         $table->addForeignKeyConstraint(
-            $this->quoteIdentifier($this->names->classToName($leftProperties)),
+            $this->quoteIdentifier($this->names->propertiesToName($leftProperties)),
             array($this->quoteIdentifier($columnName)),
             array('id'),
             array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE')

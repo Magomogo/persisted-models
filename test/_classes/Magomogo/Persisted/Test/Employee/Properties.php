@@ -18,8 +18,9 @@ class Properties extends Person\Properties implements PossessionInterface
 {
     private $ownerCompanyProperties;
 
-    public function init()
+    protected function init()
     {
+        parent::init();
         $this->ownerCompanyProperties = new Company\Properties;
     }
 

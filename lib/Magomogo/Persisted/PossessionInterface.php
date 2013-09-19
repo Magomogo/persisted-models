@@ -10,7 +10,7 @@ interface PossessionInterface
     public function foreign();
 
     /**
-     * @param PropertyBag $properties
+     * @param AbstractProperties $properties
      * @param null|string $relationName
      * @return mixed
      */

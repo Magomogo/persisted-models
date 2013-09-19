@@ -4,18 +4,17 @@ namespace Magomogo\Persisted;
 use Mockery as m;
 use Magomogo\Persisted\Container\SqlDb;
 use Magomogo\Persisted\Container\Memory;
-use Magomogo\Persisted\Test\Company\Properties as CompanyProperties;
 use Magomogo\Persisted\Test\DbNames;
 use Magomogo\Persisted\Test\ObjectMother;
 use Magomogo\Persisted\Test\Person;
 
-class PropertyBagTest extends \PHPUnit_Framework_TestCase
+class AbstractPropertiesTest extends \PHPUnit_Framework_TestCase
 {
     public function testIsIterable()
     {
         $names = array();
         $properties = array();
-        foreach (self::bag() as $name => $property) {
+        foreach (self::properties() as $name => $property) {
             $names[] = $name;
             $properties[] = $property;
         }
@@ -26,19 +25,19 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
     public function testIdIsNullInitially()
     {
-        $this->assertNull(self::bag()->id(m::mock()));
+        $this->assertNull(self::properties()->id(m::mock()));
     }
 
     public function testPersistedMessageSetsId()
     {
-        $bag = self::bag();
+        $bag = self::properties();
         $bag->persisted('888', m::mock());
         $this->assertEquals('888', $bag->id(m::mock()));
     }
 
-    public function testPropertiesBagCanHaveDifferentIdsInDifferentContainers()
+    public function testPropertiesCanHaveDifferentIdsInDifferentContainers()
     {
-        $bag = self::bag();
+        $bag = self::properties();
         $container1 = new SqlDb(m::mock(), new DbNames());
         $container2 = new Memory();
 
@@ -52,18 +51,18 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
     public function testRejectsNotConfiguredProperties()
     {
         $this->setExpectedException('PHPUnit_Framework_Error_Notice');
-        self::bag()->not_configured = 12;
+        self::properties()->not_configured = 12;
     }
 
     public function testAllowsDefineAPropertyHavingNullDefaultValue()
     {
-        $properties = self::bag();
-        $this->assertNull(self::bag()->nullDefault);
+        $properties = self::properties();
+        $this->assertNull(self::properties()->nullDefault);
         $properties->nullDefault = 1;
         $this->assertEquals(1, $properties->nullDefault);
     }
 
-    public function testPropertiesCanBeCopiedToAnotherBag()
+    public function testPropertiesCanBeCopiedToAnotherProperties()
     {
         $properties = ObjectMother\Person::maximProperties();
         $properties->persisted('1', m::mock('Magomogo\\Persisted\\Container\\SqlDb'));
@@ -76,22 +75,22 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($properties, $anotherProperties);
     }
 
-    public function testCloneCreatesEqualBag()
+    public function testCloneCreatesEqualProperties()
     {
-        $bag = self::bag();
+        $bag = self::properties();
         $this->assertEquals($bag, clone $bag);
     }
 
     public function testIssetMagicMethod()
     {
-        $this->assertTrue(isset(self::bag()->title));
-        $this->assertTrue(isset(self::bag()->nullDefault));
-        $this->assertFalse(isset(self::bag()->not_existing));
+        $this->assertTrue(isset(self::properties()->title));
+        $this->assertTrue(isset(self::properties()->nullDefault));
+        $this->assertFalse(isset(self::properties()->not_existing));
     }
 
     public function testPersistencyCanBeReset()
     {
-        $bag = self::bag();
+        $bag = self::properties();
         $bag->persisted(88, new \stdClass());
         $this->assertEquals(88, $bag->id(new \stdClass()));
         $this->assertNull($bag->resetPersistency()->id(new \stdClass()));
@@ -99,14 +98,16 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
 //----------------------------------------------------------------------------------------------------------------------
 
-    private static function bag()
+    private static function properties()
     {
         return new TestProperties();
     }
 
 }
 
-class TestProperties extends PropertyBag
+//======================================================================================================================
+
+class TestProperties extends AbstractProperties
 {
 
     protected function properties()
@@ -116,13 +117,6 @@ class TestProperties extends PropertyBag
             'description' => 'default descr',
             'object' => new \stdClass(),
             'nullDefault' => null
-        );
-    }
-
-    protected function owners()
-    {
-        return array(
-            'company' => new CompanyProperties
         );
     }
 }

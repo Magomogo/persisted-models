@@ -2,13 +2,13 @@
 namespace Magomogo\Persisted\Test\JobRecord;
 
 use Magomogo\Persisted\PossessionInterface;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Test\Company;
 
 /**
  * @property string $id
  */
-class Properties extends PropertyBag implements PossessionInterface
+class Properties extends AbstractProperties implements PossessionInterface
 {
     /**
      * @var Company\Properties
@@ -25,7 +25,7 @@ class Properties extends PropertyBag implements PossessionInterface
         return array();
     }
 
-    public function init()
+    protected function init()
     {
         $this->currentCompanyProps = new Company\Properties;
         $this->previousCompanyProps = new Company\Properties;
@@ -40,7 +40,7 @@ class Properties extends PropertyBag implements PossessionInterface
     }
 
     /**
-     * @param PropertyBag $properties
+     * @param AbstractProperties $properties
      * @param null|string $relationName
      * @return mixed
      */

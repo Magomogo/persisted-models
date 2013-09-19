@@ -1,39 +1,41 @@
 <?php
 namespace Magomogo\Persisted\Container;
-use Magomogo\Persisted\PropertyBag;
+
+use Magomogo\Persisted\Collection;
+use Magomogo\Persisted\AbstractProperties;
 
 interface ContainerInterface
 {
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
-     * @return \Magomogo\Persisted\PropertyBag $propertyBag loaded with data
+     * @param \Magomogo\Persisted\AbstractProperties $properties
+     * @return \Magomogo\Persisted\AbstractProperties loaded with data
      */
-    public function loadProperties($propertyBag);
+    public function loadProperties($properties);
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
-     * @return \Magomogo\Persisted\PropertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $properties
+     * @return \Magomogo\Persisted\AbstractProperties
      */
-    public function saveProperties($propertyBag);
+    public function saveProperties($properties);
 
     /**
-     * @param \Magomogo\Persisted\PropertyBag $propertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $properties
      * @return void
      */
-    public function deleteProperties($propertyBag);
+    public function deleteProperties($properties);
 
     /**
-     * @param string $referenceName
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @param array $connections array of \Magomogo\Model\PropertyBag
+     * @param Collection\AbstractCollection $collection
+     * @param Collection\OwnerInterface $leftProperties
+     * @param array $manyProperties array of \Magomogo\Model\AbstractProperties
      * @return void
      */
-    public function referToMany($referenceName, $leftProperties, array $connections);
+    public function referToMany($collection, $leftProperties, array $manyProperties);
 
     /**
-     * @param string $referenceName
-     * @param \Magomogo\Persisted\PropertyBag $leftProperties
-     * @return array of \Magomogo\Model\PropertyBag
+     * @param Collection\AbstractCollection $collection
+     * @param Collection\OwnerInterface $leftProperties
+     * @return array of \Magomogo\Model\AbstractProperties
      */
-    public function listReferences($referenceName, $leftProperties);
+    public function listReferences($collection, $leftProperties);
 }

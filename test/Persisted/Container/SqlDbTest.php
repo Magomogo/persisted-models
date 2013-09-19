@@ -5,7 +5,7 @@ use Magomogo\Persisted\PossessionInterface;
 use Mockery as m;
 use Magomogo\Persisted\Test\DbNames;
 use Magomogo\Persisted\Test\ObjectMother\Person as TestPerson;
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Test\Person;
 
 class SqlDbTest extends \PHPUnit_Framework_TestCase
@@ -104,7 +104,7 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
 }
 
 
-class TestType1 extends PropertyBag
+class TestType1 extends AbstractProperties
 {
     protected function properties()
     {
@@ -112,7 +112,7 @@ class TestType1 extends PropertyBag
     }
 }
 
-class TestType2 extends PropertyBag
+class TestType2 extends AbstractProperties
 {
     protected function properties()
     {
@@ -121,7 +121,7 @@ class TestType2 extends PropertyBag
 }
 
 
-class TestType3 extends PropertyBag implements PossessionInterface
+class TestType3 extends AbstractProperties implements PossessionInterface
 {
     private $ref1;
     private $ref2;
@@ -150,7 +150,7 @@ class TestType3 extends PropertyBag implements PossessionInterface
     }
 
     /**
-     * @param PropertyBag $properties
+     * @param AbstractProperties $properties
      * @param null|string $relationName
      * @return mixed
      */

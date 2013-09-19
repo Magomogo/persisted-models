@@ -1,11 +1,12 @@
 <?php
 namespace Magomogo\Persisted\Test\Keymarker;
 
+use Magomogo\Persisted\Collection\MemberInterface;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\Test\Person;
 
-class Model implements ModelInterface
+class Model implements ModelInterface, MemberInterface
 {
     /**
      * @var Properties
@@ -44,11 +45,11 @@ class Model implements ModelInterface
     }
 
     /**
-     * @param Person\Properties $personProperties
-     * @return array of Properties
+     * @param Collection $collection
+     * @param string|null $offset
      */
-    public function propertiesToBeConnectedWith($personProperties)
+    public function appendToCollection($collection, $offset = null)
     {
-        return $this->properties;
+        $collection->appendProperties($this->properties, $offset);
     }
 }

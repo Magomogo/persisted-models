@@ -1,7 +1,7 @@
 <?php
 namespace Magomogo\Persisted\Test\CreditCard;
 
-use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\AbstractProperties;
 
 /**
  * @property string $system
@@ -11,7 +11,7 @@ use Magomogo\Persisted\PropertyBag;
  * @property string $ccv
  * @property string $cardholderName
  */
-class Properties extends PropertyBag
+class Properties extends AbstractProperties
 {
     protected function properties()
     {

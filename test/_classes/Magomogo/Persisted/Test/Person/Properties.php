@@ -1,9 +1,9 @@
 <?php
 namespace Magomogo\Persisted\Test\Person;
 
-use Magomogo\Persisted\PropertyBag;
-use Magomogo\Persisted\Test\CreditCard\Model as CreditCard;
-use Magomogo\Persisted\Test\CreditCard\Properties as CreditCardProperties;
+use Magomogo\Persisted\Collection;
+use Magomogo\Persisted\AbstractProperties;
+use Magomogo\Persisted\Test\CreditCard;
 use Magomogo\Persisted\Test\Keymarker;
 
 /**
@@ -14,12 +14,12 @@ use Magomogo\Persisted\Test\Keymarker;
  * @property string $email
  * @property \Magomogo\Persisted\Test\CreditCard\Model $creditCard
  */
-class Properties extends PropertyBag
+class Properties extends AbstractProperties implements Collection\OwnerInterface
 {
     /**
-     * @var array
+     * @var Keymarker\Collection
      */
-    public $tags = array();
+    public $tags;
 
     protected function properties()
     {
@@ -29,46 +29,20 @@ class Properties extends PropertyBag
             'lastName' => '',
             'phone' => '',
             'email' => '',
-            'creditCard' => new CreditCard(new CreditCardProperties),
+            'creditCard' => new CreditCard\Model(new CreditCard\Properties),
             'birthDay' => new \DateTime('1970-01-01T00:00:00+07:00')
         );
     }
 
-    /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
-     * @param mixed $id properties identifier in the given container
-     * @return self
-     */
-    public function loadFrom($container, $id)
+    protected function init()
     {
-        $this->persisted($id, $container);
-        $container->loadProperties($this);
-
-        $this->tags = array();
-        foreach ($container->listReferences('person2keymarker', $this)
-                 as $keymarkerProperties) {
-            /** @var Keymarker\Properties $keymarkerProperties */
-            $this->tags[$keymarkerProperties->id] = new Keymarker\Model($keymarkerProperties);
-        }
-        return $this;
+        $this->tags = new Keymarker\Collection();
     }
 
-    /**
-     * @param \Magomogo\Persisted\Container\ContainerInterface $container
-     * @return string
-     */
-    public function putIn($container)
+    public function collections()
     {
-        $container->saveProperties($this);
-
-        $list = array();
-        /** @var Keymarker\Model $keymarker */
-        foreach ($this->tags as $keymarker) {
-            $list[] = $keymarker->propertiesToBeConnectedWith($this);
-        }
-        $container->referToMany('person2keymarker', $this, $list);
-
-        return $this->id($container);
+        $collections = new \stdClass();
+        $collections->tags = $this->tags;
+        return $collections;
     }
-
 }
