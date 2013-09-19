@@ -1,6 +1,7 @@
 <?php
 namespace Magomogo\Persisted\Container;
-use Magomogo\Persisted\PropertyBagCollection;
+
+use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\PropertyBag;
 
 interface ContainerInterface
@@ -24,16 +25,16 @@ interface ContainerInterface
     public function deleteProperties(array $propertyBags);
 
     /**
-     * @param PropertyBagCollection $collectionBag
-     * @param \Magomogo\Persisted\CollectionOwnerInterface $leftProperties
+     * @param Collection\AbstractCollection $collectionBag
+     * @param Collection\OwnerInterface $leftProperties
      * @param array $propertyBags array of \Magomogo\Model\PropertyBag
      * @return void
      */
     public function referToMany($collectionBag, $leftProperties, array $propertyBags);
 
     /**
-     * @param PropertyBagCollection $collectionBag
-     * @param \Magomogo\Persisted\CollectionOwnerInterface $leftProperties
+     * @param Collection\AbstractCollection $collectionBag
+     * @param Collection\OwnerInterface $leftProperties
      * @return array of \Magomogo\Model\PropertyBag
      */
     public function listReferences($collectionBag, $leftProperties);

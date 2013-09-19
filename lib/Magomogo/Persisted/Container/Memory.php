@@ -1,11 +1,10 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
-use Magomogo\Persisted\CollectionOwnerInterface;
+use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Exception\NotFound;
-use Magomogo\Persisted\PropertyBagCollection;
 
 /**
  * This container can keep one model and all its references in memory.
@@ -50,7 +49,7 @@ class Memory implements ContainerInterface
         $properties = $this->storage[$propertyBag->id($this)];
         $properties->copyTo($propertyBag);
 
-        if ($propertyBag instanceof CollectionOwnerInterface) {
+        if ($propertyBag instanceof Collection\OwnerInterface) {
             $this->loadCollections($propertyBag);
         }
 
@@ -72,7 +71,7 @@ class Memory implements ContainerInterface
             }
         }
 
-        if ($propertyBag instanceof CollectionOwnerInterface) {
+        if ($propertyBag instanceof Collection\OwnerInterface) {
             $this->saveCollections($propertyBag);
         }
 
@@ -80,8 +79,8 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param PropertyBagCollection $collectionBag
-     * @param CollectionOwnerInterface $leftProperties
+     * @param Collection\AbstractCollection $collectionBag
+     * @param Collection\OwnerInterface $leftProperties
      * @param array $propertyBags
      */
     public function referToMany($collectionBag, $leftProperties, array $propertyBags)
@@ -137,22 +136,22 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param CollectionOwnerInterface $propertyBag
+     * @param Collection\OwnerInterface $propertyBag
      */
     private function loadCollections($propertyBag)
     {
-        /** @var PropertyBagCollection $collection */
+        /** @var Collection\AbstractCollection $collection */
         foreach ($propertyBag->collections() as $collection) {
             $collection->loadFrom($this, $propertyBag);
         }
     }
 
     /**
-     * @param CollectionOwnerInterface $propertyBag
+     * @param Collection\OwnerInterface $propertyBag
      */
     private function saveCollections($propertyBag)
     {
-        /** @var PropertyBagCollection $collection */
+        /** @var Collection\AbstractCollection $collection */
         foreach ($propertyBag->collections() as $collection) {
             $collection->putIn($this, $propertyBag);
         }

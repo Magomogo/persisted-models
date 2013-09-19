@@ -3,7 +3,7 @@
 namespace Magomogo\Persisted\Container\SqlDb;
 
 use Magomogo\Persisted\PropertyBag;
-use Magomogo\Persisted\PropertyBagCollection;
+use Magomogo\Persisted\AbstractCollection;
 
 interface NamesInterface
 {
@@ -14,7 +14,7 @@ interface NamesInterface
     public function propertyBagToName($propertyBag);
 
     /**
-     * @param PropertyBagCollection $propertyBagCollection
+     * @param AbstractCollection $propertyBagCollection
      * @return string
      */
     public function propertyBagCollectionToName($propertyBagCollection);

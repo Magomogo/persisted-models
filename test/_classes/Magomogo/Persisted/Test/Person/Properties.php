@@ -1,10 +1,9 @@
 <?php
 namespace Magomogo\Persisted\Test\Person;
 
-use Magomogo\Persisted\CollectionOwnerInterface;
+use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\PropertyBag;
-use Magomogo\Persisted\Test\CreditCard\Model as CreditCard;
-use Magomogo\Persisted\Test\CreditCard\Properties as CreditCardProperties;
+use Magomogo\Persisted\Test\CreditCard;
 use Magomogo\Persisted\Test\Keymarker;
 
 /**
@@ -15,7 +14,7 @@ use Magomogo\Persisted\Test\Keymarker;
  * @property string $email
  * @property \Magomogo\Persisted\Test\CreditCard\Model $creditCard
  */
-class Properties extends PropertyBag implements CollectionOwnerInterface
+class Properties extends PropertyBag implements Collection\OwnerInterface
 {
     /**
      * @var Keymarker\Collection
@@ -30,7 +29,7 @@ class Properties extends PropertyBag implements CollectionOwnerInterface
             'lastName' => '',
             'phone' => '',
             'email' => '',
-            'creditCard' => new CreditCard(new CreditCardProperties),
+            'creditCard' => new CreditCard\Model(new CreditCard\Properties),
             'birthDay' => new \DateTime('1970-01-01T00:00:00+07:00')
         );
     }

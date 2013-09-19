@@ -1,13 +1,11 @@
 <?php
 
-namespace Magomogo\Persisted;
+namespace Magomogo\Persisted\Collection;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\PropertyBag;
-use Magomogo\Persisted\CollectableModelInterface;
-use Magomogo\Persisted\CollectionOwnerInterface;
 
-abstract class PropertyBagCollection implements \ArrayAccess, \IteratorAggregate, \Countable
+abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
     protected $items = array();
 
@@ -15,7 +13,7 @@ abstract class PropertyBagCollection implements \ArrayAccess, \IteratorAggregate
 
     /**
      * @param ContainerInterface $container
-     * @param CollectionOwnerInterface $owner
+     * @param OwnerInterface $owner
      * @return $this
      */
     public function loadFrom($container, $owner)
@@ -30,7 +28,7 @@ abstract class PropertyBagCollection implements \ArrayAccess, \IteratorAggregate
 
     /**
      * @param ContainerInterface $container
-     * @param CollectionOwnerInterface $owner
+     * @param OwnerInterface $owner
      * @return $this
      */
     public function putIn($container, $owner)
@@ -65,7 +63,7 @@ abstract class PropertyBagCollection implements \ArrayAccess, \IteratorAggregate
 
     /**
      * @param mixed $offset
-     * @param CollectableModelInterface $value
+     * @param MemberInterface $value
      */
     public function offsetSet($offset, $value)
     {

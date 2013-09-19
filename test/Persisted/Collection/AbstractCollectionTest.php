@@ -5,7 +5,7 @@ namespace Magomogo\Persisted;
 use Magomogo\Persisted\Test\Keymarker;
 use Mockery as m;
 
-class PropertyBagCollectionTest extends \PHPUnit_Framework_TestCase
+class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testCountable()
@@ -67,7 +67,7 @@ class PropertyBagCollectionTest extends \PHPUnit_Framework_TestCase
 
 //======================================================================================================================
 
-class TestCollection extends PropertyBagCollection {
+class TestCollection extends Collection\AbstractCollection {
 
     protected function constructModel($propertyBag)
     {

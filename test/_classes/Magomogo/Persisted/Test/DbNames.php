@@ -4,7 +4,7 @@ namespace Magomogo\Persisted\Test;
 
 use Magomogo\Persisted\Container\SqlDb\NamesInterface;
 use Magomogo\Persisted\PropertyBag;
-use Magomogo\Persisted\PropertyBagCollection;
+use Magomogo\Persisted\AbstractCollection;
 
 class DbNames implements NamesInterface
 {
@@ -34,7 +34,7 @@ class DbNames implements NamesInterface
     }
 
     /**
-     * @param PropertyBagCollection $propertyBagCollection
+     * @param AbstractCollection $propertyBagCollection
      * @return string
      */
     public function propertyBagCollectionToName($propertyBagCollection)

@@ -7,10 +7,9 @@ use Doctrine\DBAL\Schema\Table;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
-use Magomogo\Persisted\PropertyBagCollection;
+use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Exception;
-use Magomogo\Persisted\CollectionOwnerInterface;
 
 class SchemaCreator implements ContainerInterface
 {
@@ -61,8 +60,8 @@ class SchemaCreator implements ContainerInterface
                 $this->newTableObject($propertyBag, $tableName)
             );
 
-            if ($propertyBag instanceof CollectionOwnerInterface) {
-                /** @var PropertyBagCollection $collection */
+            if ($propertyBag instanceof Collection\OwnerInterface) {
+                /** @var Collection\AbstractCollection $collection */
                 foreach ($propertyBag->collections() as $collectionName => $collection) {
                     $collection->putIn($this, $propertyBag);
                 }
@@ -84,7 +83,7 @@ class SchemaCreator implements ContainerInterface
     }
 
     /**
-     * @param PropertyBagCollection $collectionBag
+     * @param Collection\AbstractCollection $collectionBag
      * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @param array $propertyBags array of \Magomogo\Model\PropertyBag
      * @return void

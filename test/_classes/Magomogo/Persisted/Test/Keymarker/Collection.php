@@ -2,9 +2,9 @@
 
 namespace Magomogo\Persisted\Test\Keymarker;
 
-use Magomogo\Persisted\PropertyBagCollection;
+use Magomogo\Persisted\Collection\AbstractCollection;
 
-class Collection extends PropertyBagCollection
+class Collection extends AbstractCollection
 {
     /**
      * @param Properties $propertyBag

@@ -1,12 +1,12 @@
 <?php
 namespace Magomogo\Persisted\Test\Keymarker;
 
-use Magomogo\Persisted\CollectableModelInterface;
+use Magomogo\Persisted\Collection\MemberInterface;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\Test\Person;
 
-class Model implements ModelInterface, CollectableModelInterface
+class Model implements ModelInterface, MemberInterface
 {
     /**
      * @var Properties

@@ -2,11 +2,10 @@
 namespace Magomogo\Persisted\Container;
 
 use Doctrine\DBAL\Connection;
-use Magomogo\Persisted\CollectionOwnerInterface;
+use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\Container\SqlDb\NamesInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
-use Magomogo\Persisted\PropertyBagCollection;
 use Magomogo\Persisted\PropertyBag;
 use Magomogo\Persisted\Exception;
 
@@ -46,7 +45,7 @@ class SqlDb implements ContainerInterface
         if ($propertyBag instanceof PossessionInterface) {
             $this->collectReferences($row, $propertyBag->foreign());
         }
-        if ($propertyBag instanceof CollectionOwnerInterface) {
+        if ($propertyBag instanceof Collection\OwnerInterface) {
             $this->loadCollections($propertyBag);
         }
 
@@ -71,7 +70,7 @@ class SqlDb implements ContainerInterface
         }
         $this->commit($row, $propertyBag);
 
-        if ($propertyBag instanceof CollectionOwnerInterface) {
+        if ($propertyBag instanceof Collection\OwnerInterface) {
             $this->saveCollections($propertyBag);
         }
 
@@ -89,7 +88,7 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param PropertyBagCollection $collectionBag
+     * @param Collection\AbstractCollection $collectionBag
      * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @param array $propertyBags
      * @internal param array $connections
@@ -121,7 +120,7 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param PropertyBagCollection $collectionBag
+     * @param Collection\AbstractCollection $collectionBag
      * @param \Magomogo\Persisted\PropertyBag $leftProperties
      * @return array
      */
@@ -232,22 +231,22 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param CollectionOwnerInterface $propertyBag
+     * @param Collection\OwnerInterface $propertyBag
      */
     private function loadCollections($propertyBag)
     {
-        /** @var PropertyBagCollection $collection */
+        /** @var Collection\AbstractCollection $collection */
         foreach ($propertyBag->collections() as $collection) {
             $collection->loadFrom($this, $propertyBag);
         }
     }
 
     /**
-     * @param CollectionOwnerInterface $propertyBag
+     * @param Collection\OwnerInterface $propertyBag
      */
     private function saveCollections($propertyBag)
     {
-        /** @var PropertyBagCollection $collection */
+        /** @var Collection\AbstractCollection $collection */
         foreach ($propertyBag->collections() as $collection) {
             $collection->putIn($this, $propertyBag);
         }
