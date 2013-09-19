@@ -32,87 +32,87 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $properties
      * @return \Magomogo\Persisted\AbstractProperties
      */
-    public function loadProperties($propertyBag)
+    public function loadProperties($properties)
     {
-        $row = $this->begin($propertyBag);
+        $row = $this->begin($properties);
 
-        foreach ($propertyBag as $name => &$property) {
+        foreach ($properties as $name => &$property) {
             $property = array_key_exists($name, $row) ? $this->fromDbValue($property, $row[$name]) : null;
         }
-        if ($propertyBag instanceof PossessionInterface) {
-            $this->collectReferences($row, $propertyBag->foreign());
+        if ($properties instanceof PossessionInterface) {
+            $this->collectReferences($row, $properties->foreign());
         }
-        if ($propertyBag instanceof Collection\OwnerInterface) {
-            $this->loadCollections($propertyBag);
+        if ($properties instanceof Collection\OwnerInterface) {
+            $this->loadCollections($properties->collections(), $properties);
         }
 
-        return $propertyBag;
+        return $properties;
     }
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $properties
      * @return \Magomogo\Persisted\AbstractProperties
      */
-    public function saveProperties($propertyBag)
+    public function saveProperties($properties)
     {
         $row = array();
-        if ($propertyBag instanceof PossessionInterface) {
-            $row = $this->foreignKeys($propertyBag->foreign());
+        if ($properties instanceof PossessionInterface) {
+            $row = $this->foreignKeys($properties->foreign());
         }
-        if (!is_null($propertyBag->id($this))) {
-            $row['id'] = $propertyBag->id($this);
+        if (!is_null($properties->id($this))) {
+            $row['id'] = $properties->id($this);
         }
-        foreach ($propertyBag as $name => $property) {
+        foreach ($properties as $name => $property) {
             $row[$this->db->quoteIdentifier($name)] = $this->toDbValue($property);
         }
-        $this->commit($row, $propertyBag);
+        $this->commit($row, $properties);
 
-        if ($propertyBag instanceof Collection\OwnerInterface) {
-            $this->saveCollections($propertyBag);
+        if ($properties instanceof Collection\OwnerInterface) {
+            $this->saveCollections($properties->collections(), $properties);
         }
 
-        return $propertyBag;
+        return $properties;
     }
 
     /**
-     * @param array $propertyBags
+     * @param array $properties
      */
-    public function deleteProperties(array $propertyBags)
+    public function deleteProperties(array $properties)
     {
-        foreach ($propertyBags as $bag) {
-            $this->db->delete($this->names->propertyBagToName($bag), array('id' => $bag->id($this)));
+        foreach ($properties as $bag) {
+            $this->db->delete($this->names->propertiesToName($bag), array('id' => $bag->id($this)));
         }
     }
 
     /**
-     * @param Collection\AbstractCollection $collectionBag
+     * @param Collection\AbstractCollection $collection
      * @param \Magomogo\Persisted\AbstractProperties $leftProperties
-     * @param array $propertyBags
+     * @param array $manyProperties
      * @internal param array $connections
      */
-    public function referToMany($collectionBag, $leftProperties, array $propertyBags)
+    public function referToMany($collection, $leftProperties, array $manyProperties)
     {
-        $referenceName = $this->names->manyToManyRelationName($collectionBag, $leftProperties);
+        $referenceName = $this->names->manyToManyRelationName($collection, $leftProperties);
 
         $this->db->delete(
             $this->db->quoteIdentifier($referenceName),
             array(
-                $this->db->quoteIdentifier($this->names->propertyBagToName($leftProperties)) =>
+                $this->db->quoteIdentifier($this->names->propertiesToName($leftProperties)) =>
                     $leftProperties->id($this)
             )
         );
 
         /** @var AbstractProperties $rightProperties */
-        foreach ($propertyBags as $rightProperties) {
+        foreach ($manyProperties as $rightProperties) {
             $this->db->insert(
                 $this->db->quoteIdentifier($referenceName),
                 array(
-                    $this->db->quoteIdentifier($this->names->propertyBagToName($leftProperties)) =>
+                    $this->db->quoteIdentifier($this->names->propertiesToName($leftProperties)) =>
                         $leftProperties->id($this),
-                    $this->db->quoteIdentifier($this->names->propertyBagToName($rightProperties)) =>
+                    $this->db->quoteIdentifier($this->names->propertiesToName($rightProperties)) =>
                         $rightProperties->id($this),
                 )
             );
@@ -120,14 +120,14 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param Collection\AbstractCollection $collectionBag
+     * @param Collection\AbstractCollection $collection
      * @param \Magomogo\Persisted\AbstractProperties $leftProperties
      * @return array
      */
-    public function listReferences($collectionBag, $leftProperties)
+    public function listReferences($collection, $leftProperties)
     {
-        $referenceName = $this->names->manyToManyRelationName($collectionBag, $leftProperties);
-        $leftPropertiesName = $this->names->propertyBagToName($leftProperties);
+        $referenceName = $this->names->manyToManyRelationName($collection, $leftProperties);
+        $leftPropertiesName = $this->names->propertiesToName($leftProperties);
 
         $list = $this->db->fetchAll(
             'SELECT * FROM ' . $this->db->quoteIdentifier($referenceName)
@@ -135,18 +135,18 @@ class SqlDb implements ContainerInterface
             array($leftProperties->id($this))
         );
 
-        $propertyBags = array();
+        $manyProperties = array();
 
         if (!empty($list)) {
-            $rightPropertiesName = $this->names->propertyBagCollectionToName($collectionBag);
+            $rightPropertiesName = $this->names->collectionToName($collection);
 
             foreach ($list as $row) {
-                $rightProperties = $this->names->nameToPropertyBag($rightPropertiesName);
-                $propertyBags[] = $rightProperties->loadFrom($this, $row[$rightPropertiesName]);
+                $rightProperties = $this->names->nameToProperties($rightPropertiesName);
+                $manyProperties[] = $rightProperties->loadFrom($this, $row[$rightPropertiesName]);
             }
         }
 
-        return $propertyBags;
+        return $manyProperties;
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -180,18 +180,18 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $properties
      * @return array
      * @throws \Magomogo\Persisted\Exception\NotFound
      */
-    private function begin($propertyBag)
+    private function begin($properties)
     {
-        if (!is_null($propertyBag->id($this))) {
+        if (!is_null($properties->id($this))) {
 
             $row = $this->db->fetchAssoc(
-                'SELECT * FROM ' . $this->db->quoteIdentifier($this->names->propertyBagToName($propertyBag))
+                'SELECT * FROM ' . $this->db->quoteIdentifier($this->names->propertiesToName($properties))
                 . ' WHERE id=?',
-                array($propertyBag->id($this))
+                array($properties->id($this))
             );
 
             if (is_array($row)) {
@@ -209,7 +209,7 @@ class SqlDb implements ContainerInterface
      */
     private function commit(array $row, $properties)
     {
-        $tableName = $this->names->propertyBagToName($properties);
+        $tableName = $this->names->propertiesToName($properties);
 
         if (!$properties->id($this)) {
             $this->db->insert($this->db->quoteIdentifier($tableName), $row);
@@ -231,24 +231,26 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param Collection\OwnerInterface $propertyBag
+     * @param $collections array of Collection\AbstractCollection
+     * @param Collection\OwnerInterface $ownerProperties
      */
-    private function loadCollections($propertyBag)
+    private function loadCollections($collections, $ownerProperties)
     {
         /** @var Collection\AbstractCollection $collection */
-        foreach ($propertyBag->collections() as $collection) {
-            $collection->loadFrom($this, $propertyBag);
+        foreach ($collections as $collection) {
+            $collection->loadFrom($this, $ownerProperties);
         }
     }
 
     /**
-     * @param Collection\OwnerInterface $propertyBag
+     * @param $collections array of Collection\AbstractCollection
+     * @param Collection\OwnerInterface $ownerProperties
      */
-    private function saveCollections($propertyBag)
+    private function saveCollections($collections, $ownerProperties)
     {
         /** @var Collection\AbstractCollection $collection */
-        foreach ($propertyBag->collections() as $collection) {
-            $collection->putIn($this, $propertyBag);
+        foreach ($collections as $collection) {
+            $collection->putIn($this, $ownerProperties);
         }
     }
 

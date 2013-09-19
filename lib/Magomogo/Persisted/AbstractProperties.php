@@ -137,22 +137,22 @@ abstract class AbstractProperties implements \IteratorAggregate
     }
 
     /**
-     * @param self $propertyBag
+     * @param self $properties
      * @return self
      */
-    public function copyTo($propertyBag)
+    public function copyTo($properties)
     {
         foreach ($this as $name => $property) {
-            $propertyBag->$name = $property;
+            $properties->$name = $property;
         }
 
-        if (($this instanceof PossessionInterface) && ($propertyBag instanceof PossessionInterface)) {
+        if (($this instanceof PossessionInterface) && ($properties instanceof PossessionInterface)) {
             foreach($this->foreign() as $referenceName => $referenceProperties) {
-                $referenceProperties->copyTo($propertyBag->foreign()->$referenceName);
+                $referenceProperties->copyTo($properties->foreign()->$referenceName);
             }
         }
 
-        $propertyBag->idInContainer = array_merge($propertyBag->idInContainer, $this->idInContainer);
+        $properties->idInContainer = array_merge($properties->idInContainer, $this->idInContainer);
 
         return $this;
     }

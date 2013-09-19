@@ -38,79 +38,75 @@ class SchemaCreator implements ContainerInterface
         $model->save($this);
     }
 
-    /**
-     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
-     * @return \Magomogo\Persisted\AbstractProperties $propertyBag loaded with data
-     */
-    public function loadProperties($propertyBag)
+    public function loadProperties($properties)
     {
         trigger_error('Incorrect usage', E_USER_ERROR);
     }
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $properties
      * @return \Magomogo\Persisted\AbstractProperties
      */
-    public function saveProperties($propertyBag)
+    public function saveProperties($properties)
     {
-        $tableName = $this->names->propertyBagToName($propertyBag);
+        $tableName = $this->names->propertiesToName($properties);
 
         if (!in_array($tableName, $this->manager->listTableNames())) {
             $this->manager->createTable(
-                $this->newTableObject($propertyBag, $tableName)
+                $this->newTableObject($properties, $tableName)
             );
 
-            if ($propertyBag instanceof Collection\OwnerInterface) {
+            if ($properties instanceof Collection\OwnerInterface) {
                 /** @var Collection\AbstractCollection $collection */
-                foreach ($propertyBag->collections() as $collectionName => $collection) {
-                    $collection->putIn($this, $propertyBag);
+                foreach ($properties->collections() as $collectionName => $collection) {
+                    $collection->putIn($this, $properties);
                 }
             }
 
         }
 
-        $propertyBag->persisted($tableName, $this);
-        return $propertyBag;
+        $properties->persisted($tableName, $this);
+        return $properties;
     }
 
     /**
-     * @param array $propertyBags array of \Magomogo\Model\AbstractProperties
+     * @param array $properties array of \Magomogo\Model\AbstractProperties
      * @return void
      */
-    public function deleteProperties(array $propertyBags)
+    public function deleteProperties(array $properties)
     {
         trigger_error('Incorrect usage', E_USER_ERROR);
     }
 
     /**
-     * @param Collection\AbstractCollection $collectionBag
+     * @param Collection\AbstractCollection $collection
      * @param \Magomogo\Persisted\AbstractProperties $leftProperties
-     * @param array $propertyBags array of \Magomogo\Model\AbstractProperties
+     * @param array $manyProperties array of \Magomogo\Model\AbstractProperties
      * @return void
      */
-    public function referToMany($collectionBag, $leftProperties, array $propertyBags)
+    public function referToMany($collection, $leftProperties, array $manyProperties)
     {
-        $referenceName = $this->names->manyToManyRelationName($collectionBag, $leftProperties);
+        $referenceName = $this->names->manyToManyRelationName($collection, $leftProperties);
 
-        if (!empty($propertyBags) && !in_array($referenceName, $this->manager->listTableNames())) {
-            $rightProperties = reset($propertyBags);
+        if (!empty($manyProperties) && !in_array($referenceName, $this->manager->listTableNames())) {
+            $rightProperties = reset($manyProperties);
             $table = new Table($this->quoteIdentifier($referenceName));
             $this->addForeignReferenceColumn(
-                $table, $this->names->propertyBagToName($leftProperties), $leftProperties
+                $table, $this->names->propertiesToName($leftProperties), $leftProperties
             );
             $this->addForeignReferenceColumn(
-                $table, $this->names->propertyBagToName($rightProperties), $rightProperties
+                $table, $this->names->propertiesToName($rightProperties), $rightProperties
             );
             $this->manager->createTable($table);
         }
     }
 
     /**
-     * @param string $collectionBag
+     * @param string $collection
      * @param \Magomogo\Persisted\AbstractProperties $leftProperties
      * @return array of \Magomogo\Model\AbstractProperties
      */
-    public function listReferences($collectionBag, $leftProperties)
+    public function listReferences($collection, $leftProperties)
     {
         trigger_error('Incorrect usage', E_USER_ERROR);
     }
@@ -149,19 +145,19 @@ class SchemaCreator implements ContainerInterface
     }
 
     /**
-     * @param AbstractProperties $propertyBag
+     * @param AbstractProperties $properties
      * @param string $tableName
      * @return \Doctrine\DBAL\Schema\Table
      */
-    private function newTableObject($propertyBag, $tableName)
+    private function newTableObject($properties, $tableName)
     {
         $table = new Table($this->quoteIdentifier($tableName));
 
-        if (!isset($propertyBag->id)) {
+        if (!isset($properties->id)) {
             $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
         }
 
-        foreach ($propertyBag as $name => $value) {
+        foreach ($properties as $name => $value) {
             if (($name === 'id') && is_string($value)) {
                 $table->addColumn('id', 'string', array('length' => 255, 'notnull' => true));
             } else {
@@ -171,8 +167,8 @@ class SchemaCreator implements ContainerInterface
 
         $table->setPrimaryKey(array('id'));
 
-        if ($propertyBag instanceof PossessionInterface) {
-            foreach ($propertyBag->foreign() as $propertyName => $foreignProperties) {
+        if ($properties instanceof PossessionInterface) {
+            foreach ($properties->foreign() as $propertyName => $foreignProperties) {
                 $this->addForeignReferenceColumn($table, $propertyName, $foreignProperties);
             }
         }
@@ -197,7 +193,7 @@ class SchemaCreator implements ContainerInterface
             );
         }
         $table->addForeignKeyConstraint(
-            $this->quoteIdentifier($this->names->propertyBagToName($leftProperties)),
+            $this->quoteIdentifier($this->names->propertiesToName($leftProperties)),
             array($this->quoteIdentifier($columnName)),
             array('id'),
             array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE')

@@ -69,8 +69,8 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
 
 class TestCollection extends Collection\AbstractCollection {
 
-    protected function constructModel($propertyBag)
+    protected function constructModel($properties)
     {
-        return new Keymarker\Model($propertyBag);
+        return new Keymarker\Model($properties);
     }
 }

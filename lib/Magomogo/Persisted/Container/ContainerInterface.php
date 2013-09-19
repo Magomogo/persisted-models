@@ -7,35 +7,35 @@ use Magomogo\Persisted\AbstractProperties;
 interface ContainerInterface
 {
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
-     * @return \Magomogo\Persisted\AbstractProperties $propertyBag loaded with data
+     * @param \Magomogo\Persisted\AbstractProperties $properties
+     * @return \Magomogo\Persisted\AbstractProperties loaded with data
      */
-    public function loadProperties($propertyBag);
+    public function loadProperties($properties);
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $propertyBag
+     * @param \Magomogo\Persisted\AbstractProperties $properties
      * @return \Magomogo\Persisted\AbstractProperties
      */
-    public function saveProperties($propertyBag);
+    public function saveProperties($properties);
 
     /**
-     * @param array $propertyBags array of \Magomogo\Model\AbstractProperties
+     * @param array $properties array of \Magomogo\Model\AbstractProperties
      * @return void
      */
-    public function deleteProperties(array $propertyBags);
+    public function deleteProperties(array $properties);
 
     /**
-     * @param Collection\AbstractCollection $collectionBag
+     * @param Collection\AbstractCollection $collection
      * @param Collection\OwnerInterface $leftProperties
-     * @param array $propertyBags array of \Magomogo\Model\AbstractProperties
+     * @param array $manyProperties array of \Magomogo\Model\AbstractProperties
      * @return void
      */
-    public function referToMany($collectionBag, $leftProperties, array $propertyBags);
+    public function referToMany($collection, $leftProperties, array $manyProperties);
 
     /**
-     * @param Collection\AbstractCollection $collectionBag
+     * @param Collection\AbstractCollection $collection
      * @param Collection\OwnerInterface $leftProperties
      * @return array of \Magomogo\Model\AbstractProperties
      */
-    public function listReferences($collectionBag, $leftProperties);
+    public function listReferences($collection, $leftProperties);
 }

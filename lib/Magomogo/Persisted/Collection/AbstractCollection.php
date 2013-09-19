@@ -9,7 +9,7 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
 {
     protected $items = array();
 
-    abstract protected function constructModel($propertyBag);
+    abstract protected function constructModel($properties);
 
     /**
      * @param ContainerInterface $container
@@ -19,9 +19,9 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
     public function loadFrom($container, $owner)
     {
         $this->items = array();
-        foreach ($container->listReferences($this, $owner) as $propertyBag) {
-            /** @var AbstractProperties $propertyBag */
-            $this->appendPropertyBag($propertyBag, $propertyBag->id($container));
+        foreach ($container->listReferences($this, $owner) as $properties) {
+            /** @var AbstractProperties $properties */
+            $this->appendProperties($properties, $properties->id($container));
         }
         return $this;
     }
@@ -37,12 +37,12 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return $this;
     }
 
-    public function appendPropertyBag($propertyBag, $offset = null)
+    public function appendProperties($properties, $offset = null)
     {
         if (is_null($offset)) {
-            $this->items[] = $propertyBag;
+            $this->items[] = $properties;
         } else {
-            $this->items[$offset] = $propertyBag;
+            $this->items[$offset] = $properties;
         }
     }
 
@@ -83,8 +83,8 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
     public function asArray()
     {
         $models = array();
-        foreach ($this->items as $offset => $propertyBag) {
-            $models[$offset] = $this->constructModel($propertyBag);
+        foreach ($this->items as $offset => $properties) {
+            $models[$offset] = $this->constructModel($properties);
         }
         return $models;
     }

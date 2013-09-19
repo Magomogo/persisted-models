@@ -7,11 +7,11 @@ use Magomogo\Persisted\Collection\AbstractCollection;
 class Collection extends AbstractCollection
 {
     /**
-     * @param Properties $propertyBag
+     * @param Properties $properties
      * @return Model
      */
-    protected function constructModel($propertyBag)
+    protected function constructModel($properties)
     {
-        return new Model($propertyBag);
+        return new Model($properties);
     }
 }

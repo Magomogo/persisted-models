@@ -3,27 +3,27 @@
 namespace Magomogo\Persisted\Container\SqlDb;
 
 use Magomogo\Persisted\AbstractProperties;
-use Magomogo\Persisted\AbstractCollection;
+use Magomogo\Persisted\Collection;
 
 interface NamesInterface
 {
     /**
-     * @param AbstractProperties $propertyBag
+     * @param AbstractProperties $properties
      * @return string
      */
-    public function propertyBagToName($propertyBag);
+    public function propertiesToName($properties);
 
     /**
-     * @param AbstractCollection $propertyBagCollection
+     * @param Collection\AbstractCollection $collection
      * @return string
      */
-    public function propertyBagCollectionToName($propertyBagCollection);
+    public function collectionToName($collection);
 
     /**
      * @param string $name
      * @return AbstractProperties
      */
-    public function nameToPropertyBag($name);
+    public function nameToProperties($name);
 
-    public function manyToManyRelationName($propertyBagCollection, $ownerPropertyBag);
+    public function manyToManyRelationName($collection, $ownerProperties);
 }

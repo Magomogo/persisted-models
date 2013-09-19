@@ -50,6 +50,6 @@ class Model implements ModelInterface, MemberInterface
      */
     public function appendToCollection($collection, $offset = null)
     {
-        $collection->appendPropertyBag($this->properties, $offset);
+        $collection->appendProperties($this->properties, $offset);
     }
 }
