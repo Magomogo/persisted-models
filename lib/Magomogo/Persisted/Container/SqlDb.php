@@ -84,7 +84,7 @@ class SqlDb implements ContainerInterface
     public function deleteProperties(array $propertyBags)
     {
         foreach ($propertyBags as $bag) {
-            $this->db->delete($this->names->classToName($bag), array('id' => $bag->id($this)));
+            $this->db->delete($this->names->propertyBagToName($bag), array('id' => $bag->id($this)));
         }
     }
 
@@ -100,7 +100,10 @@ class SqlDb implements ContainerInterface
 
         $this->db->delete(
             $this->db->quoteIdentifier($referenceName),
-            array($this->db->quoteIdentifier($this->names->classToName($leftProperties)) => $leftProperties->id($this))
+            array(
+                $this->db->quoteIdentifier($this->names->propertyBagToName($leftProperties)) =>
+                    $leftProperties->id($this)
+            )
         );
 
         /** @var PropertyBag $rightProperties */
@@ -108,8 +111,10 @@ class SqlDb implements ContainerInterface
             $this->db->insert(
                 $this->db->quoteIdentifier($referenceName),
                 array(
-                    $this->db->quoteIdentifier($this->names->classToName($leftProperties)) => $leftProperties->id($this),
-                    $this->db->quoteIdentifier($this->names->classToName($rightProperties)) => $rightProperties->id($this),
+                    $this->db->quoteIdentifier($this->names->propertyBagToName($leftProperties)) =>
+                        $leftProperties->id($this),
+                    $this->db->quoteIdentifier($this->names->propertyBagToName($rightProperties)) =>
+                        $rightProperties->id($this),
                 )
             );
         }
@@ -123,7 +128,7 @@ class SqlDb implements ContainerInterface
     public function listReferences($collectionBag, $leftProperties)
     {
         $referenceName = $this->names->manyToManyRelationName($collectionBag, $leftProperties);
-        $leftPropertiesName = $this->names->classToName($leftProperties);
+        $leftPropertiesName = $this->names->propertyBagToName($leftProperties);
 
         $list = $this->db->fetchAll(
             'SELECT * FROM ' . $this->db->quoteIdentifier($referenceName)
@@ -134,11 +139,11 @@ class SqlDb implements ContainerInterface
         $propertyBags = array();
 
         if (!empty($list)) {
-            $rightPropertiesName = self::rightPropertiesName($list[0], $leftPropertiesName);
+            $rightPropertiesName = $this->names->propertyBagCollectionToName($collectionBag);
 
             foreach ($list as $row) {
-                $props = $this->names->nameToClass($rightPropertiesName);
-                $propertyBags[] = $props->loadFrom($this, $row[$rightPropertiesName]);
+                $rightProperties = $this->names->nameToPropertyBag($rightPropertiesName);
+                $propertyBags[] = $rightProperties->loadFrom($this, $row[$rightPropertiesName]);
             }
         }
 
@@ -185,7 +190,8 @@ class SqlDb implements ContainerInterface
         if (!is_null($propertyBag->id($this))) {
 
             $row = $this->db->fetchAssoc(
-                'SELECT * FROM ' . $this->db->quoteIdentifier($this->names->classToName($propertyBag)) . ' WHERE id=?',
+                'SELECT * FROM ' . $this->db->quoteIdentifier($this->names->propertyBagToName($propertyBag))
+                . ' WHERE id=?',
                 array($propertyBag->id($this))
             );
 
@@ -204,7 +210,7 @@ class SqlDb implements ContainerInterface
      */
     private function commit(array $row, $properties)
     {
-        $tableName = $this->names->classToName($properties);
+        $tableName = $this->names->propertyBagToName($properties);
 
         if (!$properties->id($this)) {
             $this->db->insert($this->db->quoteIdentifier($tableName), $row);
@@ -256,12 +262,5 @@ class SqlDb implements ContainerInterface
         }
 
         return $keys;
-    }
-
-    private function rightPropertiesName($row, $leftPropertiesName)
-    {
-        unset($row[$leftPropertiesName]);
-        reset($row);
-        return key($row);
     }
 }

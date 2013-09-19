@@ -3,6 +3,7 @@
 namespace Magomogo\Persisted\Container\SqlDb;
 
 use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\PropertyBagCollection;
 
 interface NamesInterface
 {
@@ -10,13 +11,19 @@ interface NamesInterface
      * @param PropertyBag $propertyBag
      * @return string
      */
-    public function classToName($propertyBag);
+    public function propertyBagToName($propertyBag);
+
+    /**
+     * @param PropertyBagCollection $propertyBagCollection
+     * @return string
+     */
+    public function propertyBagCollectionToName($propertyBagCollection);
 
     /**
      * @param string $name
      * @return PropertyBag
      */
-    public function nameToClass($name);
+    public function nameToPropertyBag($name);
 
-    public function manyToManyRelationName($collectionBag, $ownerPropertyBag);
+    public function manyToManyRelationName($propertyBagCollection, $ownerPropertyBag);
 }

@@ -4,6 +4,7 @@ namespace Magomogo\Persisted\Test;
 
 use Magomogo\Persisted\Container\SqlDb\NamesInterface;
 use Magomogo\Persisted\PropertyBag;
+use Magomogo\Persisted\PropertyBagCollection;
 
 class DbNames implements NamesInterface
 {
@@ -12,7 +13,7 @@ class DbNames implements NamesInterface
      * @param PropertyBag $propertyBag
      * @return string
      */
-    public function classToName($propertyBag)
+    public function propertyBagToName($propertyBag)
     {
         return self::personAndEmployeeShareSameTable(self::uniqueName($propertyBag));
     }
@@ -21,15 +22,24 @@ class DbNames implements NamesInterface
      * @param string $name
      * @return PropertyBag
      */
-    public function nameToClass($name)
+    public function nameToPropertyBag($name)
     {
         $className = '\\Magomogo\\Persisted\\Test\\' . ucfirst($name) . '\\Properties';
         return new $className;
     }
 
-    public function manyToManyRelationName($collectionBag, $ownerPropertyBag)
+    public function manyToManyRelationName($propertyBagCollection, $ownerPropertyBag)
     {
         return 'person2keymarker';
+    }
+
+    /**
+     * @param PropertyBagCollection $propertyBagCollection
+     * @return string
+     */
+    public function propertyBagCollectionToName($propertyBagCollection)
+    {
+        return 'keymarker';
     }
 
 //----------------------------------------------------------------------------------------------------------------------
