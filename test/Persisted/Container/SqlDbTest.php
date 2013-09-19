@@ -80,19 +80,11 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
     {
         $db = self::dbMock();
         $db->shouldReceive('delete')->with('magomogo_persisted_container_testtype1', array('id' => 3))->once();
-        $db->shouldReceive('delete')->with('magomogo_persisted_container_testtype2', array('id' => 45))->once();
 
-        $persistedProperties1 = new TestType1();
-        $persistedProperties1->persisted(3, self::container($db));
-        $persistedProperties2 = new TestType2();
-        $persistedProperties2->persisted(45, self::container($db));
+        $persistedProperties = new TestType1();
+        $persistedProperties->persisted(3, self::container($db));
 
-        self::container($db)->deleteProperties(
-            array(
-                $persistedProperties1,
-                $persistedProperties2
-            )
-        );
+        self::container($db)->deleteProperties($persistedProperties);
     }
 
     private static function dbMock()

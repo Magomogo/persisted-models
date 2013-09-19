@@ -103,10 +103,10 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param array $propertyBags array of \Magomogo\Model\PropertyBag
+     * @param \Magomogo\Persisted\PropertyBag $propertyBag
      * @return void
      */
-    public function deleteProperties(array $propertyBags)
+    public function deleteProperties($propertyBag)
     {
         $this->storage = array();
         $this->manyToManyReferences = array();

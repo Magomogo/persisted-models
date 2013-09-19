@@ -127,7 +127,7 @@ abstract class PropertyBag implements \IteratorAggregate
      */
     public function deleteFrom($container)
     {
-        $container->deleteProperties(array($this));
+        $container->deleteProperties($this);
     }
 
     /**

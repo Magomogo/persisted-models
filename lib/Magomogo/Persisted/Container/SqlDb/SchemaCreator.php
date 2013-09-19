@@ -64,11 +64,7 @@ class SchemaCreator implements ContainerInterface
         return $propertyBag;
     }
 
-    /**
-     * @param array $propertyBags array of \Magomogo\Model\PropertyBag
-     * @return void
-     */
-    public function deleteProperties(array $propertyBags)
+    public function deleteProperties($propertyBags)
     {
         trigger_error('Incorrect usage', E_USER_ERROR);
     }

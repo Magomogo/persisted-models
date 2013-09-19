@@ -69,13 +69,11 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param array $propertyBags
+     * @param $propertyBag
      */
-    public function deleteProperties(array $propertyBags)
+    public function deleteProperties($propertyBag)
     {
-        foreach ($propertyBags as $bag) {
-            $this->db->delete($this->names->classToName($bag), array('id' => $bag->id($this)));
-        }
+        $this->db->delete($this->names->classToName($propertyBag), array('id' => $propertyBag->id($this)));
     }
 
     /**
