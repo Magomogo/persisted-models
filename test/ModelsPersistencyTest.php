@@ -78,11 +78,13 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
             array(ObjectMother\Person::maxim(), array(__CLASS__, 'sqliteContainer')),
             array(ObjectMother\Person::maxim(), array(__CLASS__, 'postgresContainer')),
             array(ObjectMother\Person::maxim(), array(__CLASS__, 'mysqlContainer')),
+            array(ObjectMother\Person::maxim(), array(__CLASS__, 'couchDbContainer')),
 
             array(ObjectMother\Person::maximWithoutCC(), new Memory()),
             array(ObjectMother\Person::maximWithoutCC(), array(__CLASS__, 'sqliteContainer')),
             array(ObjectMother\Person::maximWithoutCC(), array(__CLASS__, 'postgresContainer')),
             array(ObjectMother\Person::maximWithoutCC(), array(__CLASS__, 'mysqlContainer')),
+            array(ObjectMother\Person::maximWithoutCC(), array(__CLASS__, 'couchDbContainer')),
 
             array(ObjectMother\Company::xiag(), new Memory()),
             array(ObjectMother\Company::xiag(), array(__CLASS__, 'sqliteContainer')),

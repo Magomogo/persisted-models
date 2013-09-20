@@ -5,7 +5,7 @@ namespace Magomogo\Persisted\Container;
 use Doctrine\CouchDB\CouchDBClient;
 use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Collection;
-use Magomogo\Persisted\Exception\NotFound;
+use Magomogo\Persisted\Exception;
 use Magomogo\Persisted\ModelInterface;
 
 class CouchDb implements ContainerInterface
@@ -47,7 +47,7 @@ class CouchDb implements ContainerInterface
         $doc = array();
 
         foreach ($properties as $name => $value) {
-            $doc[$name] = ($value instanceof \DateTime) ? $value->format('c') : $value;
+            $doc[$name] = self::toDbValue($value);
         }
 
         if ($properties->id($this) && is_array($existingDoc = $this->loadDocument($properties->id($this)))) {
@@ -106,7 +106,7 @@ class CouchDb implements ContainerInterface
         if (200 === $response->status) {
             return $response->body;
         }
-        throw new NotFound;
+        throw new Exception\NotFound;
     }
 
     private static function dateInIso8601($str)
@@ -122,6 +122,19 @@ class CouchDb implements ContainerInterface
             return self::dateInIso8601($value);
         }
         return $value;
+    }
+
+    private function toDbValue($property)
+    {
+        if (is_scalar($property) || is_null($property)) {
+            return $property;
+        } elseif ($property instanceof ModelInterface) {
+            return $property->save($this);
+        } elseif ($property instanceof \DateTime) {
+            return $property->format('c');
+        } else {
+            throw new Exception\Type;
+        }
     }
 
 }
