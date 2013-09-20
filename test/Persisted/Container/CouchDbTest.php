@@ -5,6 +5,7 @@ namespace Magomogo\Persisted\Container;
 use Mockery as m;
 use Magomogo\Persisted\Test\ObjectMother;
 use Magomogo\Persisted\Test\Company;
+use Magomogo\Persisted\Test\Keymarker;
 
 class CouchDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +25,7 @@ class CouchDbTest extends \PHPUnit_Framework_TestCase
 
     public function testPutsExistingProperties()
     {
-        $client = self::fullCouchDb();
+        $client = self::couchDbHavingDoc();
         $client->shouldReceive('putDocument')
             ->with(array('_id' => 'id-hash-43FF', '_rev' => '1-rev-hash-45323DD', 'name' => 'XIAG'), 'id-hash-43FF')
             ->once();
@@ -63,9 +64,34 @@ class CouchDbTest extends \PHPUnit_Framework_TestCase
 
     public function testDeletesProperties()
     {
-        $client = self::fullCouchDb();
+        $client = self::couchDbHavingDoc();
         $client->shouldReceive('deleteDocument')->with('id-hash-43FF', '1-rev-hash-45323DD');
         ObjectMother\CreditCard::datatransTesting()->deleteFrom(self::container($client));
+    }
+
+    public function testConvertsDateTimeObjectBeforeSavingToCouchDb()
+    {
+        $client = self::couchDbHavingDoc();
+        $client->shouldReceive('postDocument')
+            ->with(m::subset(array('created' => '2012-12-08T10:36:00+07:00')))
+            ->once();
+
+        ObjectMother\Keymarker::IT()->save(self::container($client));
+    }
+
+    public function testConvertsDateStringToObjectAfterLoadingFromCouchDb()
+    {
+        $client = self::couchDbHavingDoc(
+            array(
+                'created' => '2012-12-08T10:36:00+07:00'
+            )
+        );
+
+        $properties = new Keymarker\Properties();
+        $properties->loadFrom(self::container($client), 'id');
+
+        $this->assertInstanceOf('DateTime', $properties->created);
+        $this->assertEquals(new \DateTime('2012-12-08T10:36:00+07:00'), $properties->created);
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -98,17 +124,21 @@ class CouchDbTest extends \PHPUnit_Framework_TestCase
     /**
      * @return m\MockInterface
      */
-    private static function fullCouchDb()
+    private static function couchDbHavingDoc($doc = array())
     {
         return m::mock(
             'counch db client',
-            function ($mock) {
+            function ($mock) use ($doc) {
                 $mock->shouldReceive('findDocument')
                     ->andReturnUsing(
-                        function () {
+                        function () use ($doc) {
                             $resp = new \stdClass();
                             $resp->status = 200;
-                            $resp->body = array('_id' => 'id-hash-43FF', '_rev' => '1-rev-hash-45323DD');
+                            $resp->body =
+                                array_merge(
+                                    array('_id' => 'id-hash-43FF', '_rev' => '1-rev-hash-45323DD'),
+                                    $doc
+                                );
                             return $resp;
                         }
                     );
