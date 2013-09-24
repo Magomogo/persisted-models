@@ -14,4 +14,9 @@ class Collection extends AbstractCollection
     {
         return new Model($properties);
     }
+
+    public function element()
+    {
+        return new Properties();
+    }
 }

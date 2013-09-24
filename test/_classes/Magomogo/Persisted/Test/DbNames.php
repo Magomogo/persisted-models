@@ -18,16 +18,6 @@ class DbNames implements NamesInterface
         return self::personAndEmployeeShareSameTable(self::uniqueName($properties));
     }
 
-    /**
-     * @param string $name
-     * @return AbstractProperties
-     */
-    public function nameToProperties($name)
-    {
-        $className = '\\Magomogo\\Persisted\\Test\\' . ucfirst($name) . '\\Properties';
-        return new $className;
-    }
-
     public function manyToManyRelationName($collection, $ownerProperties)
     {
         return 'person2keymarker';

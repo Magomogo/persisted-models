@@ -4,12 +4,22 @@ namespace Magomogo\Persisted\Collection;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\AbstractProperties;
+use Magomogo\Persisted\ModelInterface;
 
 abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
     protected $items = array();
 
+    /**
+     * @param AbstractProperties $properties
+     * @return ModelInterface
+     */
     abstract protected function constructModel($properties);
+
+    /**
+     * @return AbstractProperties
+     */
+    abstract public function element();
 
     /**
      * @param ContainerInterface $container
