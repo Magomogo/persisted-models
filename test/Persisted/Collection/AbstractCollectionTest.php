@@ -74,7 +74,7 @@ class TestCollection extends Collection\AbstractCollection {
         return new Keymarker\Model($properties);
     }
 
-    public function element()
+    public function constructProperties()
     {
         return new Keymarker\Properties();
     }

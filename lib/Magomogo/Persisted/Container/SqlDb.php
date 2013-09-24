@@ -138,7 +138,7 @@ class SqlDb implements ContainerInterface
             $rightPropertiesName = $this->names->collectionToName($collection);
 
             foreach ($list as $row) {
-                $rightProperties = $collection->element();
+                $rightProperties = $collection->constructProperties();
                 $manyProperties[] = $rightProperties->loadFrom($this, $row[$rightPropertiesName]);
             }
         }

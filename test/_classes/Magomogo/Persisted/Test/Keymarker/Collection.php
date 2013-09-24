@@ -15,7 +15,7 @@ class Collection extends AbstractCollection
         return new Model($properties);
     }
 
-    public function element()
+    public function constructProperties()
     {
         return new Properties();
     }

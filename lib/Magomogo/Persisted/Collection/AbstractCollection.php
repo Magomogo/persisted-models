@@ -19,7 +19,7 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
     /**
      * @return AbstractProperties
      */
-    abstract public function element();
+    abstract public function constructProperties();
 
     /**
      * @param ContainerInterface $container
