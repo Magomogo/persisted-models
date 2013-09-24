@@ -47,6 +47,10 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return $this;
     }
 
+    /**
+     * @param AbstractProperties $properties
+     * @param mixed $offset
+     */
     public function appendProperties($properties, $offset = null)
     {
         if (is_null($offset)) {
@@ -66,6 +70,10 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return array_key_exists($offset, $this->items);
     }
 
+    /**
+     * @param mixed $offset
+     * @return ModelInterface
+     */
     public function offsetGet($offset)
     {
         return $this->constructModel($this->items[$offset]);
@@ -90,6 +98,9 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return new \ArrayIterator($this->asArray());
     }
 
+    /**
+     * @return ModelInterface[]
+     */
     public function asArray()
     {
         $models = array();
