@@ -20,10 +20,9 @@ interface NamesInterface
     public function collectionToName($collection);
 
     /**
-     * @param string $name
-     * @return AbstractProperties
+     * @param Collection\AbstractCollection $collection
+     * @param AbstractProperties $ownerProperties
+     * @return string
      */
-    public function nameToProperties($name);
-
     public function manyToManyRelationName($collection, $ownerProperties);
 }

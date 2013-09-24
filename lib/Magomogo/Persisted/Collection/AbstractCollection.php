@@ -4,12 +4,22 @@ namespace Magomogo\Persisted\Collection;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\AbstractProperties;
+use Magomogo\Persisted\ModelInterface;
 
 abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
     protected $items = array();
 
+    /**
+     * @param AbstractProperties $properties
+     * @return ModelInterface
+     */
     abstract protected function constructModel($properties);
+
+    /**
+     * @return AbstractProperties
+     */
+    abstract public function constructProperties();
 
     /**
      * @param ContainerInterface $container
@@ -37,6 +47,10 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return $this;
     }
 
+    /**
+     * @param AbstractProperties $properties
+     * @param mixed $offset
+     */
     public function appendProperties($properties, $offset = null)
     {
         if (is_null($offset)) {
@@ -56,6 +70,10 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return array_key_exists($offset, $this->items);
     }
 
+    /**
+     * @param mixed $offset
+     * @return ModelInterface
+     */
     public function offsetGet($offset)
     {
         return $this->constructModel($this->items[$offset]);
@@ -80,6 +98,9 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
         return new \ArrayIterator($this->asArray());
     }
 
+    /**
+     * @return ModelInterface[]
+     */
     public function asArray()
     {
         $models = array();

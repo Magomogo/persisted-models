@@ -32,8 +32,8 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $properties
-     * @return \Magomogo\Persisted\AbstractProperties
+     * @param AbstractProperties $properties
+     * @return AbstractProperties
      */
     public function loadProperties($properties)
     {
@@ -53,8 +53,8 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $properties
-     * @return \Magomogo\Persisted\AbstractProperties
+     * @param AbstractProperties $properties
+     * @return AbstractProperties
      */
     public function saveProperties($properties)
     {
@@ -88,9 +88,8 @@ class SqlDb implements ContainerInterface
 
     /**
      * @param Collection\AbstractCollection $collection
-     * @param \Magomogo\Persisted\AbstractProperties $leftProperties
-     * @param array $manyProperties
-     * @internal param array $connections
+     * @param AbstractProperties $leftProperties
+     * @param AbstractProperties[] $manyProperties
      */
     public function referToMany($collection, $leftProperties, array $manyProperties)
     {
@@ -104,7 +103,6 @@ class SqlDb implements ContainerInterface
             )
         );
 
-        /** @var AbstractProperties $rightProperties */
         foreach ($manyProperties as $rightProperties) {
             $this->db->insert(
                 $this->db->quoteIdentifier($referenceName),
@@ -120,8 +118,8 @@ class SqlDb implements ContainerInterface
 
     /**
      * @param Collection\AbstractCollection $collection
-     * @param \Magomogo\Persisted\AbstractProperties $leftProperties
-     * @return array
+     * @param AbstractProperties $leftProperties
+     * @return AbstractProperties[]
      */
     public function listReferences($collection, $leftProperties)
     {
@@ -140,7 +138,7 @@ class SqlDb implements ContainerInterface
             $rightPropertiesName = $this->names->collectionToName($collection);
 
             foreach ($list as $row) {
-                $rightProperties = $this->names->nameToProperties($rightPropertiesName);
+                $rightProperties = $collection->constructProperties();
                 $manyProperties[] = $rightProperties->loadFrom($this, $row[$rightPropertiesName]);
             }
         }
@@ -179,9 +177,9 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $properties
+     * @param AbstractProperties $properties
      * @return array
-     * @throws \Magomogo\Persisted\Exception\NotFound
+     * @throws Exception\NotFound
      */
     private function begin($properties)
     {
@@ -203,8 +201,8 @@ class SqlDb implements ContainerInterface
 
     /**
      * @param array $row
-     * @param \Magomogo\Persisted\AbstractProperties $properties
-     * @return \Magomogo\Persisted\AbstractProperties
+     * @param AbstractProperties $properties
+     * @return AbstractProperties
      */
     private function commit(array $row, $properties)
     {
@@ -220,9 +218,13 @@ class SqlDb implements ContainerInterface
         return $properties;
     }
 
+    /**
+     * @param array $row
+     * @param AbstractProperties[] $references
+     * @return AbstractProperties[]
+     */
     private function collectReferences(array $row, $references)
     {
-        /* @var AbstractProperties $properties */
         foreach ($references as $referenceName => $properties) {
             $properties->loadFrom($this, $row[$referenceName]);
         }
@@ -230,33 +232,34 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param $collections array of Collection\AbstractCollection
+     * @param Collection\AbstractCollection[] $collections
      * @param Collection\OwnerInterface $ownerProperties
      */
     private function loadCollections($collections, $ownerProperties)
     {
-        /** @var Collection\AbstractCollection $collection */
         foreach ($collections as $collection) {
             $collection->loadFrom($this, $ownerProperties);
         }
     }
 
     /**
-     * @param $collections array of Collection\AbstractCollection
+     * @param Collection\AbstractCollection[] $collections
      * @param Collection\OwnerInterface $ownerProperties
      */
     private function saveCollections($collections, $ownerProperties)
     {
-        /** @var Collection\AbstractCollection $collection */
         foreach ($collections as $collection) {
             $collection->putIn($this, $ownerProperties);
         }
     }
 
+    /**
+     * @param AbstractProperties[] $references
+     * @return array
+     */
     private function foreignKeys($references)
     {
         $keys = array();
-        /* @var AbstractProperties $properties */
         foreach ($references as $referenceName => $properties) {
             $keys[$this->db->quoteIdentifier($referenceName)] = $properties->id($this);
         }
