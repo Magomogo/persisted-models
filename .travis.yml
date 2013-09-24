@@ -12,4 +12,4 @@ before_script:
   - mysql -e 'create database magomogo_persisted_models;'
   - psql -c 'create database magomogo_persisted_models;' -U postgres
 
-script: phpunit
+script: bash phpunit

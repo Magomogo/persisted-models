@@ -14,7 +14,7 @@ class Memory implements ContainerInterface
     private static $autoincrement = 1;
 
     /**
-     * @var array of AbstractProperties
+     * @var AbstractProperties[]
      */
     protected $storage = array();
 
@@ -36,7 +36,7 @@ class Memory implements ContainerInterface
     /**
      * @param AbstractProperties $targetProperties
      * @return AbstractProperties
-     * @throws \Magomogo\Persisted\Exception\NotFound
+     * @throws NotFound
      */
     public function loadProperties($targetProperties)
     {
@@ -81,7 +81,7 @@ class Memory implements ContainerInterface
     /**
      * @param Collection\AbstractCollection $collection
      * @param Collection\OwnerInterface $leftProperties
-     * @param array $manyProperties
+     * @param AbstractProperties[] $manyProperties
      */
     public function referToMany($collection, $leftProperties, array $manyProperties)
     {
@@ -100,7 +100,7 @@ class Memory implements ContainerInterface
     /**
      * @param string $collection
      * @param AbstractProperties $leftProperties
-     * @return array
+     * @return AbstractProperties[]
      */
     public function listReferences($collection, $leftProperties)
     {
