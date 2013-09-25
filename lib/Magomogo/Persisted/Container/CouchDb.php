@@ -32,7 +32,7 @@ class CouchDb implements ContainerInterface
         $doc = $this->loadDocument($properties->id($this));
 
         foreach ($properties as $name => &$property) {
-            $property = array_key_exists($name, $doc) ? self::fromDbValue($property, $doc[$name]) : null;
+            $property = array_key_exists($name, $doc) ? $this->fromDbValue($property, $doc[$name]) : null;
         }
 
         return $properties;
@@ -47,7 +47,7 @@ class CouchDb implements ContainerInterface
         $doc = array();
 
         foreach ($properties as $name => $value) {
-            $doc[$name] = self::toDbValue($value);
+            $doc[$name] = $this->toDbValue($value);
         }
 
         if ($properties->id($this) && is_array($existingDoc = $this->loadDocument($properties->id($this)))) {
