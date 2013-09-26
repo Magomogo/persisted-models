@@ -4,11 +4,14 @@ namespace Magomogo\Persisted\Collection;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\AbstractProperties;
+use Magomogo\Persisted\Exception;
 use Magomogo\Persisted\ModelInterface;
 
 abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
     protected $items = array();
+
+    private $optionalName;
 
     /**
      * @param AbstractProperties $properties
@@ -108,5 +111,24 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
             $models[$offset] = $this->constructModel($properties);
         }
         return $models;
+    }
+
+    /**
+     * Getter/setter
+     *
+     * @param string|null $value to set
+     * @return string
+     */
+    public function name($value = null)
+    {
+        if (!is_null($value)) {
+            $this->optionalName = $value;
+        }
+
+        if (is_null($this->optionalName)) {
+            throw new Exception\CollectionName;
+        }
+
+        return $this->optionalName;
     }
 }

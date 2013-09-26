@@ -101,10 +101,10 @@ class CouchDb implements ContainerInterface
     public function referToMany($collection, $leftProperties, array $manyProperties)
     {
         $doc = $this->loadDocument($leftProperties->id($this));
-        $doc[get_class($collection)] = array();
+        $doc[$collection->name()] = array();
 
         foreach ($manyProperties as $rightProperties) {
-            $doc[get_class($collection)][] = $rightProperties->id($this);
+            $doc[$collection->name()][] = $rightProperties->id($this);
         }
 
         $this->client->putDocument($doc, $leftProperties->id($this));
@@ -121,7 +121,7 @@ class CouchDb implements ContainerInterface
 
         $doc = $this->loadDocument($leftProperties->id($this));
 
-        foreach ($doc[get_class($collection)] as $id) {
+        foreach ($doc[$collection->name()] as $id) {
             $rightProperties = $collection->constructProperties();
             $manyProperties[] = $rightProperties->loadFrom($this, $id);
         }
@@ -200,7 +200,8 @@ class CouchDb implements ContainerInterface
     private function saveCollections($collections, $ownerProperties)
     {
         /** @var Collection\AbstractCollection $collection */
-        foreach ($collections as $collection) {
+        foreach ($collections as $name => $collection) {
+            $collection->name($name);
             $collection->putIn($this, $ownerProperties);
         }
     }
@@ -212,7 +213,8 @@ class CouchDb implements ContainerInterface
     private function loadCollections($collections, $ownerProperties)
     {
         /** @var Collection\AbstractCollection $collection */
-        foreach ($collections as $collection) {
+        foreach ($collections as $name => $collection) {
+            $collection->name($name);
             $collection->loadFrom($this, $ownerProperties);
         }
     }
