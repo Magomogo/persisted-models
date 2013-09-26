@@ -61,6 +61,25 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('tags', $collection->name());
     }
 
+    public function testCanReturnAllStoredProperties()
+    {
+        $this->assertEquals(
+            array(new Keymarker\Properties, new Keymarker\Properties),
+            self::loadedCollection()->allProperties()
+        );
+    }
+
+    public function testDoesntExposePropertiesInstance()
+    {
+        $collection = self::loadedCollection();
+        $p1 = $collection->allProperties();
+        $p2 = $collection->allProperties();
+
+        $this->assertNotSame($p1[0], $p2[0]);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+
     /**
      * @return TestCollection
      */

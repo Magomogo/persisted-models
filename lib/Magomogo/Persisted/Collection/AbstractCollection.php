@@ -106,17 +106,25 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
      */
     public function allModels()
     {
-        $models = array();
-        foreach ($this->items as $offset => $properties) {
-            $models[$offset] = $this->constructModel($properties);
-        }
-        return $models;
+        $collection = $this;
+        return array_map(
+            function($properties) use ($collection) {
+                return $collection->constructModel($properties);
+            },
+            $this->items
+        );
+    }
+
+    public function allProperties()
+    {
+        return array_map(function($properties) { return clone $properties;}, $this->items);
     }
 
     /**
      * Getter/setter
      *
      * @param string|null $value to set
+     * @throws \Magomogo\Persisted\Exception\CollectionName
      * @return string
      */
     public function name($value = null)
