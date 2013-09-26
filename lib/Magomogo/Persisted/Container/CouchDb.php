@@ -40,6 +40,10 @@ class CouchDb implements ContainerInterface
             $this->collectReferences($doc, $properties->foreign());
         }
 
+        if ($properties instanceof Collection\OwnerInterface) {
+            $this->loadCollections($properties->collections(), $properties);
+        }
+
         return $properties;
     }
 
@@ -66,6 +70,11 @@ class CouchDb implements ContainerInterface
             list($id, $rev) = $this->client->postDocument($doc);
             $properties->persisted($id, $this);
         }
+
+        if ($properties instanceof Collection\OwnerInterface) {
+            $this->saveCollections($properties->collections(), $properties);
+        }
+
         return $properties;
     }
 
@@ -88,7 +97,14 @@ class CouchDb implements ContainerInterface
      */
     public function referToMany($collection, $leftProperties, array $manyProperties)
     {
-        // TODO: Implement referToMany() method.
+        $doc = $this->loadDocument($leftProperties->id($this));
+        $doc[get_class($collection)] = array();
+
+        foreach ($manyProperties as $rightProperties) {
+            $doc[get_class($collection)][] = $rightProperties->id($this);
+        }
+
+        $this->client->putDocument($doc, $leftProperties->id($this));
     }
 
     /**
@@ -98,8 +114,16 @@ class CouchDb implements ContainerInterface
      */
     public function listReferences($collection, $leftProperties)
     {
-        // TODO: Implement listReferences() method.
-        return array();
+        $manyProperties = array();
+
+        $doc = $this->loadDocument($leftProperties->id($this));
+
+        foreach ($doc[get_class($collection)] as $id) {
+            $rightProperties = $collection->constructProperties();
+            $manyProperties[] = $rightProperties->loadFrom($this, $id);
+        }
+
+        return $manyProperties;
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -164,6 +188,30 @@ class CouchDb implements ContainerInterface
             $properties->loadFrom($this, $doc[$referenceName]);
         }
         return $references;
+    }
+
+    /**
+     * @param $collections array of Collection\AbstractCollection
+     * @param Collection\OwnerInterface $ownerProperties
+     */
+    private function saveCollections($collections, $ownerProperties)
+    {
+        /** @var Collection\AbstractCollection $collection */
+        foreach ($collections as $collection) {
+            $collection->putIn($this, $ownerProperties);
+        }
+    }
+
+    /**
+     * @param $collections array of Collection\AbstractCollection
+     * @param Collection\OwnerInterface $ownerProperties
+     */
+    private function loadCollections($collections, $ownerProperties)
+    {
+        /** @var Collection\AbstractCollection $collection */
+        foreach ($collections as $collection) {
+            $collection->loadFrom($this, $ownerProperties);
+        }
     }
 
 }

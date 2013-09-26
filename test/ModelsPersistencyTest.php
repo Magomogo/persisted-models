@@ -36,6 +36,7 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
 
         $id = $model->save($container);
         $this->assertEquals($model, $model::load($container, $id));
+        exit;
     }
 
     /**
@@ -68,6 +69,8 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
     public static function modelsProvider()
     {
         return array(
+            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'couchDbContainer')),
+
             array(ObjectMother\CreditCard::datatransTesting(), new Memory()),
             array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'sqliteContainer')),
             array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'postgresContainer')),
