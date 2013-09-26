@@ -26,9 +26,12 @@
         "doctrine/dbal": "2.3.0"
     },
     "require-dev": {
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-pdo_pgsql": "*",
         "ext-pdo_sqlite": "*",
         "mockery/mockery": "0.7.2",
-        "phpunit/phpunit": "3.7.1",
+        "phpunit/phpunit": "3.7.*",
         "hamcrest/hamcrest": "1.1.0",
         "doctrine/couchdb": "@dev"
     },
@@ -36,6 +39,10 @@
         {
             "name": "Maxim Gnatenko",
             "email": "maxim@xiag.ch"
+        },
+        {
+            "name": "Anton Bondar",
+            "email": "zebooka@xiag.ch"
         }
     ],
     "autoload": {

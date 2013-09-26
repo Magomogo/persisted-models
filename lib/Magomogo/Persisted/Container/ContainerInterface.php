@@ -7,19 +7,19 @@ use Magomogo\Persisted\AbstractProperties;
 interface ContainerInterface
 {
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $properties
-     * @return \Magomogo\Persisted\AbstractProperties loaded with data
+     * @param AbstractProperties $properties
+     * @return AbstractProperties loaded with data
      */
     public function loadProperties($properties);
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $properties
-     * @return \Magomogo\Persisted\AbstractProperties
+     * @param AbstractProperties $properties
+     * @return AbstractProperties
      */
     public function saveProperties($properties);
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $properties
+     * @param AbstractProperties $properties
      * @return void
      */
     public function deleteProperties($properties);
@@ -27,7 +27,7 @@ interface ContainerInterface
     /**
      * @param Collection\AbstractCollection $collection
      * @param Collection\OwnerInterface $leftProperties
-     * @param array $manyProperties array of \Magomogo\Model\AbstractProperties
+     * @param AbstractProperties[] $manyProperties
      * @return void
      */
     public function referToMany($collection, $leftProperties, array $manyProperties);
@@ -35,7 +35,7 @@ interface ContainerInterface
     /**
      * @param Collection\AbstractCollection $collection
      * @param Collection\OwnerInterface $leftProperties
-     * @return array of \Magomogo\Model\AbstractProperties
+     * @return AbstractProperties[]
      */
     public function listReferences($collection, $leftProperties);
 }
