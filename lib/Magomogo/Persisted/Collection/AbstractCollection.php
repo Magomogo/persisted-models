@@ -98,13 +98,13 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->asArray());
+        return new \ArrayIterator($this->allModels());
     }
 
     /**
      * @return ModelInterface[]
      */
-    public function asArray()
+    public function allModels()
     {
         $models = array();
         foreach ($this->items as $offset => $properties) {

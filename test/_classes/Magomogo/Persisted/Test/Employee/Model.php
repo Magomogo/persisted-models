@@ -26,7 +26,7 @@ class Model extends Person
     {
         $p = new Properties();
         $p->loadFrom($container, $id);
-        return new self(new Company\Model($p->foreign()->company), $p, $p->tags->asArray());
+        return new self(new Company\Model($p->foreign()->company), $p, $p->tags->allModels());
     }
 
     /**
