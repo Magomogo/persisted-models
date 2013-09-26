@@ -83,7 +83,10 @@ class SqlDb implements ContainerInterface
      */
     public function deleteProperties($properties)
     {
-        $this->db->delete($this->names->propertiesToName($properties), array('id' => $properties->id($this)));
+        $this->db->delete(
+            $this->db->quoteIdentifier($this->names->propertiesToName($properties)),
+            array('id' => $properties->id($this))
+        );
     }
 
     /**
