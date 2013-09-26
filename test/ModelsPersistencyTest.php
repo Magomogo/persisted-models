@@ -36,7 +36,6 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
 
         $id = $model->save($container);
         $this->assertEquals($model, $model::load($container, $id));
-        exit;
     }
 
     /**
@@ -69,8 +68,6 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
     public static function modelsProvider()
     {
         return array(
-            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'couchDbContainer')),
-
             array(ObjectMother\CreditCard::datatransTesting(), new Memory()),
             array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'sqliteContainer')),
             array(ObjectMother\CreditCard::datatransTesting(), array(__CLASS__, 'postgresContainer')),
@@ -101,22 +98,23 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
             array(ObjectMother\Keymarker::friend(), array(__CLASS__, 'mysqlContainer')),
             array(ObjectMother\Keymarker::friend(), array(__CLASS__, 'couchDbContainer')),
 
+            array(array(__CLASS__, 'personHavingKeymarkers'), new Memory()),
+            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'sqliteContainer')),
+            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'postgresContainer')),
+            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'mysqlContainer')),
+            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'couchDbContainer')),
+
             array(array(__CLASS__, 'employeeModel'), new Memory()),
             array(array(__CLASS__, 'employeeModel'), array(__CLASS__, 'sqliteContainer')),
             array(array(__CLASS__, 'employeeModel'), array(__CLASS__, 'postgresContainer')),
             array(array(__CLASS__, 'employeeModel'), array(__CLASS__, 'mysqlContainer')),
+            array(array(__CLASS__, 'employeeModel'), array(__CLASS__, 'couchDbContainer')),
 
             array(array(__CLASS__, 'jobRecord'), new Memory()),
             array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'sqliteContainer')),
             array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'postgresContainer')),
             array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'mysqlContainer')),
             array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'couchDbContainer')),
-
-            array(array(__CLASS__, 'personHavingKeymarkers'), new Memory()),
-            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'sqliteContainer')),
-            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'postgresContainer')),
-            array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'mysqlContainer')),
-
         );
     }
 
