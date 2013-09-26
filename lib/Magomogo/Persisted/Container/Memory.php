@@ -106,14 +106,14 @@ class Memory implements ContainerInterface
     {
         /** @var Collection\AbstractCollection $collection */
         foreach ($properties->collections() as $collection) {
-            $references =  $this->manyToManyReferences[$this->manyToManyRefName($collection, $properties)];
-            $id = $properties->id($this);
+            $references = $this->manyToManyReferences[$this->manyToManyRefName($collection, $properties)];
+            $ownId = $properties->id($this);
 
             $collection->propertiesOperation(
-                function() use ($references, $properties, $id) {
+                function() use ($references, $ownId) {
                     $items = array();
                     foreach ($references as $pair) {
-                        if ($id === $pair['left']) {
+                        if ($ownId === $pair['left']) {
                             $items[] = $pair['right'];
                         }
                     }
@@ -133,17 +133,16 @@ class Memory implements ContainerInterface
             $refName = $this->manyToManyRefName($collection, $properties);
             $this->manyToManyReferences[$refName] = array();
             $referenceStorage = &$this->manyToManyReferences[$refName];
-            $id = $properties->id($this);
+            $ownId = $properties->id($this);
             $container = $this;
 
             $collection->propertiesOperation(
-                function($items) use (&$referenceStorage, $id, $container) {
+                function($items) use (&$referenceStorage, $ownId, $container) {
                     foreach ($items as $rightProperties) {
                         $referenceStorage[] = array(
-                            'left' => $id,
+                            'left' => $ownId,
                             'right' => $rightProperties,
                         );
-                        $container->saveProperties($rightProperties);
                     }
                     return $items;
                 }

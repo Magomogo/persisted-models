@@ -8,6 +8,9 @@ use Magomogo\Persisted\ModelInterface;
 
 abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
+    /**
+     * @var AbstractProperties[]
+     */
     protected $items = array();
 
     private $optionalName;
