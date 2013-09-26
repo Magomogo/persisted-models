@@ -6,6 +6,7 @@ php:
 services:
   - MySQL
   - PostgreSQL
+  - CouchDB
 
 before_script:
   - composer install --dev

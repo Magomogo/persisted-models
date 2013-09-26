@@ -6,7 +6,7 @@ use Magomogo\Persisted\Test\CreditCard\Properties;
 
 class CreditCard
 {
-    public static function datatransTesting($id = null)
+    public static function datatransTesting()
     {
         return new Model(new Properties(array(
             'system' => 'VISA',
