@@ -34,17 +34,12 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(Test\ObjectMother\Keymarker::IT(), $collection[0]);
 
-        $container = m::mock();
-        $container
-            ->shouldReceive('referToMany')
-            ->with(
-                anything(),
-                anything(),
-                m::on(function($arg) {
-                    return (count($arg) == 1) && ($arg[0] instanceof Keymarker\Properties);
-                }))
-            ->once();
-        $collection->putIn($container, m::mock());
+        $phpunit = $this;
+
+        $collection->propertiesOperation(function($items) use ($phpunit) {
+                $phpunit->assertCount(1, $items);
+                $phpunit->assertInstanceOf('Magomogo\\Persisted\\Test\\Keymarker\\Properties', $items[0]);
+            });
     }
 
     public function testAskingAnUnknownCollectionName()
@@ -61,23 +56,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('tags', $collection->name());
     }
 
-    public function testCanReturnAllStoredProperties()
-    {
-        $this->assertEquals(
-            array(new Keymarker\Properties, new Keymarker\Properties),
-            self::loadedCollection()->allProperties()
-        );
-    }
-
-    public function testDoesntExposePropertiesInstance()
-    {
-        $collection = self::loadedCollection();
-        $p1 = $collection->allProperties();
-        $p2 = $collection->allProperties();
-
-        $this->assertNotSame($p1[0], $p2[0]);
-    }
-
 //----------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -86,13 +64,9 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
     private static function loadedCollection()
     {
         $collection = new TestCollection();
-        $collection->loadFrom(
-            m::mock(
-                array(
-                    'listReferences' => array(new Keymarker\Properties, new Keymarker\Properties)
-                )
-            ),
-            m::mock()
+        $collection->propertiesOperation(function() {
+                return array(new Keymarker\Properties, new Keymarker\Properties);
+            }
         );
         return $collection;
     }

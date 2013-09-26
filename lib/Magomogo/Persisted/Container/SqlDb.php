@@ -12,7 +12,7 @@ use Magomogo\Persisted\Exception;
 class SqlDb implements ContainerInterface
 {
     /**
-     * @var string
+     * @var NamesInterface
      */
     private $names;
 
@@ -87,66 +87,6 @@ class SqlDb implements ContainerInterface
             $this->db->quoteIdentifier($this->names->propertiesToName($properties)),
             array('id' => $properties->id($this))
         );
-    }
-
-    /**
-     * @param Collection\AbstractCollection $collection
-     * @param AbstractProperties $leftProperties
-     * @param AbstractProperties[] $manyProperties
-     */
-    public function referToMany($collection, $leftProperties, array $manyProperties)
-    {
-        $referenceName = $this->names->manyToManyRelationName($collection, $leftProperties);
-
-        $this->db->delete(
-            $this->db->quoteIdentifier($referenceName),
-            array(
-                $this->db->quoteIdentifier($this->names->propertiesToName($leftProperties)) =>
-                    $leftProperties->id($this)
-            )
-        );
-
-        foreach ($manyProperties as $rightProperties) {
-            $this->db->insert(
-                $this->db->quoteIdentifier($referenceName),
-                array(
-                    $this->db->quoteIdentifier($this->names->propertiesToName($leftProperties)) =>
-                        $leftProperties->id($this),
-                    $this->db->quoteIdentifier($this->names->propertiesToName($rightProperties)) =>
-                        $rightProperties->id($this),
-                )
-            );
-        }
-    }
-
-    /**
-     * @param Collection\AbstractCollection $collection
-     * @param AbstractProperties $leftProperties
-     * @return AbstractProperties[]
-     */
-    public function listReferences($collection, $leftProperties)
-    {
-        $referenceName = $this->names->manyToManyRelationName($collection, $leftProperties);
-        $leftPropertiesName = $this->names->propertiesToName($leftProperties);
-
-        $list = $this->db->fetchAll(
-            'SELECT * FROM ' . $this->db->quoteIdentifier($referenceName)
-            . ' WHERE ' . $this->db->quoteIdentifier($leftPropertiesName) . '=?',
-            array($leftProperties->id($this))
-        );
-
-        $manyProperties = array();
-
-        if (!empty($list)) {
-            $rightPropertiesName = $this->names->collectionToName($collection);
-
-            foreach ($list as $row) {
-                $rightProperties = $collection->constructProperties();
-                $manyProperties[] = $rightProperties->loadFrom($this, $row[$rightPropertiesName]);
-            }
-        }
-
-        return $manyProperties;
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -240,8 +180,34 @@ class SqlDb implements ContainerInterface
      */
     private function loadCollections($collections, $ownerProperties)
     {
+        $leftPropertiesName = $this->names->propertiesToName($ownerProperties);
+
         foreach ($collections as $collection) {
-            $collection->loadFrom($this, $ownerProperties);
+
+            $referenceName = $this->names->manyToManyRelationName($collection, $ownerProperties);
+            $rightPropertiesName = $this->names->collectionToName($collection);
+
+            $list = $this->db->fetchAll(
+                'SELECT * FROM ' . $this->db->quoteIdentifier($referenceName)
+                . ' WHERE ' . $this->db->quoteIdentifier($leftPropertiesName) . '=?',
+                array($ownerProperties->id($this))
+            );
+
+            $container = $this;
+            $collection->propertiesOperation(
+                function() use ($rightPropertiesName, $collection, $list, $container) {
+                    $items = array();
+
+                    if (!empty($list)) {
+                        foreach ($list as $row) {
+                            $rightProperties = $collection->constructProperties();
+                            $items[] = $rightProperties->loadFrom($container, $row[$rightPropertiesName]);
+                        }
+                    }
+
+                    return $items;
+                }
+            );
         }
     }
 
@@ -251,8 +217,38 @@ class SqlDb implements ContainerInterface
      */
     private function saveCollections($collections, $ownerProperties)
     {
+
         foreach ($collections as $collection) {
-            $collection->putIn($this, $ownerProperties);
+            $referenceName = $this->names->manyToManyRelationName($collection, $ownerProperties);
+
+            $this->db->delete(
+                $this->db->quoteIdentifier($referenceName),
+                array(
+                    $this->db->quoteIdentifier($this->names->propertiesToName($ownerProperties)) =>
+                    $ownerProperties->id($this)
+                )
+            );
+
+            $dbAdapter = $this->db;
+            $container = $this;
+            $names = $this->names;
+
+            $collection->propertiesOperation(
+                function($items) use ($referenceName, $dbAdapter, $ownerProperties, $container, $names) {
+                    foreach ($items as $rightProperties) {
+                        $dbAdapter->insert(
+                            $dbAdapter->quoteIdentifier($referenceName),
+                            array(
+                                $dbAdapter->quoteIdentifier($names->propertiesToName($ownerProperties)) =>
+                                $ownerProperties->id($container),
+                                $dbAdapter->quoteIdentifier($names->propertiesToName($rightProperties)) =>
+                                $rightProperties->id($container),
+                            )
+                        );
+                    }
+                    return $items;
+                }
+            );
         }
     }
 

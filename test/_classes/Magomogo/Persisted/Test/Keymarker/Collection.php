@@ -19,4 +19,15 @@ class Collection extends AbstractCollection
     {
         return new Properties();
     }
+
+    public function propertiesOperation($function)
+    {
+        parent::propertiesOperation($function);
+
+        $indexedItems = array();
+        foreach ($this->items as $property) {
+            $indexedItems[$property->id] = $property;
+        }
+        $this->items = $indexedItems;
+    }
 }

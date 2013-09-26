@@ -23,19 +23,4 @@ interface ContainerInterface
      * @return void
      */
     public function deleteProperties($properties);
-
-    /**
-     * @param Collection\AbstractCollection $collection
-     * @param Collection\OwnerInterface $leftProperties
-     * @param AbstractProperties[] $manyProperties
-     * @return void
-     */
-    public function referToMany($collection, $leftProperties, array $manyProperties);
-
-    /**
-     * @param Collection\AbstractCollection $collection
-     * @param Collection\OwnerInterface $leftProperties
-     * @return AbstractProperties[]
-     */
-    public function listReferences($collection, $leftProperties);
 }
