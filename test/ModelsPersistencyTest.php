@@ -107,6 +107,7 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
             array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'sqliteContainer')),
             array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'postgresContainer')),
             array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'mysqlContainer')),
+            array(array(__CLASS__, 'jobRecord'), array(__CLASS__, 'couchDbContainer')),
 
             array(array(__CLASS__, 'personHavingKeymarkers'), new Memory()),
             array(array(__CLASS__, 'personHavingKeymarkers'), array(__CLASS__, 'sqliteContainer')),

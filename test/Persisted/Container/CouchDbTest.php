@@ -14,7 +14,7 @@ class CouchDbTest extends \PHPUnit_Framework_TestCase
         $client = m::mock();
         $client->shouldReceive('findDocument');
         $client->shouldReceive('postDocument')
-            ->with(array('name' => 'XIAG'))
+            ->with(m::subset(array('name' => 'XIAG')))
             ->once()
             ->andReturn(array('id-hash-FE2343', '1-rev-hash-35AC'));
 
@@ -27,7 +27,7 @@ class CouchDbTest extends \PHPUnit_Framework_TestCase
     {
         $client = self::couchDbHavingDoc();
         $client->shouldReceive('putDocument')
-            ->with(array('_id' => 'id-hash-43FF', '_rev' => '1-rev-hash-45323DD', 'name' => 'XIAG'), 'id-hash-43FF')
+            ->with(m::subset(array('name' => 'XIAG')), 'id-hash-43FF')
             ->once();
 
         $props = new Company\Properties(array('name' => 'XIAG'));

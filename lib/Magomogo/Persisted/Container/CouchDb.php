@@ -7,6 +7,7 @@ use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\Exception;
 use Magomogo\Persisted\ModelInterface;
+use Magomogo\Persisted\PossessionInterface;
 
 class CouchDb implements ContainerInterface
 {
@@ -35,6 +36,10 @@ class CouchDb implements ContainerInterface
             $property = array_key_exists($name, $doc) ? $this->fromDbValue($property, $doc[$name]) : null;
         }
 
+        if ($properties instanceof PossessionInterface) {
+            $this->collectReferences($doc, $properties->foreign());
+        }
+
         return $properties;
     }
 
@@ -44,10 +49,14 @@ class CouchDb implements ContainerInterface
      */
     public function saveProperties($properties)
     {
-        $doc = array();
+        $doc = array('type' => get_class($properties));
 
         foreach ($properties as $name => $value) {
             $doc[$name] = $this->toDbValue($value);
+        }
+
+        if ($properties instanceof PossessionInterface) {
+            $doc = array_merge($doc, $this->foreignKeys($properties->foreign()));
         }
 
         if ($properties->id($this) && is_array($existingDoc = $this->loadDocument($properties->id($this)))) {
@@ -135,6 +144,26 @@ class CouchDb implements ContainerInterface
         } else {
             throw new Exception\Type;
         }
+    }
+
+    private function foreignKeys($references)
+    {
+        $keys = array();
+        /* @var AbstractProperties $properties */
+        foreach ($references as $referenceName => $properties) {
+            $keys[$referenceName] = $properties->id($this);
+        }
+
+        return $keys;
+    }
+
+    private function collectReferences(array $doc, $references)
+    {
+        /* @var AbstractProperties $properties */
+        foreach ($references as $referenceName => $properties) {
+            $properties->loadFrom($this, $doc[$referenceName]);
+        }
+        return $references;
     }
 
 }
