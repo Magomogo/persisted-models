@@ -58,8 +58,15 @@ class SchemaCreator implements ContainerInterface
 
             if ($properties instanceof Collection\OwnerInterface) {
                 /** @var Collection\AbstractCollection $collection */
-                foreach ($properties->collections() as $collectionName => $collection) {
-                    $collection->putIn($this, $properties);
+                foreach ($properties->collections() as $collection) {
+
+                    $creator = $this;
+                    $collection->propertiesOperation(
+                        function($items) use ($properties, $collection, $creator) {
+                            $creator->many2manySchema($collection, $properties, $items);
+                            return $items;
+                        }
+                    );
                 }
             }
 
@@ -81,10 +88,10 @@ class SchemaCreator implements ContainerInterface
     /**
      * @param Collection\AbstractCollection $collection
      * @param \Magomogo\Persisted\AbstractProperties $leftProperties
-     * @param array $manyProperties array of \Magomogo\Model\AbstractProperties
+     * @param \Magomogo\Persisted\AbstractProperties[] $manyProperties
      * @return void
      */
-    public function referToMany($collection, $leftProperties, array $manyProperties)
+    public function many2manySchema($collection, $leftProperties, array $manyProperties)
     {
         $referenceName = $this->names->manyToManyRelationName($collection, $leftProperties);
 
@@ -99,16 +106,6 @@ class SchemaCreator implements ContainerInterface
             );
             $this->manager->createTable($table);
         }
-    }
-
-    /**
-     * @param string $collection
-     * @param \Magomogo\Persisted\AbstractProperties $leftProperties
-     * @return array of \Magomogo\Model\AbstractProperties
-     */
-    public function listReferences($collection, $leftProperties)
-    {
-        trigger_error('Incorrect usage', E_USER_ERROR);
     }
 
 //----------------------------------------------------------------------------------------------------------------------

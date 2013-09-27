@@ -50,6 +50,17 @@ class Model implements ModelInterface, MemberInterface
      */
     public function appendToCollection($collection, $offset = null)
     {
-        $collection->appendProperties($this->properties, $offset);
+        $properties = $this->properties;
+
+        $collection->propertiesOperation(
+            function($items) use ($properties, $offset) {
+                if (is_null($offset)) {
+                    $items[] = $properties;
+                } else {
+                    $items[$offset] = $properties;
+                }
+                return $items;
+            }
+        );
     }
 }

@@ -92,43 +92,6 @@ class CouchDb implements ContainerInterface
         }
     }
 
-    /**
-     * @param Collection\AbstractCollection $collection
-     * @param Collection\OwnerInterface $leftProperties
-     * @param array $manyProperties array of \Magomogo\Model\AbstractProperties
-     * @return void
-     */
-    public function referToMany($collection, $leftProperties, array $manyProperties)
-    {
-        $doc = $this->loadDocument($leftProperties->id($this));
-        $doc[$collection->name()] = array();
-
-        foreach ($manyProperties as $rightProperties) {
-            $doc[$collection->name()][] = $rightProperties->id($this);
-        }
-
-        $this->client->putDocument($doc, $leftProperties->id($this));
-    }
-
-    /**
-     * @param Collection\AbstractCollection $collection
-     * @param Collection\OwnerInterface $leftProperties
-     * @return array of \Magomogo\Model\AbstractProperties
-     */
-    public function listReferences($collection, $leftProperties)
-    {
-        $manyProperties = array();
-
-        $doc = $this->loadDocument($leftProperties->id($this));
-
-        foreach ($doc[$collection->name()] as $id) {
-            $rightProperties = $collection->constructProperties();
-            $manyProperties[] = $rightProperties->loadFrom($this, $id);
-        }
-
-        return $manyProperties;
-    }
-
 //----------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -201,8 +164,20 @@ class CouchDb implements ContainerInterface
     {
         /** @var Collection\AbstractCollection $collection */
         foreach ($collections as $name => $collection) {
-            $collection->name($name);
-            $collection->putIn($this, $ownerProperties);
+            $couchDbClient = $this->client;
+            $doc = $this->loadDocument($ownerProperties->id($this));
+            $container = $this;
+
+            $collection->propertiesOperation(function($items) use ($name, $couchDbClient, $doc, $container) {
+                $doc[$name] = array();
+
+                foreach ($items as $rightProperties) {
+                    $doc[$name][] = $rightProperties->id($container);
+                }
+
+                $couchDbClient->putDocument($doc, $doc['_id']);
+                return $items;
+            });
         }
     }
 
@@ -212,10 +187,21 @@ class CouchDb implements ContainerInterface
      */
     private function loadCollections($collections, $ownerProperties)
     {
+        $doc = $this->loadDocument($ownerProperties->id($this));
+        $container = $this;
+
         /** @var Collection\AbstractCollection $collection */
         foreach ($collections as $name => $collection) {
-            $collection->name($name);
-            $collection->loadFrom($this, $ownerProperties);
+            $propertiesIds = $doc[$name];
+
+            $collection->propertiesOperation(function() use ($propertiesIds, $collection, $container) {
+                $items = array();
+                foreach ($propertiesIds as $id) {
+                    $rightProperties = $collection->constructProperties();
+                    $items[] = $rightProperties->loadFrom($container, $id);
+                }
+                return $items;
+           });
         }
     }
 

@@ -2,13 +2,15 @@
 
 namespace Magomogo\Persisted\Collection;
 
-use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Exception;
 use Magomogo\Persisted\ModelInterface;
 
 abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \Countable
 {
+    /**
+     * @var AbstractProperties[]
+     */
     protected $items = array();
 
     private $optionalName;
@@ -24,44 +26,44 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
      */
     abstract public function constructProperties();
 
-    /**
-     * @param ContainerInterface $container
-     * @param OwnerInterface $owner
-     * @return $this
-     */
-    public function loadFrom($container, $owner)
+    public function propertiesOperation($function)
     {
-        $this->items = array();
-        foreach ($container->listReferences($this, $owner) as $properties) {
-            /** @var AbstractProperties $properties */
-            $this->appendProperties($properties, $properties->id($container));
-        }
-        return $this;
+        $this->items = $function($this->items);
     }
 
     /**
-     * @param ContainerInterface $container
-     * @param OwnerInterface $owner
-     * @return $this
+     * @return ModelInterface[]
      */
-    public function putIn($container, $owner)
+    public function asArray()
     {
-        $container->referToMany($this, $owner, $this->items);
-        return $this;
+        $models = array();
+        foreach ($this->items as $offset => $properties) {
+            $models[$offset] = $this->constructModel($properties);
+        }
+        return $models;
     }
 
     /**
-     * @param AbstractProperties $properties
-     * @param mixed $offset
+     * Getter/setter
+     *
+     * @param string|null $value to set
+     * @throws \Magomogo\Persisted\Exception\CollectionName
+     * @return string
      */
-    public function appendProperties($properties, $offset = null)
+    public function name($value = null)
     {
-        if (is_null($offset)) {
-            $this->items[] = $properties;
-        } else {
-            $this->items[$offset] = $properties;
+        if (!is_null($value)) {
+            $this->optionalName = $value;
         }
+
+        if (is_null($this->optionalName)) {
+            throw new Exception\CollectionName;
+        }
+
+        return $this->optionalName;
     }
+
+//----------------------------------------------------------------------------------------------------------------------
 
     public function count()
     {
@@ -98,43 +100,6 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->allModels());
-    }
-
-    /**
-     * @return ModelInterface[]
-     */
-    public function allModels()
-    {
-        $models = array();
-        foreach ($this->items as $offset => $properties) {
-            $models[$offset] = $this->constructModel($properties);
-        }
-        return $models;
-    }
-
-    public function allProperties()
-    {
-        return array_map(function($properties) { return clone $properties;}, $this->items);
-    }
-
-    /**
-     * Getter/setter
-     *
-     * @param string|null $value to set
-     * @throws \Magomogo\Persisted\Exception\CollectionName
-     * @return string
-     */
-    public function name($value = null)
-    {
-        if (!is_null($value)) {
-            $this->optionalName = $value;
-        }
-
-        if (is_null($this->optionalName)) {
-            throw new Exception\CollectionName;
-        }
-
-        return $this->optionalName;
+        return new \ArrayIterator($this->asArray());
     }
 }
