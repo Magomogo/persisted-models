@@ -25,7 +25,7 @@ source: [Person\Model](//github.com/Magomogo/persisted-models/blob/master/test/_
 
 ### Obvious responsibilities
 
-To achieve persistency we not need to store **A model**, it is necessary to store its properties.
+To achieve persistency we don't need to store **A model**, it is necessary to store its properties.
 
     // save/update
     $dbContainer = new Persisted\Container\SqlDb($connection);
@@ -36,19 +36,18 @@ To achieve persistency we not need to store **A model**, it is necessary to stor
 
 source: [Persisted\Container\SqlDb](//github.com/Magomogo/persisted-models/blob/master/lib/Magomogo/Persisted/Container/SqlDb.php "Database container")
 
+Handling user input with **'Editors'**, **'A Editor'** is kind of a Container.
 
-Handling user input with **'Forms'**, **'A Form'** is kind of a Container.
+    $editor = new ProfileEditor($person);
+    // validation here
+    $editor->edit($userInput);
 
-    $form = new ProfileForm;
-    $person->save($form);
-
-    // final validation here
-    $editedPerson = Person\Model::load($form);
+    $editedPerson = Person\Model::load($editor);
     $editedPerson->save($dbContainer);
 
 ### Strong separation between different types of object relations.
 
-For example person properties can have a contact info aggregated, it gets stored and updated together with person:
+For example person properties can have contact info aggregated, it gets stored and updated together with person:
 
     $contactInfoModel = new ContactInfo\Model($contactInfoProperties);
 
@@ -66,6 +65,24 @@ created/updated separately.
     // this won't update company, only creates one to many reference company -> person in the container
     $employee->save($dbContainer);
 
+A model can have a list of another models connected. This so called many-to-many relation is possible using
+Collections.
 
+    $collection = new Keymarker\Collection;
+    $collection['Example'] = new Keymarker\Model(new Keymarker\Properties(array('name' => 'Example'));
+
+Examples
+--------
+
+See test cases to learn recommended usage:
+
+- Model with simply properties [Company/ModelTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Company/ModelTest.php)
+- A Person having CreditCard aggregated, A Person that can be tagged with Keymarkers
+ [Person/ModelTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Person/ModelTest.php)
+- An Employee working in a Company [Employee/ModelTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Employee/ModelTest.php)
+- Keymarker model that have natural keys
+ [Keymarker/ModelTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Keymarker/ModelTest.php),
+ [Keymarker/PropertiesTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Keymarker/PropertiesTest.php)
+- Load/Create/Update/Save a persisted model [ModelPersonEditorWorkflowTest.php](//github.com/Magomogo/persisted-models/blob/master/test/ModelPersonEditorWorkflowTest.php)
 
 *...the work is in progress...*
