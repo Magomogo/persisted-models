@@ -72,7 +72,7 @@ class SchemaCreator implements ContainerInterface
 
         }
 
-        $properties->persisted($tableName, $this);
+        $properties->persisted($properties, $this);
         return $properties;
     }
 
@@ -99,10 +99,12 @@ class SchemaCreator implements ContainerInterface
             $rightProperties = reset($manyProperties);
             $table = new Table($this->quoteIdentifier($referenceName));
             $this->addForeignReferenceColumn(
-                $table, $this->names->propertiesToName($leftProperties), $leftProperties
+                $table, $this->names->propertiesToName($leftProperties), $leftProperties,
+                array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE')
             );
             $this->addForeignReferenceColumn(
-                $table, $this->names->propertiesToName($rightProperties), $rightProperties
+                $table, $this->names->propertiesToName($rightProperties), $rightProperties,
+                array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE')
             );
             $this->manager->createTable($table);
         }
@@ -126,12 +128,10 @@ class SchemaCreator implements ContainerInterface
         if (is_string($fieldValue)) {
             $table->addColumn($this->quoteIdentifier($fieldName), 'text', array('notNull' => false));
         } elseif ($fieldValue instanceof ModelInterface) {
-            $table->addColumn($this->quoteIdentifier($fieldName), 'integer', array('unsigned' => true, 'notNull' => false));
-            $relatedTable = $fieldValue->save($this);
-            $table->addForeignKeyConstraint(
-                $this->quoteIdentifier($relatedTable),
-                array($this->quoteIdentifier($fieldName)),
-                array('id'),
+            $this->addForeignReferenceColumn(
+                $table,
+                $fieldName,
+                $fieldValue->save($this),
                 array('onUpdate' => 'RESTRICT', 'onDelete' => 'SET NULL')
             );
         } elseif ($fieldValue instanceof \DateTime) {
@@ -150,23 +150,24 @@ class SchemaCreator implements ContainerInterface
     {
         $table = new Table($this->quoteIdentifier($tableName));
 
-        if (!isset($properties->id)) {
+        if (is_null($properties->naturalKeyFieldName())) {
             $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
         }
 
         foreach ($properties as $name => $value) {
-            if (($name === 'id') && is_string($value)) {
-                $table->addColumn('id', 'string', array('length' => 255, 'notnull' => true));
+            if ($properties->naturalKeyFieldName() === $name) {
+                $table->addColumn($name, 'string', array('length' => 255, 'notnull' => true));
             } else {
                 $this->defineSchemaForField($table, $name, $value);
             }
         }
 
-        $table->setPrimaryKey(array('id'));
+        $table->setPrimaryKey(array($properties->naturalKeyFieldName() ?: 'id'));
 
         if ($properties instanceof PossessionInterface) {
             foreach ($properties->foreign() as $propertyName => $foreignProperties) {
-                $this->addForeignReferenceColumn($table, $propertyName, $foreignProperties);
+                $this->addForeignReferenceColumn($table, $propertyName, $foreignProperties,
+                    array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE'));
             }
         }
 
@@ -178,9 +179,9 @@ class SchemaCreator implements ContainerInterface
      * @param string $columnName
      * @param AbstractProperties $leftProperties
      */
-    private function addForeignReferenceColumn($table, $columnName, $leftProperties)
+    private function addForeignReferenceColumn($table, $columnName, $leftProperties, $options)
     {
-        if ($leftProperties->naturalKey() && is_string($leftProperties->naturalKey())) {
+        if ($leftProperties->naturalKeyFieldName()) {
             $table->addColumn($this->quoteIdentifier($columnName), 'string', array('length' => 255, 'notnull' => false));
         } else {
             $table->addColumn(
@@ -192,8 +193,8 @@ class SchemaCreator implements ContainerInterface
         $table->addForeignKeyConstraint(
             $this->quoteIdentifier($this->names->propertiesToName($leftProperties)),
             array($this->quoteIdentifier($columnName)),
-            array('id'),
-            array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE')
+            array($leftProperties->naturalKeyFieldName() ?: 'id'),
+            $options
         );
     }
 

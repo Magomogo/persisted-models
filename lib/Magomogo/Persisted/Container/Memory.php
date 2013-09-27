@@ -95,8 +95,13 @@ class Memory implements ContainerInterface
      */
     private function notifyOnPersistence($properties)
     {
-        $id = $properties->id($this) ?: $properties->naturalKey() ?: self::$autoincrement++;
+        if (is_null($properties->naturalKeyFieldName())) {
+            $id = $properties->id($this) ?: self::$autoincrement++;
+        } else {
+            $id = $properties->{$properties->naturalKeyFieldName()};
+        }
         $properties->persisted($id, $this);
+
         return $properties;
     }
 

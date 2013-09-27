@@ -67,8 +67,8 @@ class CouchDb implements ContainerInterface
             $doc = array_merge_recursive($doc, $existingDoc);
             $this->client->putDocument($doc, $properties->id($this));
         } else {
-            if (!is_null($properties->naturalKey())) {
-                $doc['_id'] = $properties->naturalKey();
+            if (!is_null($properties->naturalKeyFieldName())) {
+                $doc['_id'] = $properties->{$properties->naturalKeyFieldName()};
             }
             list($id, $rev) = $this->client->postDocument($doc);
             $properties->persisted($id, $this);

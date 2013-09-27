@@ -42,7 +42,7 @@ abstract class AbstractProperties implements \IteratorAggregate, PropertiesInter
             $this->idInContainer[get_class($container)] : null;
     }
 
-    public function naturalKey()
+    public function naturalKeyFieldName()
     {
         return null;
     }

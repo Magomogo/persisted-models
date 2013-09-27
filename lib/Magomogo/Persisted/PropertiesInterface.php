@@ -14,12 +14,12 @@ interface PropertiesInterface
     public function id($container);
 
     /**
-     * Optionally defines natural key value
-     * null value forces container to set its artificial identifier
+     * Optionally defines natural key
+     * null value forces container to use its specific artificial identifier
      *
-     * @return mixed
+     * @return string|null
      */
-    public function naturalKey();
+    public function naturalKeyFieldName();
 
     /**
      * The message. A container stored properties giving particular identifier

@@ -25,8 +25,9 @@ class Collection extends AbstractCollection
         parent::propertiesOperation($function);
 
         $indexedItems = array();
+        /** @var Properties $property */
         foreach ($this->items as $property) {
-            $indexedItems[$property->id] = $property;
+            $indexedItems[$property->name] = $property;
         }
         $this->items = $indexedItems;
     }

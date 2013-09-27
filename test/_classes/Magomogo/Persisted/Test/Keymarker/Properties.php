@@ -12,13 +12,13 @@ class Properties extends AbstractProperties
     protected function properties()
     {
         return array(
-            'id' => '',
+            'name' => '',
             'created' => new \DateTime(date('c'))
         );
     }
 
-    public function naturalKey()
+    public function naturalKeyFieldName()
     {
-        return $this->id;
+        return 'name';
     }
 }

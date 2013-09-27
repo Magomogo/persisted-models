@@ -8,6 +8,7 @@ use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
 use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Exception;
+use Magomogo\Persisted\PropertiesInterface;
 
 class SqlDb implements ContainerInterface
 {
@@ -130,7 +131,7 @@ class SqlDb implements ContainerInterface
 
             $row = $this->db->fetchAssoc(
                 'SELECT * FROM ' . $this->db->quoteIdentifier($this->names->propertiesToName($properties))
-                . ' WHERE id=?',
+                . ' WHERE ' . $this->db->quoteIdentifier(($properties->naturalKeyFieldName() ?: 'id')) . '=?',
                 array($properties->id($this))
             );
 
@@ -153,7 +154,7 @@ class SqlDb implements ContainerInterface
 
         if (!$properties->id($this)) {
             $this->db->insert($this->db->quoteIdentifier($tableName), $row);
-            $properties->persisted($properties->naturalKey() ?: $this->db->lastInsertId($tableName . '_id_seq'), $this);
+            $properties->persisted($this->defineNewId($properties, $tableName), $this);
         } else {
             $this->db->update($this->db->quoteIdentifier($tableName), $row, array('id' => $properties->id($this)));
         }
@@ -264,5 +265,16 @@ class SqlDb implements ContainerInterface
         }
 
         return $keys;
+    }
+
+    /**
+     * @param PropertiesInterface $properties
+     * @param string $tableName
+     * @return string
+     */
+    private function defineNewId($properties, $tableName)
+    {
+        return $properties->naturalKeyFieldName() ?
+            $properties->{$properties->naturalKeyFieldName()} : $this->db->lastInsertId($tableName . '_id_seq');
     }
 }

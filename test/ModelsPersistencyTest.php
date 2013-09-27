@@ -157,7 +157,7 @@ class ModelsPersistencyTest extends \PHPUnit_Framework_TestCase
         $company = ObjectMother\Company::xiag();
         $company->save($container);
 
-        $keymarker = new Keymarker\Model(new Keymarker\Properties(array('id' => 'test')));
+        $keymarker = new Keymarker\Model(new Keymarker\Properties(array('name' => 'test')));
         $keymarker->save($container);
 
         return new Employee\Model(
