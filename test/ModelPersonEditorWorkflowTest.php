@@ -48,14 +48,17 @@ class ModelEditorWorkflowTest extends \PHPUnit_Framework_TestCase
                 'firstName' => 'John',
                 'lastName' => 'Doe',
                 'email' => 'John.Doe@example.com',
+                'creditCard' => array(
+                    'system' => 'VISA',
+                    'pan' => '9512456785213698',
+                )
             ));
         $editor->saveTo($this->dbContainer());
 
-        $this->assertEquals(
-            'Mr. John Doe',
-            Person\Model::load($this->dbContainer(), $this->propertiesId)->politeTitle()
-        );
+        $updatedModel = Person\Model::load($this->dbContainer(), $this->propertiesId);
 
+        $this->assertEquals('Mr. John Doe', $updatedModel->politeTitle());
+        $this->assertEquals('VISA, 9512 **** **** 3698', $updatedModel->paymentInfo());
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -83,9 +86,7 @@ class PersonEditor extends Memory
 
     public function edit($data)
     {
-        foreach ($data as $name => $value) {
-            $this->properties->$name = $value;
-        }
+        $this->editProperties($data, $this->properties);
     }
 
     /**
@@ -101,4 +102,20 @@ class PersonEditor extends Memory
     {
         return new Person\Model(new Person\Properties(array('title' => 'Mr.')));
     }
+
+    /**
+     * @param $data
+     * @param AbstractProperties $properties
+     */
+    private function editProperties($data, $properties)
+    {
+        foreach ($data as $name => $value) {
+            if (is_array($value)) {
+                $this->editProperties($value, $this->exposeProperties($properties->$name));
+            } else {
+                $properties->$name = $value;
+            }
+        }
+    }
+
 }
