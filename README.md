@@ -21,8 +21,8 @@ instance that have no sense from the business logic point of view.
     $person = new Person\Model($propertiesBag);
     $employee = new Employee\Model($company, $propertiesBag);
     
-source: [Person\Model](//github.com/Magomogo/persisted-models/blob/master/test/_classes/Magomogo/Persisted/Person/Model.php "Person model")
- | [Employee\Model](//github.com/Magomogo/persisted-models/blob/master/test/_classes/Magomogo/Persisted/Employee/Model.php "Employee model")
+source: [Person\Model](//github.com/Magomogo/persisted-models/blob/master/test/_classes/Magomogo/Persisted/Test/Person/Model.php "Person model")
+ | [Employee\Model](//github.com/Magomogo/persisted-models/blob/master/test/_classes/Magomogo/Persisted/Test/Employee/Model.php "Employee model")
 
 ### Obvious responsibilities
 
