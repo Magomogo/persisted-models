@@ -62,19 +62,6 @@ class AbstractPropertiesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $properties->nullDefault);
     }
 
-    public function testPropertiesCanBeCopiedToAnotherProperties()
-    {
-        $properties = ObjectMother\Person::maximProperties();
-        $properties->persisted('1', m::mock('Magomogo\\Persisted\\Container\\SqlDb'));
-        $properties->persisted('123123132', m::mock('Magomogo\\Persisted\\Container\\Memory'));
-
-        $anotherProperties = new Person\Properties();
-        $properties->copyTo($anotherProperties);
-
-        $this->assertNotSame($properties, $anotherProperties);
-        $this->assertEquals($properties, $anotherProperties);
-    }
-
     public function testCloneCreatesEqualProperties()
     {
         $bag = self::properties();

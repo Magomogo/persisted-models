@@ -53,12 +53,4 @@ interface PropertiesInterface
      * @return void
      */
     public function deleteFrom($container);
-
-    /**
-     * Copy state to another properties of same type
-     *
-     * @param self $properties
-     * @return self
-     */
-    public function copyTo($properties);
 }

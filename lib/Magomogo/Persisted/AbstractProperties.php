@@ -7,7 +7,7 @@ use Magomogo\Persisted\Container\Memory;
 /**
  * @property string $id
  */
-abstract class AbstractProperties implements \IteratorAggregate
+abstract class AbstractProperties implements \IteratorAggregate, PropertiesInterface
 {
     private $idInContainer = array();
     private $properties;
@@ -128,26 +128,5 @@ abstract class AbstractProperties implements \IteratorAggregate
     public function deleteFrom($container)
     {
         $container->deleteProperties($this);
-    }
-
-    /**
-     * @param self $properties
-     * @return self
-     */
-    public function copyTo($properties)
-    {
-        foreach ($this as $name => $property) {
-            $properties->$name = $property;
-        }
-
-        if (($this instanceof PossessionInterface) && ($properties instanceof PossessionInterface)) {
-            foreach($this->foreign() as $referenceName => $referenceProperties) {
-                $referenceProperties->copyTo($properties->foreign()->$referenceName);
-            }
-        }
-
-        $properties->idInContainer = array_merge($properties->idInContainer, $this->idInContainer);
-
-        return $this;
     }
 }

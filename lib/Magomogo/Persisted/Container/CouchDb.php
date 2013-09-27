@@ -25,8 +25,8 @@ class CouchDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $properties
-     * @return \Magomogo\Persisted\AbstractProperties loaded with data
+     * @param AbstractProperties $properties
+     * @return AbstractProperties loaded with data
      */
     public function loadProperties($properties)
     {
@@ -48,8 +48,8 @@ class CouchDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $properties
-     * @return \Magomogo\Persisted\AbstractProperties
+     * @param AbstractProperties $properties
+     * @return AbstractProperties
      */
     public function saveProperties($properties)
     {
@@ -82,7 +82,7 @@ class CouchDb implements ContainerInterface
     }
 
     /**
-     * @param \Magomogo\Persisted\AbstractProperties $properties
+     * @param AbstractProperties $properties
      * @return void
      */
     public function deleteProperties($properties)
