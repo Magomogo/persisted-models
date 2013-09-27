@@ -106,7 +106,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $jobRecord = new JobRecord\Model(ObjectMother\Company::xiag(), ObjectMother\Company::nstu());
         $id = $jobRecord->save($container);
 
-        $this->assertModelsAreEqual(
+        $this->assertEquals(
             $jobRecord,
             JobRecord\Model::load($container, $id)
         );
@@ -126,19 +126,6 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(
             'I\'ve updated it!',
             $personProperties->creditCard->paymentSystem()
-        );
-    }
-
-    /**
-     * @param ModelInterface $model1
-     * @param ModelInterface $model2
-     */
-    private function assertModelsAreEqual($model1, $model2)
-    {
-        $container = new Memory();
-        $this->assertEquals(
-            $container->exposeProperties($model1)->resetPersistency(),
-            $container->exposeProperties($model2)->resetPersistency()
         );
     }
 }

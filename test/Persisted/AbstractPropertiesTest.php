@@ -88,14 +88,6 @@ class AbstractPropertiesTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset(self::properties()->not_existing));
     }
 
-    public function testPersistencyCanBeReset()
-    {
-        $bag = self::properties();
-        $bag->persisted(88, new \stdClass());
-        $this->assertEquals(88, $bag->id(new \stdClass()));
-        $this->assertNull($bag->resetPersistency()->id(new \stdClass()));
-    }
-
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function properties()

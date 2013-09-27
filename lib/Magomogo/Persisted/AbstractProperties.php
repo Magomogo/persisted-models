@@ -42,12 +42,6 @@ abstract class AbstractProperties implements \IteratorAggregate
             $this->idInContainer[get_class($container)] : null;
     }
 
-    public function resetPersistency()
-    {
-        $this->idInContainer = array();
-        return $this;
-    }
-
     public function naturalKey()
     {
         return null;
