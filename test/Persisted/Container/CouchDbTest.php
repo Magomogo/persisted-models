@@ -94,6 +94,19 @@ class CouchDbTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new \DateTime('2012-12-08T10:36:00+07:00'), $properties->created);
     }
 
+    public function testSavesDocumentHavingNaturalKey()
+    {
+        $client = m::mock();
+        $client->shouldReceive('findDocument');
+        $client->shouldReceive('postDocument')
+            ->with(m::subset(array('name' => 'XIAG')))
+            ->once()
+            ->andReturn(array('id-hash-FE2343', '1-rev-hash-35AC'));
+
+        $id = ObjectMother\Company::xiag()->save(self::container($client));
+
+    }
+
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function container($client = null)

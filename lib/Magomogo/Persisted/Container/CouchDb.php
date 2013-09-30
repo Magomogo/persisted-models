@@ -32,6 +32,10 @@ class CouchDb implements ContainerInterface
     {
         $doc = $this->loadDocument($properties->id($this));
 
+        if (!is_null($properties->naturalKeyFieldName())) {
+            $doc[$properties->naturalKeyFieldName()] = $doc['_id'];
+        }
+
         foreach ($properties as $name => &$property) {
             $property = array_key_exists($name, $doc) ? $this->fromDbValue($property, $doc[$name]) : null;
         }
@@ -63,13 +67,14 @@ class CouchDb implements ContainerInterface
             $doc = array_merge($doc, $this->foreignKeys($properties->foreign()));
         }
 
+        if (!is_null($properties->naturalKeyFieldName())) {
+            $doc = self::applyNaturalKey($doc, $properties);
+        }
+
         if ($properties->id($this) && is_array($existingDoc = $this->loadDocument($properties->id($this)))) {
             $doc = array_merge_recursive($doc, $existingDoc);
             $this->client->putDocument($doc, $properties->id($this));
         } else {
-            if (!is_null($properties->naturalKeyFieldName())) {
-                $doc['_id'] = $properties->{$properties->naturalKeyFieldName()};
-            }
             list($id, $rev) = $this->client->postDocument($doc);
             $properties->persisted($id, $this);
         }
@@ -203,6 +208,18 @@ class CouchDb implements ContainerInterface
                 return $items;
            });
         }
+    }
+
+    /**
+     * @param array $doc
+     * @param AbstractProperties $properties
+     * @return array
+     */
+    private static function applyNaturalKey($doc, $properties)
+    {
+        $doc['_id'] = $properties->{$properties->naturalKeyFieldName()};
+        unset($doc[$properties->naturalKeyFieldName()]);
+        return $doc;
     }
 
 }
