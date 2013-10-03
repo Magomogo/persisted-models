@@ -7,7 +7,6 @@ use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\Exception;
 use Magomogo\Persisted\ModelInterface;
-use Magomogo\Persisted\PossessionInterface;
 
 class CouchDb implements ContainerInterface
 {
@@ -40,11 +39,9 @@ class CouchDb implements ContainerInterface
             $property = array_key_exists($name, $doc) ? $this->fromDbValue($property, $doc[$name]) : null;
         }
 
-        if ($properties instanceof PossessionInterface) {
-            $this->collectReferences($doc, $properties->foreign());
-        }
+        $this->collectReferences($doc, $properties->foreign());
 
-        if ($properties instanceof Collection\OwnerInterface) {
+        if ($properties->collections() != new \stdClass()) {
             $this->loadCollections($properties->collections(), $properties);
         }
 
@@ -63,9 +60,7 @@ class CouchDb implements ContainerInterface
             $doc[$name] = $this->toDbValue($value);
         }
 
-        if ($properties instanceof PossessionInterface) {
-            $doc = array_merge($doc, $this->foreignKeys($properties->foreign()));
-        }
+        $doc = array_merge($doc, $this->foreignKeys($properties->foreign()));
 
         if (!is_null($properties->naturalKeyFieldName())) {
             $doc = self::applyNaturalKey($doc, $properties);
@@ -79,9 +74,7 @@ class CouchDb implements ContainerInterface
             $properties->persisted($id, $this);
         }
 
-        if ($properties instanceof Collection\OwnerInterface) {
-            $this->saveCollections($properties->collections(), $properties);
-        }
+        $this->saveCollections($properties->collections(), $properties);
 
         return $properties;
     }
@@ -163,7 +156,7 @@ class CouchDb implements ContainerInterface
 
     /**
      * @param $collections array of Collection\AbstractCollection
-     * @param Collection\OwnerInterface $ownerProperties
+     * @param AbstractProperties $ownerProperties
      */
     private function saveCollections($collections, $ownerProperties)
     {
@@ -188,7 +181,7 @@ class CouchDb implements ContainerInterface
 
     /**
      * @param $collections array of Collection\AbstractCollection
-     * @param Collection\OwnerInterface $ownerProperties
+     * @param AbstractProperties $ownerProperties
      */
     private function loadCollections($collections, $ownerProperties)
     {

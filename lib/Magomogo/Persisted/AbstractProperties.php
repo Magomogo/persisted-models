@@ -7,10 +7,12 @@ use Magomogo\Persisted\Container\Memory;
 /**
  * @property string $id
  */
-abstract class AbstractProperties implements \IteratorAggregate, PropertiesInterface
+abstract class AbstractProperties implements \IteratorAggregate
 {
     private $idInContainer = array();
     private $properties;
+    private $owners = array();
+    private $collections = array();
 
     public function __construct($valuesToSet = null)
     {
@@ -83,16 +85,12 @@ abstract class AbstractProperties implements \IteratorAggregate, PropertiesInter
             $this->$name = is_object($value) ? clone $value : $value;
         }
 
-        if ($this instanceof PossessionInterface) {
-            foreach ($this->foreign() as $name => $value) {
-                $this->foreign()->$name = clone $value;
-            }
+        foreach ($this->foreign() as $name => $value) {
+            $this->foreign()->$name = clone $value;
         }
 
-        if ($this instanceof Collection\OwnerInterface) {
-            foreach ($this->collections() as $name => $value) {
-                $this->collections()->$name = clone $value;
-            }
+        foreach ($this->collections() as $name => $value) {
+            $this->collections()->$name = clone $value;
         }
     }
 
@@ -129,4 +127,27 @@ abstract class AbstractProperties implements \IteratorAggregate, PropertiesInter
     {
         $container->deleteProperties($this);
     }
+
+    public function foreign()
+    {
+        return (object) $this->owners;
+    }
+
+    public function ownedBy($ownerProperties, $relationName)
+    {
+        $this->owners[$relationName] = $ownerProperties;
+        return $this;
+    }
+
+    public function hasCollection($collection, $relationName)
+    {
+        $this->collections[$relationName] = $collection;
+        return $this;
+    }
+
+    public function collections()
+    {
+        return (object) $this->collections;
+    }
+
 }

@@ -26,7 +26,7 @@ class Model extends Person
     {
         $p = new Properties();
         $p->loadFrom($container, $id);
-        return new self(new Company\Model($p->foreign()->company), $p, $p->tags->asArray());
+        return new self(new Company\Model($p->foreign()->company), $p, $p->collections()->tags->asArray());
     }
 
     /**
@@ -39,7 +39,7 @@ class Model extends Person
     {
         parent::__construct($properties, $tags);
         $this->company = $company;
-        $this->company->isOwner($this->properties);
+        $this->company->isOwner($this->properties, 'company');
     }
 
     public function greeting()

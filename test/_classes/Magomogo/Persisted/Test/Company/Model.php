@@ -1,6 +1,7 @@
 <?php
 namespace Magomogo\Persisted\Test\Company;
 
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\PossessionInterface;
@@ -43,11 +44,11 @@ class Model implements ModelInterface
     }
 
     /**
-     * @param PossessionInterface $properties
-     * @param null|string $relationName
+     * @param AbstractProperties $properties
+     * @param string $relationName
      * @return Properties
      */
-    public function isOwner($properties, $relationName = null)
+    public function isOwner($properties, $relationName)
     {
         return $properties->ownedBy($this->properties, $relationName);
     }

@@ -1,7 +1,6 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
-use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\AbstractProperties;
 
 interface ContainerInterface

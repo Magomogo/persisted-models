@@ -6,7 +6,6 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Table;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
-use Magomogo\Persisted\PossessionInterface;
 use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Exception;
@@ -56,18 +55,16 @@ class SchemaCreator implements ContainerInterface
                 $this->newTableObject($properties, $tableName)
             );
 
-            if ($properties instanceof Collection\OwnerInterface) {
-                /** @var Collection\AbstractCollection $collection */
-                foreach ($properties->collections() as $collection) {
+            /** @var Collection\AbstractCollection $collection */
+            foreach ($properties->collections() as $collection) {
 
-                    $creator = $this;
-                    $collection->propertiesOperation(
-                        function($items) use ($properties, $collection, $creator) {
-                            $creator->many2manySchema($collection, $properties, $items);
-                            return $items;
-                        }
-                    );
-                }
+                $creator = $this;
+                $collection->propertiesOperation(
+                    function($items) use ($properties, $collection, $creator) {
+                        $creator->many2manySchema($collection, $properties, $items);
+                        return $items;
+                    }
+                );
             }
 
         }
@@ -164,11 +161,9 @@ class SchemaCreator implements ContainerInterface
 
         $table->setPrimaryKey(array($properties->naturalKeyFieldName() ?: 'id'));
 
-        if ($properties instanceof PossessionInterface) {
-            foreach ($properties->foreign() as $propertyName => $foreignProperties) {
-                $this->addForeignReferenceColumn($table, $propertyName, $foreignProperties,
-                    array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE'));
-            }
+        foreach ($properties->foreign() as $propertyName => $foreignProperties) {
+            $this->addForeignReferenceColumn($table, $propertyName, $foreignProperties,
+                array('onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE'));
         }
 
         return $table;

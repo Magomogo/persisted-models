@@ -5,7 +5,6 @@ use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Exception\NotFound;
-use Magomogo\Persisted\PossessionInterface;
 
 /**
  * This container can keep one model and all its references in memory.
@@ -49,10 +48,7 @@ class Memory implements ContainerInterface
         /** @var $properties AbstractProperties */
         $properties = $this->storage[$targetProperties->id($this)];
         $this->copyProperties($properties, $targetProperties);
-
-        if ($targetProperties instanceof Collection\OwnerInterface) {
-            $this->loadCollections($targetProperties);
-        }
+        $this->loadCollections($targetProperties);
 
         return $properties;
     }
@@ -72,9 +68,7 @@ class Memory implements ContainerInterface
             }
         }
 
-        if ($properties instanceof Collection\OwnerInterface) {
-            $this->saveCollections($properties);
-        }
+        $this->saveCollections($properties);
 
         return $properties;
     }
@@ -106,7 +100,7 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param Collection\OwnerInterface $properties
+     * @param AbstractProperties $properties
      */
     private function loadCollections($properties)
     {
@@ -130,7 +124,7 @@ class Memory implements ContainerInterface
     }
 
     /**
-     * @param Collection\OwnerInterface $properties
+     * @param AbstractProperties $properties
      */
     private function saveCollections($properties)
     {
@@ -161,7 +155,6 @@ class Memory implements ContainerInterface
         return get_class($collection) . '-' . get_class($owner);
     }
 
-
     /**
      * @param AbstractProperties $source
      * @param AbstractProperties $destination
@@ -172,12 +165,10 @@ class Memory implements ContainerInterface
             $destination->$name = $property;
         }
 
-        if (($source instanceof PossessionInterface) && ($destination instanceof PossessionInterface)) {
-            foreach($source->foreign() as $referenceName => $referenceProperties) {
-                $this->copyProperties($referenceProperties, $destination->foreign()->$referenceName);
-                if ($referenceProperties->id($this)) {
-                    $destination->foreign()->$referenceName->persisted($referenceProperties->id($this), $this);
-                }
+        foreach($source->foreign() as $referenceName => $referenceProperties) {
+            $this->copyProperties($referenceProperties, $destination->foreign()->$referenceName);
+            if ($referenceProperties->id($this)) {
+                $destination->foreign()->$referenceName->persisted($referenceProperties->id($this), $this);
             }
         }
 

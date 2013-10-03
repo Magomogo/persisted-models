@@ -1,7 +1,6 @@
 <?php
 namespace Magomogo\Persisted\Test\Person;
 
-use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Test\CreditCard;
 use Magomogo\Persisted\Test\Keymarker;
@@ -14,13 +13,8 @@ use Magomogo\Persisted\Test\Keymarker;
  * @property string $email
  * @property \Magomogo\Persisted\Test\CreditCard\Model $creditCard
  */
-class Properties extends AbstractProperties implements Collection\OwnerInterface
+class Properties extends AbstractProperties
 {
-    /**
-     * @var Keymarker\Collection
-     */
-    public $tags;
-
     protected function properties()
     {
         return array(
@@ -36,13 +30,6 @@ class Properties extends AbstractProperties implements Collection\OwnerInterface
 
     protected function init()
     {
-        $this->tags = new Keymarker\Collection();
-    }
-
-    public function collections()
-    {
-        $collections = new \stdClass();
-        $collections->tags = $this->tags;
-        return $collections;
+        $this->hasCollection(new Keymarker\Collection(), 'tags');
     }
 }

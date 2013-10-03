@@ -1,7 +1,6 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
-use Magomogo\Persisted\PossessionInterface;
 use Mockery as m;
 use Magomogo\Persisted\Test\DbNames;
 use Magomogo\Persisted\Test\ObjectMother\Person as TestPerson;
@@ -120,43 +119,17 @@ class TestType2 extends AbstractProperties
     }
 }
 
-
-class TestType3 extends AbstractProperties implements PossessionInterface
+class TestType3 extends AbstractProperties
 {
-    private $ref1;
-    private $ref2;
-
-    public function __construct($valuesToSet = null)
+    public function init()
     {
-        parent::__construct($valuesToSet);
-        $this->ref1 = new TestType1(null);
-        $this->ref2 = new TestType2(null);
+        $this->ownedBy(new TestType1(null), 'ref1');
+        $this->ownedBy(new TestType2(null), 'ref2');
     }
 
     protected function properties()
     {
         return array();
-    }
-
-    /**
-     * @return \stdClass $relationName => Properties
-     */
-    public function foreign()
-    {
-        $f = new \stdClass();
-        $f->ref1 = $this->ref1;
-        $f->ref2 = $this->ref2;
-        return $f;
-    }
-
-    /**
-     * @param AbstractProperties $properties
-     * @param null|string $relationName
-     * @return mixed
-     */
-    public function ownedBy($properties, $relationName = null)
-    {
-        // TODO: Implement ownedBy() method.
     }
 }
 

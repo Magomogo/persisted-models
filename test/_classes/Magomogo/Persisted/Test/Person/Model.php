@@ -21,7 +21,7 @@ class Model implements ModelInterface
     {
         $p = new Properties();
         $p->loadFrom($container, $id);
-        return new self($p, $p->tags->asArray());
+        return new self($p, $p->collections()->tags->asArray());
     }
 
     public function save($container)
@@ -76,12 +76,12 @@ class Model implements ModelInterface
 
     public function tag(Keymarker $keymarker)
     {
-        $this->properties->tags[strval($keymarker)] = $keymarker;
+        $this->properties->collections()->tags[strval($keymarker)] = $keymarker;
     }
 
     public function taggedAs()
     {
-        return join(', ', $this->properties->tags->asArray());
+        return join(', ', $this->properties->collections()->tags->asArray());
     }
 
 }

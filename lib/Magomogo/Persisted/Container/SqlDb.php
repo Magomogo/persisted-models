@@ -5,10 +5,8 @@ use Doctrine\DBAL\Connection;
 use Magomogo\Persisted\Collection;
 use Magomogo\Persisted\Container\SqlDb\NamesInterface;
 use Magomogo\Persisted\ModelInterface;
-use Magomogo\Persisted\PossessionInterface;
 use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Exception;
-use Magomogo\Persisted\PropertiesInterface;
 
 class SqlDb implements ContainerInterface
 {
@@ -43,12 +41,8 @@ class SqlDb implements ContainerInterface
         foreach ($properties as $name => &$property) {
             $property = array_key_exists($name, $row) ? $this->fromDbValue($property, $row[$name]) : null;
         }
-        if ($properties instanceof PossessionInterface) {
-            $this->collectReferences($row, $properties->foreign());
-        }
-        if ($properties instanceof Collection\OwnerInterface) {
-            $this->loadCollections($properties->collections(), $properties);
-        }
+        $this->collectReferences($row, $properties->foreign());
+        $this->loadCollections($properties->collections(), $properties);
 
         return $properties;
     }
@@ -59,21 +53,17 @@ class SqlDb implements ContainerInterface
      */
     public function saveProperties($properties)
     {
-        $row = array();
-        if ($properties instanceof PossessionInterface) {
-            $row = $this->foreignKeys($properties->foreign());
-        }
+        $row = $this->foreignKeys($properties->foreign());
+
         if (!is_null($properties->id($this))) {
             $row['id'] = $properties->id($this);
         }
         foreach ($properties as $name => $property) {
             $row[$this->db->quoteIdentifier($name)] = $this->toDbValue($property);
         }
-        $this->commit($row, $properties);
 
-        if ($properties instanceof Collection\OwnerInterface) {
-            $this->saveCollections($properties->collections(), $properties);
-        }
+        $this->commit($row, $properties);
+        $this->saveCollections($properties->collections(), $properties);
 
         return $properties;
     }
@@ -177,7 +167,7 @@ class SqlDb implements ContainerInterface
 
     /**
      * @param Collection\AbstractCollection[] $collections
-     * @param Collection\OwnerInterface $ownerProperties
+     * @param AbstractProperties $ownerProperties
      */
     private function loadCollections($collections, $ownerProperties)
     {
@@ -214,7 +204,7 @@ class SqlDb implements ContainerInterface
 
     /**
      * @param Collection\AbstractCollection[] $collections
-     * @param Collection\OwnerInterface $ownerProperties
+     * @param AbstractProperties $ownerProperties
      */
     private function saveCollections($collections, $ownerProperties)
     {
@@ -268,7 +258,7 @@ class SqlDb implements ContainerInterface
     }
 
     /**
-     * @param PropertiesInterface $properties
+     * @param AbstractProperties $properties
      * @param string $tableName
      * @return string
      */
