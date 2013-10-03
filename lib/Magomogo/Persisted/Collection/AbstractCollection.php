@@ -13,8 +13,6 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
      */
     protected $items = array();
 
-    private $optionalName;
-
     /**
      * @param AbstractProperties $properties
      * @return ModelInterface
@@ -41,26 +39,6 @@ abstract class AbstractCollection implements \ArrayAccess, \IteratorAggregate, \
             $models[$offset] = $this->constructModel($properties);
         }
         return $models;
-    }
-
-    /**
-     * Getter/setter
-     *
-     * @param string|null $value to set
-     * @throws \Magomogo\Persisted\Exception\CollectionName
-     * @return string
-     */
-    public function name($value = null)
-    {
-        if (!is_null($value)) {
-            $this->optionalName = $value;
-        }
-
-        if (is_null($this->optionalName)) {
-            throw new Exception\CollectionName;
-        }
-
-        return $this->optionalName;
     }
 
 //----------------------------------------------------------------------------------------------------------------------

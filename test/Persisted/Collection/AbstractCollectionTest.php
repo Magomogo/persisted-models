@@ -42,20 +42,6 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
             });
     }
 
-    public function testAskingAnUnknownCollectionName()
-    {
-        $this->setExpectedException('Magomogo\\Persisted\\Exception\\CollectionName');
-        $collection = new TestCollection();
-        $collection->name();
-    }
-
-    public function testACollectionCanOptionallyHaveAName()
-    {
-        $collection = new TestCollection();
-        $collection->name('tags');
-        $this->assertSame('tags', $collection->name());
-    }
-
 //----------------------------------------------------------------------------------------------------------------------
 
     /**
