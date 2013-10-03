@@ -7,32 +7,27 @@ use Magomogo\Persisted\Container\Memory;
 /**
  * @property string $id
  */
-abstract class AbstractProperties implements \IteratorAggregate
+abstract class AbstractProperties
 {
     private $idInContainer = array();
-    private $properties;
     private $owners = array();
     private $collections = array();
 
     public function __construct($valuesToSet = null)
     {
-        $this->properties = (object)$this->properties();
+        $this->init();
 
         if (!is_null($valuesToSet)) {
             foreach ($valuesToSet as $name => $value) {
                 $this->$name = $value;
             }
         }
-
-        $this->init();
     }
 
     protected function init()
     {
 
     }
-
-    protected abstract function properties();
 
     /**
      * @param ContainerInterface $container|null
@@ -49,18 +44,9 @@ abstract class AbstractProperties implements \IteratorAggregate
         return null;
     }
 
-    public function __get($name)
-    {
-        return $this->properties->$name;
-    }
-
     public function __set($name, $value)
     {
-        if (property_exists($this->properties, $name)) {
-            $this->properties->$name = $value;
-        } else {
-            trigger_error('Undefined property: ' . $name, E_USER_NOTICE);
-        }
+        trigger_error('Undefined property: ' . $name, E_USER_NOTICE);
     }
 
     /**
@@ -72,16 +58,9 @@ abstract class AbstractProperties implements \IteratorAggregate
         $this->idInContainer[get_class($container)] = $id;
     }
 
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->properties);
-    }
-
     public function __clone()
     {
-        $this->properties = clone $this->properties;
-
-        foreach ($this->properties as $name => $value) {
+        foreach ($this as $name => $value) {
             $this->$name = is_object($value) ? clone $value : $value;
         }
 
@@ -92,11 +71,6 @@ abstract class AbstractProperties implements \IteratorAggregate
         foreach ($this->collections() as $name => $value) {
             $this->collections()->$name = clone $value;
         }
-    }
-
-    public function __isset($name)
-    {
-        return property_exists($this->properties, $name);
     }
 
     /**

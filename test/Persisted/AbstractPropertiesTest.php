@@ -68,13 +68,6 @@ class AbstractPropertiesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($bag, clone $bag);
     }
 
-    public function testIssetMagicMethod()
-    {
-        $this->assertTrue(isset(self::properties()->title));
-        $this->assertTrue(isset(self::properties()->nullDefault));
-        $this->assertFalse(isset(self::properties()->not_existing));
-    }
-
 //----------------------------------------------------------------------------------------------------------------------
 
     private static function properties()
@@ -88,14 +81,13 @@ class AbstractPropertiesTest extends \PHPUnit_Framework_TestCase
 
 class TestProperties extends AbstractProperties
 {
+    public $title = 'default title';
+    public $description = 'default descr';
+    public $object;
+    public $nullDefault;
 
-    protected function properties()
+    protected function init()
     {
-        return array(
-            'title' => 'default title',
-            'description' => 'default descr',
-            'object' => new \stdClass(),
-            'nullDefault' => null
-        );
+        $this->object = new \stdClass();
     }
 }
