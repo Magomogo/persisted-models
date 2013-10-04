@@ -3,7 +3,7 @@ namespace Magomogo\Persisted\Test\Person;
 
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\ModelInterface;
-use Magomogo\Persisted\Test\Keymarker\Model as Keymarker;
+use Magomogo\Persisted\Test\Keymarker;
 
 class Model implements ModelInterface
 {
@@ -33,11 +33,12 @@ class Model implements ModelInterface
 
     /**
      * @param Properties $properties
-     * @param array $tags array of \Keymarker\Model
+     * @param array $tags array of Keymarker\Model
      */
     public function __construct($properties, array $tags = array())
     {
         $this->properties = $properties;
+        $this->properties->hasCollection(new Keymarker\Collection, 'tags');
         foreach ($tags as $tag) {
             $this->tag($tag);
         }
@@ -74,7 +75,10 @@ class Model implements ModelInterface
         return !is_null($this->properties->creditCard);
     }
 
-    public function tag(Keymarker $keymarker)
+    /**
+     * @param Keymarker\Model $keymarker
+     */
+    public function tag($keymarker)
     {
         $this->properties->collections()->tags[strval($keymarker)] = $keymarker;
     }
