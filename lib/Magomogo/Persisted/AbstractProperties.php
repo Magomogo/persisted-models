@@ -10,11 +10,22 @@ use Magomogo\Persisted\Container\Memory;
 abstract class AbstractProperties
 {
     private $idInContainer = array();
-    private $owners = array();
-    private $collections = array();
+
+    /**
+     * @var \stdClass
+     */
+    private $owners;
+
+    /**
+     * @var \stdClass
+     */
+    private $collections;
 
     public function __construct($valuesToSet = null)
     {
+        $this->owners = new \stdClass();
+        $this->collections = new \stdClass();
+
         $this->init();
 
         if (!is_null($valuesToSet)) {
@@ -104,24 +115,24 @@ abstract class AbstractProperties
 
     public function foreign()
     {
-        return (object) $this->owners;
+        return $this->owners;
     }
 
     public function ownedBy($ownerProperties, $relationName)
     {
-        $this->owners[$relationName] = $ownerProperties;
+        $this->owners->$relationName = $ownerProperties;
         return $this;
     }
 
     public function hasCollection($collection, $relationName)
     {
-        $this->collections[$relationName] = $collection;
+        $this->collections->$relationName = $collection;
         return $this;
     }
 
     public function collections()
     {
-        return (object) $this->collections;
+        return $this->collections;
     }
 
 }
