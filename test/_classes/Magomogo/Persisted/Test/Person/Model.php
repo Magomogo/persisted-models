@@ -13,6 +13,11 @@ class Model implements ModelInterface
     protected $properties;
 
     /**
+     * @var Keymarker\Model[]
+     */
+    private $tags = array();
+
+    /**
      * @param ContainerInterface $container
      * @param string $id
      * @return self
@@ -26,6 +31,10 @@ class Model implements ModelInterface
 
     public function save($container)
     {
+        $this->properties->hasCollection(new Keymarker\Collection, 'tags');
+        foreach ($this->tags as $tag) {
+            $this->properties->collections()->tags[] = $tag;
+        }
         return $this->properties->putIn($container);
     }
 
@@ -38,10 +47,7 @@ class Model implements ModelInterface
     public function __construct($properties, array $tags = array())
     {
         $this->properties = $properties;
-        $this->properties->hasCollection(new Keymarker\Collection, 'tags');
-        foreach ($tags as $tag) {
-            $this->tag($tag);
-        }
+        array_map(array($this, 'tag'), $tags);
     }
 
     public function politeTitle()
@@ -80,12 +86,12 @@ class Model implements ModelInterface
      */
     public function tag($keymarker)
     {
-        $this->properties->collections()->tags[strval($keymarker)] = $keymarker;
+        $this->tags[strval($keymarker)] = $keymarker;
     }
 
     public function taggedAs()
     {
-        return join(', ', $this->properties->collections()->tags->asArray());
+        return join(', ', $this->tags);
     }
 
 }

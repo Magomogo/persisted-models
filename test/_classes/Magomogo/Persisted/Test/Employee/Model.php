@@ -29,6 +29,12 @@ class Model extends Person
         return new self(new Company\Model($p->foreign()->company), $p, $p->collections()->tags->asArray());
     }
 
+    public function save($container)
+    {
+        $this->company->isOwner($this->properties, 'company');
+        return parent::save($container);
+    }
+
     /**
      * @param Company\Model $company
      * @param Properties $properties
@@ -39,7 +45,6 @@ class Model extends Person
     {
         parent::__construct($properties, $tags);
         $this->company = $company;
-        $this->company->isOwner($this->properties, 'company');
     }
 
     public function greeting()
