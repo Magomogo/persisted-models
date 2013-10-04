@@ -13,14 +13,33 @@ Intro
 Here is the way
 ---------------
 
-### Clean models
+### The concept
 
-They have only business logic that realized using model's properties. Constructor signature doesn't allow to create an
+To implement an entity one should create two classes: **Model** and **Properties**. Model class contains domain-specific
+logic only. All **state** that should persist is located in **Properties**. Model has its Properties aggregated:
+
+    class Model implements ModelInterface
+    {
+        /**
+         * @var Properties
+         */
+        private $properties;
+
+        public function __construct($properties)
+        {
+             $this->properties = $properties;
+        }
+    }
+
+This library takes care about the **Properties**, all its public fields and also relations can be saved/loaded in
+the **Container**s. Currently there is SqlDb, CouchDb and Memory containers.
+
+It is recommended to implement Model's constructor signature that doesn't allow to create an
 instance that have no sense from the business logic point of view.
 
     $person = new Person\Model($propertiesBag);
     $employee = new Employee\Model($company, $propertiesBag);
-    
+
 source: [Person\Model](//github.com/Magomogo/persisted-models/blob/master/test/_classes/Magomogo/Persisted/Test/Person/Model.php "Person model")
  | [Employee\Model](//github.com/Magomogo/persisted-models/blob/master/test/_classes/Magomogo/Persisted/Test/Employee/Model.php "Employee model")
 
