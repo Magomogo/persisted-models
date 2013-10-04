@@ -30,22 +30,22 @@ class AbstractPropertiesTest extends \PHPUnit_Framework_TestCase
 
     public function testPersistedMessageSetsId()
     {
-        $bag = self::properties();
-        $bag->persisted('888', m::mock());
-        $this->assertEquals('888', $bag->id(m::mock()));
+        $props = self::properties();
+        $props->persisted('888', m::mock());
+        $this->assertEquals('888', $props->id(m::mock()));
     }
 
     public function testPropertiesCanHaveDifferentIdsInDifferentContainers()
     {
-        $bag = self::properties();
+        $props = self::properties();
         $container1 = new SqlDb(m::mock(), new DbNames());
         $container2 = new Memory();
 
-        $bag->persisted('888', $container1);
-        $bag->persisted('2342-klsjdf94', $container2);
+        $props->persisted('888', $container1);
+        $props->persisted('2342-klsjdf94', $container2);
 
-        $this->assertEquals('888', $bag->id($container1));
-        $this->assertEquals('2342-klsjdf94', $bag->id($container2));
+        $this->assertEquals('888', $props->id($container1));
+        $this->assertEquals('2342-klsjdf94', $props->id($container2));
     }
 
     public function testRejectsNotConfiguredProperties()
@@ -64,8 +64,16 @@ class AbstractPropertiesTest extends \PHPUnit_Framework_TestCase
 
     public function testCloneCreatesEqualProperties()
     {
-        $bag = self::properties();
-        $this->assertEquals($bag, clone $bag);
+        $p = self::properties();
+        $this->assertEquals($p, clone $p);
+    }
+
+    public function testPreventsFromCreatingArbitraryProperties()
+    {
+        $p = self::properties();
+
+        $this->setExpectedException('PHPUnit_Framework_Error_Notice');
+        $p->anyName = 'hehe';
     }
 
 //----------------------------------------------------------------------------------------------------------------------
