@@ -72,13 +72,15 @@ class Model implements ModelInterface
 
     public function paymentInfo()
     {
+        $creditCard = $this->properties->creditCard();
+
         return $this->ableToPay() ?
-            $this->properties->creditCard->paymentSystem() . ', ' . $this->properties->creditCard->maskedPan() : null;
+            $creditCard->paymentSystem() . ', ' . $creditCard->maskedPan() : null;
     }
 
     public function ableToPay()
     {
-        return !is_null($this->properties->creditCard);
+        return !is_null($this->properties->creditCard());
     }
 
     /**

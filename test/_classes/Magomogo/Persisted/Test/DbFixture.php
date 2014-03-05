@@ -93,9 +93,44 @@ SQL
         $creator->schemaFor(ObjectMother\Keymarker::IT());
         $creator->schemaFor(ObjectMother\CreditCard::datatransTesting());
 
-        $taggedEmployee = ObjectMother\Employee::maxim();
+        /*$taggedEmployee = ObjectMother\Employee::maxim();
         $taggedEmployee->tag(ObjectMother\Keymarker::IT());
-        $creator->schemaFor($taggedEmployee);
+        $creator->schemaFor($taggedEmployee);*/
+
+        self::createEmployeeSchema($db->getSchemaManager());
+    }
+
+    /**
+     * @param $manager \Doctrine\DBAL\Schema\AbstractSchemaManager
+     */
+    private static function createEmployeeSchema($manager)
+    {
+        $table = new \Doctrine\DBAL\Schema\Table('person');
+        $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
+        $table->addColumn('title', 'text', array('notNull' => false));
+        $table->addColumn('firstName', 'text', array('notNull' => false));
+        $table->addColumn('lastName', 'text', array('notNull' => false));
+        $table->addColumn('phone', 'text', array('notNull' => false));
+        $table->addColumn('email', 'text', array('notNull' => false));
+        $table->addColumn('birthDay', 'text', array('notNull' => false));
+        $table->addColumn(
+            'creditCard',
+            'integer',
+            array('unsigned' => true, 'notNull' => false)
+        );
+        $table->addForeignKeyConstraint(
+            'person',
+            array('creditCard'),
+            array('id'),
+            array('onUpdate' => 'RESTRICT', 'onDelete' => 'SET NULL')
+        );
+        $table->setPrimaryKey(array('id'));
+        $manager->createTable($table);
+
+        $table = new \Doctrine\DBAL\Schema\Table('person2keymarker');
+        $table->addColumn('person', 'integer', array('unsigned' => true, 'notNull' => false));
+        $table->addColumn('keymarker', 'integer', array('unsigned' => true, 'notNull' => false));
+        $manager->createTable($table);
     }
 
     /**

@@ -6,9 +6,9 @@ use Magomogo\Persisted\Test\Person\Model;
 
 class Person
 {
-    public static function maxim($id = null)
+    public static function maxim()
     {
-        return new Model(self::maximProperties($id));
+        return new Model(self::maximProperties());
     }
 
     public static function maximWithoutCC()
@@ -19,10 +19,9 @@ class Person
     }
 
     /**
-     * @param null $id
      * @return Properties
      */
-    public static function maximProperties($id = null)
+    public static function maximProperties()
     {
         return new Properties(array(
             'title' => 'Mr.',
@@ -30,8 +29,8 @@ class Person
             'lastName' => 'Gnatenko',
             'email' => 'maxim@xiag.ch',
             'phone' => '+7923-117-2801',
-            'creditCard' => CreditCard::datatransTesting($id),
-            'birthDay' => new \DateTime('1975-07-07T00:00:00+07:00')
+            'creditCard' => CreditCard::datatransTestingProperties(),
+            'birthDay' => '1975-07-07T00:00:00+07:00'
         ));
     }
 }

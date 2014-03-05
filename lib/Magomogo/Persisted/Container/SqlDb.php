@@ -84,10 +84,8 @@ class SqlDb implements ContainerInterface
 
     private function fromDbValue($property, $value)
     {
-        if ($property instanceof ModelInterface) {
-            return is_null($value) ? null : $property::load($this, $value);
-        } elseif($property instanceof \DateTime) {
-            return self::dateInIso8601($value);
+        if ($property instanceof AbstractProperties) {
+            return is_null($value) ? null : $property->loadFrom($this, $value);
         }
         return $value;
     }
@@ -101,10 +99,8 @@ class SqlDb implements ContainerInterface
     {
         if (is_scalar($property) || is_null($property)) {
             return $property;
-        } elseif ($property instanceof ModelInterface) {
-            return $property->save($this);
-        } elseif ($property instanceof \DateTime) {
-            return $property->format('c');
+        } elseif ($property instanceof AbstractProperties) {
+            return $property->putIn($this);
         } else {
             throw new Exception\Type;
         }

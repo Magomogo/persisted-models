@@ -33,19 +33,34 @@ class Properties extends AbstractProperties
     public $email;
 
     /**
-     * @var CreditCard\Model
+     * @var string
+     */
+    public $birthDay = '1970-01-01T00:00:00+07:00';
+
+    /**
+     * @var CreditCard\Properties
      */
     public $creditCard;
 
-    /**
-     * @var \DateTime
-     */
-    public $birthDay;
-
     protected function init()
     {
-        $this->creditCard = new CreditCard\Model(new CreditCard\Properties);
-        $this->birthDay = new \DateTime('1970-01-01T00:00:00+07:00');
-        $this->hasCollection(new Keymarker\Collection(), 'tags');
+        $this->creditCard = new CreditCard\Properties;
+//        $this->hasCollection(new Keymarker\Collection(), 'tags');
+    }
+
+    /**
+     * @return CreditCard\Model
+     */
+    public function creditCard()
+    {
+        return $this->creditCard ? new CreditCard\Model($this->creditCard) : null;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function birthDay()
+    {
+        return $this->birthDay ? new \DateTime($this->birthDay) : null;
     }
 }

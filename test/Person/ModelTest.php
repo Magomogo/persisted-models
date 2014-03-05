@@ -76,7 +76,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                 'lastName' => 'Doe',
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
-                'creditCard' => ObjectMother\CreditCard::datatransTesting()
+                'creditCardProperties' => ObjectMother\CreditCard::datatransTestingProperties()
             )
         );
     }
@@ -90,7 +90,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                 'lastName' => 'Doe',
                 'email' => 'maxim@xiag.ch',
                 'phone' => '+7923-117-2801',
-                'creditCard' => null
+                'creditCardProperties' => null
             )
         ));
     }
