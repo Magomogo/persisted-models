@@ -7,7 +7,7 @@ Intro
 -----
 
 - I don't like ActiveRecord because of tight coupling with the database,
-- I not so comfortable with Data mappers because a mapper breaks model encapsulation,
+- I am not so comfortable with Data mappers because a mapper breaks model encapsulation,
 - I like the idea to keep **'The State'** separately from the logic.
 
 Here is the way
