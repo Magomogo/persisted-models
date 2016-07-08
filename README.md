@@ -15,7 +15,7 @@ Here is the way
 
 ### The concept
 
-To implement an entity one should create two classes: **Model** and **Properties**. Model class contains domain-specific
+To implement an entity, one should create two classes: **Model** and **Properties**. Model class contains domain-specific
 logic only. All **state** that should persist is located in **Properties**. Model has its Properties aggregated:
 
     class Model implements ModelInterface
@@ -32,10 +32,10 @@ logic only. All **state** that should persist is located in **Properties**. Mode
     }
 
 This library takes care about the **Properties**, all its public fields and also relations can be saved/loaded in
-the **Container**s. Currently there is SqlDb, CouchDb and Memory containers.
+the **Container**s. Currently there is SqlDb, CouchDb, and Memory container.
 
-It is recommended to implement Model's constructor signature that doesn't allow to create an
-instance that have no sense from the business logic point of view.
+It is recommended to declare Model's constructor signature that doesn't allow to create an
+instance that makes no sense from the business logic point of view.
 
     $person = new Person\Model($propertiesBag);
     $employee = new Employee\Model($company, $propertiesBag);
@@ -65,7 +65,7 @@ Handling user input with **'Editors'**, **'A Editor'** is kind of a Container.
     $editedPerson = Person\Model::load($editor);
     $editedPerson->save($dbContainer);
 
-### Strong separation between different types of object relations.
+### Strong separation between different types of object relations
 
 For example person properties can have contact info aggregated, it gets stored and updated together with person:
 
@@ -76,16 +76,16 @@ For example person properties can have contact info aggregated, it gets stored a
         'contactInfo => $contactInfoModel
     );
 
-In another hand there is a person who working in a company, these objects are connected by foreign key and
+On the other hand, there is a person who's working in a company. These objects are connected by foreign key and
 created/updated separately.
 
     $company->save($dbContainer);
     $employee = new Employee\Model($company, $employeeProperties);
 
-    // this won't update company, only creates one to many reference company -> person in the container
+    // this won't update the company, but create one-to-many reference company -> person in the container
     $employee->save($dbContainer);
 
-A model can have a list of another models connected. This so called many-to-many relation is possible using
+A model can have a list of another models connected. This so-called many-to-many relation is possible using
 Collections.
 
     $collection = new Keymarker\Collection;
@@ -96,13 +96,13 @@ Examples
 
 See test cases to learn recommended usage:
 
-- Model with simply properties [Company/ModelTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Company/ModelTest.php)
-- A Person having CreditCard aggregated, A Person that can be tagged with Keymarkers
+- Simply a Model with properties [Company/ModelTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Company/ModelTest.php)
+- A Person having CreditCard aggregated, a Person that can be tagged with Keymarkers
  [Person/ModelTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Person/ModelTest.php)
 - An Employee working in a Company [Employee/ModelTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Employee/ModelTest.php)
-- Keymarker model that have natural keys
+- Keymarker model that has natural keys
  [Keymarker/ModelTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Keymarker/ModelTest.php),
  [Keymarker/PropertiesTest.php](//github.com/Magomogo/persisted-models/blob/master/test/Keymarker/PropertiesTest.php)
-- Load/Create/Update/Save a persisted model [ModelPersonEditorWorkflowTest.php](//github.com/Magomogo/persisted-models/blob/master/test/ModelPersonEditorWorkflowTest.php)
+- Load/Create/Update/Save a persistent model [ModelPersonEditorWorkflowTest.php](//github.com/Magomogo/persisted-models/blob/master/test/ModelPersonEditorWorkflowTest.php)
 
 *...the work is in progress...*
