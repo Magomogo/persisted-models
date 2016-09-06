@@ -1,6 +1,9 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
+require_once './vendor/hamcrest/hamcrest-php/hamcrest/Hamcrest.php';
+
+
 use Mockery as m;
 use Magomogo\Persisted\Test\DbNames;
 use Magomogo\Persisted\Test\ObjectMother\Person as TestPerson;
