@@ -4,8 +4,6 @@
     "description": "A way to make domain-specific models persistent",
     "homepage": "https://github.com/Magomogo/persisted-models",
     "repositories": [
-        {
-        }
     ],
     "require": {
         "php":">=5.3.0",
