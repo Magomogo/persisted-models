@@ -1,7 +1,7 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
-require_once './vendor/hamcrest/hamcrest-php/hamcrest/Hamcrest.php';
+
 
 
 use Mockery as m;
@@ -9,6 +9,7 @@ use Magomogo\Persisted\Test\DbNames;
 use Magomogo\Persisted\Test\ObjectMother\Person as TestPerson;
 use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Test\Person;
+use Hamcrest\Matchers;
 
 class SqlDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,8 +21,8 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
     public function testFollowsTableNamingConvention()
     {
         $db = self::dbMock();
-        $db->shouldReceive('insert')->with('person', typeOf('array'))->once();
-        $db->shouldReceive('insert')->with('creditcard', typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('person', Matchers::typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('creditcard', Matchers::typeOf('array'))->once();
         $properties = new Person\Properties;
         $properties->putIn(self::container($db));
     }
