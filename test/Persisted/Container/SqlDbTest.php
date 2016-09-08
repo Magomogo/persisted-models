@@ -1,11 +1,15 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
+
+
+
 use Mockery as m;
 use Magomogo\Persisted\Test\DbNames;
 use Magomogo\Persisted\Test\ObjectMother\Person as TestPerson;
 use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Test\Person;
+
 
 class SqlDbTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,6 +25,7 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
         $db->shouldReceive('insert')->with('creditcard', typeOf('array'))->once();
         $properties = new Person\Properties;
         $properties->putIn(self::container($db));
+
     }
 
     public function testLoadsReferencesAccordingToReferenceName()
