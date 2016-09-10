@@ -119,19 +119,16 @@ class CouchDbTest extends \PHPUnit_Framework_TestCase
      */
     private static function emptyCouchDb()
     {
-        return m::mock(
-            'counch db client',
-            function ($mock) {
-                $mock->shouldReceive('findDocument')
-                    ->andReturnUsing(
-                        function () {
-                            $resp = new \stdClass();
-                            $resp->status = 404;
-                            return $resp;
-                        }
-                    );
-            }
-        );
+        return m::mock()
+            ->shouldReceive('findDocument')
+            ->andReturnUsing(
+                function () {
+                    $resp = new \stdClass();
+                    $resp->status = 404;
+                    return $resp;
+                }
+            )
+            ->getMock();
     }
 
     /**
@@ -139,24 +136,21 @@ class CouchDbTest extends \PHPUnit_Framework_TestCase
      */
     private static function couchDbHavingDoc($doc = array())
     {
-        return m::mock(
-            'counch db client',
-            function ($mock) use ($doc) {
-                $mock->shouldReceive('findDocument')
-                    ->andReturnUsing(
-                        function () use ($doc) {
-                            $resp = new \stdClass();
-                            $resp->status = 200;
-                            $resp->body =
-                                array_merge(
-                                    array('_id' => 'id-hash-43FF', '_rev' => '1-rev-hash-45323DD'),
-                                    $doc
-                                );
-                            return $resp;
-                        }
-                    );
-            }
-        );
+        return m::mock()
+            ->shouldReceive('findDocument')
+            ->andReturnUsing(
+                function () use ($doc) {
+                    $resp = new \stdClass();
+                    $resp->status = 200;
+                    $resp->body =
+                        array_merge(
+                            array('_id' => 'id-hash-43FF', '_rev' => '1-rev-hash-45323DD'),
+                            $doc
+                        );
+                    return $resp;
+                }
+            )
+            ->getMock();
     }
 
 }
