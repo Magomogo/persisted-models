@@ -1,19 +1,21 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
+use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\Test\Person;
-use Magomogo\Persisted\Test\Company;
 use Magomogo\Persisted\Test\Keymarker;
 use Magomogo\Persisted\Test\ObjectMother;
 use Magomogo\Persisted\Test\Employee\Model as Employee;
+use Magomogo\Persisted\Test\Employee\Properties as EmployeeProperties;
 use Magomogo\Persisted\Test\CreditCard\Model as CreditCard;
 use Magomogo\Persisted\Test\JobRecord;
+use Magomogo\Persisted\Test\Affiliate;
 
 class MemoryTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
+     * @param ModelInterface $model
      * @dataProvider modelsProvider
      */
     public function testCanBePutInAndLoadedFrom(ModelInterface $model)
@@ -127,5 +129,24 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
             'I\'ve updated it!',
             $personProperties->creditCard->paymentSystem()
         );
+    }
+
+    public function testStoreModelsWithEqualsIDsProperly()
+    {
+        $cookieProps = new Affiliate\Cookie\Properties(array('id' => 1, 'lifeTime' => 60));
+        $cookieModel = new Affiliate\Cookie\Model($cookieProps);
+
+        $affiliateProps = new Affiliate\Properties(array(
+            'id' => 1,
+            'name' => 'STS Shop',
+            'cookie' => $cookieModel
+        ));
+        $affiliateModel = new Affiliate\Model($affiliateProps);
+
+        $container = new Memory;
+        $id = $affiliateModel->save($container);
+
+        $loadedModel = Affiliate\Model::load($container, $id);
+        $this->assertEquals($affiliateModel, $loadedModel);
     }
 }

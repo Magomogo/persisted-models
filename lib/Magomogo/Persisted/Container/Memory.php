@@ -92,7 +92,7 @@ class Memory implements ContainerInterface
         if (is_null($properties->naturalKeyFieldName())) {
             $id = $properties->id($this) ?: self::$autoincrement++;
         } else {
-            $id = $properties->{$properties->naturalKeyFieldName()};
+            $id = get_class($properties) . '_' . $properties->{$properties->naturalKeyFieldName()};
         }
         $properties->persisted($id, $this);
 

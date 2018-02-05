@@ -10,6 +10,6 @@ class PropertiesTest extends \PHPUnit_Framework_TestCase
         $properties = new Properties(array('name' => 'Natural'));
         $container = new Memory();
         $container->saveProperties($properties);
-        $this->assertEquals('Natural', $properties->id($container));
+        $this->assertEquals('Magomogo\Persisted\Test\Keymarker\Properties_Natural', $properties->id($container));
     }
 }
