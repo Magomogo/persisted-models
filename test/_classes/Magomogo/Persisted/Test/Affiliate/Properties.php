@@ -1,4 +1,5 @@
 <?php
+
 namespace Magomogo\Persisted\Test\Affiliate;
 
 use Magomogo\Persisted\AbstractProperties;

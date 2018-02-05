@@ -1,13 +1,11 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
-use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\ModelInterface;
 use Magomogo\Persisted\Test\Person;
 use Magomogo\Persisted\Test\Keymarker;
 use Magomogo\Persisted\Test\ObjectMother;
 use Magomogo\Persisted\Test\Employee\Model as Employee;
-use Magomogo\Persisted\Test\Employee\Properties as EmployeeProperties;
 use Magomogo\Persisted\Test\CreditCard\Model as CreditCard;
 use Magomogo\Persisted\Test\JobRecord;
 use Magomogo\Persisted\Test\Affiliate;
