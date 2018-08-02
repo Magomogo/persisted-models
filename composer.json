@@ -5,7 +5,7 @@
     "homepage": "https://github.com/Magomogo/persisted-models",
     "require": {
         "php":">=5.3.0",
-        "doctrine/dbal": "2.3.0"
+        "doctrine/dbal": "~2.5.0"
     },
     "require-dev": {
         "ext-pdo": "*",
