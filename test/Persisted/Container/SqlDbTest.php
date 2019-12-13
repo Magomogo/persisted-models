@@ -65,7 +65,7 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
         $db->shouldReceive('insert')->with(
             'magomogo_persisted_test_affiliate_cookie_properties',
             array('id' => null, 'lifeTime' => 0, 'isMaster' => true),
-            array('isMaster' => \PDO::PARAM_BOOL)
+            array('`isMaster`' => \PDO::PARAM_BOOL)
         )->once();
         $properties = new Cookie\Properties(array('isMaster' => true));
         $properties->putIn(self::container($db));
@@ -78,7 +78,7 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
             'magomogo_persisted_test_affiliate_cookie_properties',
             array('id' => 5, 'lifeTime' => 0, 'isMaster' => true),
             array('id' => 5),
-            array('isMaster' => \PDO::PARAM_BOOL)
+            array('`isMaster`' => \PDO::PARAM_BOOL)
         )->once();
         $properties = new Cookie\Properties(array('id' => 5, 'isMaster' => true));
         $properties->persisted(5, self::container($db));
