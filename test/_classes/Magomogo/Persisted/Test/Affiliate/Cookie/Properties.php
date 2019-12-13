@@ -13,6 +13,7 @@ class Properties extends AbstractProperties
 {
     public $id;
     public $lifeTime = 0;
+    public $isMaster = false;
 
     public function naturalKeyFieldName()
     {

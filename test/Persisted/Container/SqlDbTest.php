@@ -5,6 +5,7 @@ use Mockery as m;
 use Magomogo\Persisted\Test\DbNames;
 use Magomogo\Persisted\AbstractProperties;
 use Magomogo\Persisted\Test\Person;
+use Magomogo\Persisted\Test\Affiliate\Cookie;
 use Hamcrest\Matchers;
 
 class SqlDbTest extends \PHPUnit_Framework_TestCase
@@ -17,8 +18,8 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
     public function testFollowsTableNamingConvention()
     {
         $db = self::dbMock();
-        $db->shouldReceive('insert')->with('person', Matchers::typeOf('array'))->once();
-        $db->shouldReceive('insert')->with('creditcard', Matchers::typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('person', Matchers::typeOf('array'), array())->once();
+        $db->shouldReceive('insert')->with('creditcard', Matchers::typeOf('array'), array())->once();
         $properties = new Person\Properties;
         $properties->putIn(self::container($db));
     }
@@ -47,7 +48,8 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
             array(
                 'ref1' => 4,
                 'ref2' => 5,
-            )
+            ),
+            array()
         )->once();
 
         $properties = new TestType3();
@@ -55,6 +57,32 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
         $properties->foreign()->ref2->persisted(5, self::container($db));
 
         self::container($db)->saveProperties($properties);
+    }
+
+    public function testInsertContainsBooleanProvidePDOTypes()
+    {
+        $db = self::dbMock();
+        $db->shouldReceive('insert')->with(
+            'magomogo_persisted_test_affiliate_cookie_properties',
+            array('id' => null, 'lifeTime' => 0, 'isMaster' => true),
+            array('isMaster' => \PDO::PARAM_BOOL)
+        )->once();
+        $properties = new Cookie\Properties(array('isMaster' => true));
+        $properties->putIn(self::container($db));
+    }
+
+    public function testUpdateContainsBooleanProvidePDOTypes()
+    {
+        $db = self::dbMock();
+        $db->shouldReceive('update')->with(
+            'magomogo_persisted_test_affiliate_cookie_properties',
+            array('id' => 5, 'lifeTime' => 0, 'isMaster' => true),
+            array('id' => 5),
+            array('isMaster' => \PDO::PARAM_BOOL)
+        )->once();
+        $properties = new Cookie\Properties(array('id' => 5, 'isMaster' => true));
+        $properties->persisted(5, self::container($db));
+        $properties->putIn(self::container($db));
     }
 
     public function testExceptionOnLoadingWhenPropertiesAreNotFound()
