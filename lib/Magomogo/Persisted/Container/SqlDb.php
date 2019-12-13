@@ -162,7 +162,7 @@ class SqlDb implements ContainerInterface
         $types = array();
         foreach ($properties as $name => $property) {
             if (is_bool($property)) {
-                $types[$name] = \PDO::PARAM_BOOL;
+                $types[$this->db->quoteIdentifier($name)] = \PDO::PARAM_BOOL;
             }
         }
         return $types;
