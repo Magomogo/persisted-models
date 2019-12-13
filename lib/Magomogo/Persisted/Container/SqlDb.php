@@ -141,15 +141,31 @@ class SqlDb implements ContainerInterface
     private function commit(array $row, $properties)
     {
         $tableName = $this->names->propertiesToName($properties);
-
+        $types = $this->propertiesPDOTypes($properties);
         if (!$properties->id($this)) {
-            $this->db->insert($this->db->quoteIdentifier($tableName), $row);
+            $this->db->insert($this->db->quoteIdentifier($tableName), $row, $types);
             $properties->persisted($this->defineNewId($properties, $tableName), $this);
         } else {
-            $this->db->update($this->db->quoteIdentifier($tableName), $row, array('id' => $properties->id($this)));
+            $this->db->update($this->db->quoteIdentifier($tableName), $row, array('id' => $properties->id($this)),
+                $types);
         }
 
         return $properties;
+    }
+
+    /**
+     * @param AbstractProperties $properties
+     * @return array|null
+     */
+    private function propertiesPDOTypes($properties)
+    {
+        $types = array();
+        foreach ($properties as $name => $property) {
+            if (is_bool($property)) {
+                $types[$name] = \PDO::PARAM_BOOL;
+            }
+        }
+        return $types;
     }
 
     /**
