@@ -61,11 +61,11 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
 
     public function testInsertContainsBooleanProvidePDOTypes()
     {
-        $db = self::dbMock();
+        $db = self::dbMock(true);
         $db->shouldReceive('insert')->with(
-            'magomogo_persisted_test_affiliate_cookie_properties',
-            array('id' => null, 'lifeTime' => 0, 'isMaster' => true),
-            array('isMaster' => \PDO::PARAM_BOOL)
+            '`magomogo_persisted_test_affiliate_cookie_properties`',
+            array('`id`' => null, '`lifeTime`' => 0, '`isMaster`' => true),
+            array('`isMaster`' => \PDO::PARAM_BOOL)
         )->once();
         $properties = new Cookie\Properties(array('isMaster' => true));
         $properties->putIn(self::container($db));
@@ -73,10 +73,10 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
 
     public function testUpdateContainsBooleanProvidePDOTypes()
     {
-        $db = self::dbMock();
+        $db = self::dbMock(true);
         $db->shouldReceive('update')->with(
-            'magomogo_persisted_test_affiliate_cookie_properties',
-            array('id' => 5, 'lifeTime' => 0, 'isMaster' => true),
+            '`magomogo_persisted_test_affiliate_cookie_properties`',
+            array('id' => 5, '`id`' => 5, '`lifeTime`' => 0, '`isMaster`' => true),
             array('id' => 5),
             array('isMaster' => \PDO::PARAM_BOOL)
         )->once();
@@ -114,10 +114,12 @@ class SqlDbTest extends \PHPUnit_Framework_TestCase
         self::container($db)->deleteProperties($persistedProperties);
     }
 
-    private static function dbMock()
+    private static function dbMock($wrap = false)
     {
         $db = m::mock();
-        $db->shouldReceive('quoteIdentifier')->andReturnUsing(function($arg) {return $arg;});
+        $db->shouldReceive('quoteIdentifier')->andReturnUsing(
+            function($arg) use ($wrap) {return $wrap ? "`{$arg}`" : $arg;}
+        );
         $db->shouldIgnoreMissing();
         return $db;
     }
