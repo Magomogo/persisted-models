@@ -35,13 +35,13 @@ class SchemaCreatorTest extends \PHPUnit_Framework_TestCase
         self::schema($this->connection->getSchemaManager())->schemaFor(Person::maxim());
 
         $this->assertRegExp(
-            '/CREATE TABLE "person" \(id INTEGER NOT NULL, "title" CLOB DEFAULT NULL, "firstName" CLOB DEFAULT NULL/',
-            $this->connection->fetchColumn("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'person'")
+            '/CREATE TABLE "person" \(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" CLOB DEFAULT NULL, "firstName" CLOB DEFAULT NULL/',
+            $this->connection->fetchOne("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'person'")
         );
 
         $this->assertRegExp(
             '/CREATE INDEX .+ ON "person" \\("creditCard"\\)/',
-            $this->connection->fetchColumn("SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = 'person'")
+            $this->connection->fetchOne("SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = 'person'")
         );
 
     }
@@ -54,18 +54,17 @@ class SchemaCreatorTest extends \PHPUnit_Framework_TestCase
             self::asOneLine(
                 <<<SQL
 CREATE TABLE "creditcard" (
-  id INTEGER NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   "system" CLOB DEFAULT NULL,
   "pan" CLOB DEFAULT NULL,
   "validMonth" CLOB DEFAULT NULL,
   "validYear" CLOB DEFAULT NULL,
   "ccv" CLOB DEFAULT NULL,
-  "cardholderName" CLOB DEFAULT NULL,
-  PRIMARY KEY(id)
+  "cardholderName" CLOB DEFAULT NULL
 )
 SQL
             ),
-            $this->connection->fetchColumn("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'creditcard'")
+            $this->connection->fetchOne("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'creditcard'")
         );
     }
 
@@ -78,12 +77,12 @@ SQL
 
         $this->assertRegExp(
             '/CREATE TABLE "person2keymarker" \("person" INTEGER UNSIGNED DEFAULT NULL, "keymarker" VARCHAR\(255\) DEFAULT NULL/',
-            $this->connection->fetchColumn("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'person2keymarker'")
+            $this->connection->fetchOne("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'person2keymarker'")
         );
 
         $this->assertRegExp(
             '/CREATE INDEX .+ ON "person2keymarker" \\("person"\\)/',
-            $this->connection->fetchColumn("SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = 'person2keymarker'")
+            $this->connection->fetchOne("SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = 'person2keymarker'")
         );
     }
 
