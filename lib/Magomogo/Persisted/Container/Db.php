@@ -111,7 +111,7 @@ class Db implements ContainerInterface
         );
 
         $connections = array();
-        while ($id = $statement->fetchColumn()) {
+        while ($id = $statement->fetchOne()) {
             $props = clone $rightPropertiesSample;
             $connections[] = $props->loadFrom($this, $id);
         }
@@ -153,7 +153,7 @@ class Db implements ContainerInterface
     {
         if (!is_null($propertyBag->id($this))) {
             $table = $this->classToName($propertyBag);
-            $row = $this->db->fetchAssoc("SELECT * FROM $table WHERE id=?", array($propertyBag->id($this)));
+            $row = $this->db->fetchAssociative("SELECT * FROM $table WHERE id=?", array($propertyBag->id($this)));
 
             if (is_array($row)) {
                 $propertyBag->persisted($propertyBag->id($this), $this);
@@ -189,7 +189,7 @@ class Db implements ContainerInterface
      */
     private function confirmPersistency($properties)
     {
-        if ($properties->id($this) && $this->db->fetchColumn(
+        if ($properties->id($this) && $this->db->fetchOne(
             'SELECT 1 FROM ' . $this->classToName($properties) . ' WHERE id=?', array($properties->id($this))
         )) {
             $properties->persisted($properties->id($this), $this);

@@ -26,9 +26,9 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
     public function testFixtureHasCorrectTablesCreated()
     {
-        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM company_properties"));
-        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM person_properties"));
-        $this->assertEquals(array(), $this->fixture->db->fetchAll("SELECT * FROM creditcard_properties"));
+        $this->assertEquals(array(), $this->fixture->db->fetchAllAssociative("SELECT * FROM company_properties"));
+        $this->assertEquals(array(), $this->fixture->db->fetchAllAssociative("SELECT * FROM person_properties"));
+        $this->assertEquals(array(), $this->fixture->db->fetchAllAssociative("SELECT * FROM creditcard_properties"));
     }
 
     public function testSavesCreditCardIntoDatabase()
@@ -45,7 +45,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'ccv' => '234',
                 'cardholderName' => 'Maxim Gnatenko'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM creditcard_properties")
+            $this->fixture->db->fetchAssociative("SELECT * FROM creditcard_properties")
         );
     }
 
@@ -64,7 +64,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'creditCard' => '1',
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM person_properties")
+            $this->fixture->db->fetchAssociative("SELECT * FROM person_properties")
         );
 
         $this->assertEquals(
@@ -77,7 +77,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'ccv' => '234',
                 'cardholderName' => 'Maxim Gnatenko'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM creditcard_properties")
+            $this->fixture->db->fetchAssociative("SELECT * FROM creditcard_properties")
         );
     }
 
@@ -120,7 +120,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
                 'company' => '1',
                 'birthDay' => '1975-07-07T00:00:00+07:00'
             ),
-            $this->fixture->db->fetchAssoc("SELECT * FROM employee_properties")
+            $this->fixture->db->fetchAssociative("SELECT * FROM employee_properties")
         );
     }
 
@@ -156,7 +156,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
     public function testCreatesTwoRecordsOfSameType()
     {
         $this->persistTwoKeymarkers();
-        $this->assertEquals('2', $this->fixture->db->fetchColumn('select count(1) from keymarker_properties'));
+        $this->assertEquals('2', $this->fixture->db->fetchOne('select count(1) from keymarker_properties'));
     }
 
     private function persistTwoKeymarkers()
@@ -194,7 +194,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
         $id = $vova->save($this->sqliteContainer());
 
         $this->assertNull(
-            $this->fixture->db->fetchColumn('SELECT lastName FROM person_properties WHERE id = ?', array($id))
+            $this->fixture->db->fetchOne('SELECT lastName FROM person_properties WHERE id = ?', array($id))
         );
 
         $person = Person\Model::load($this->sqliteContainer(), $id);

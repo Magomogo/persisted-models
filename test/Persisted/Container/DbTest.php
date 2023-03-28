@@ -27,7 +27,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testLoadsReferencesAccordingToReferenceName()
     {
         $db = m::mock();
-        $db->shouldReceive('fetchAssoc')->andReturn(
+        $db->shouldReceive('fetchAssociative')->andReturn(
             array('ref1' => 4, 'ref2' => 5),
             array()
         );
@@ -63,7 +63,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
 
-        $container = self::container(m::mock(array('fetchAssoc' => false)));
+        $container = self::container(m::mock(array('fetchAssociative' => false)));
 
         $notFoundProperties = new TestType1();
         $notFoundProperties->persisted(11, $container);
@@ -94,7 +94,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     private static function container($db = null)
     {
-        return new Db($db ?: m::mock(array('fetchAssoc' => array())), 'Magomogo\\Persisted\\');
+        return new Db($db ?: m::mock(array('fetchAssociative' => array())), 'Magomogo\\Persisted\\');
     }
 }
 
