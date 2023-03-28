@@ -45,7 +45,7 @@ class Properties extends AbstractProperties
     protected function init()
     {
         $this->creditCard = new CreditCard\Model(new CreditCard\Properties);
-        $this->birthDay = new \DateTime('1970-01-01T00:00:00+07:00');
+        $this->birthDay = new \DateTime('1970-01-02T00:00:00+07:00');
         $this->hasCollection(new Keymarker\Collection(), 'tags');
     }
 }

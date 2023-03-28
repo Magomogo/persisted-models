@@ -119,7 +119,7 @@ class SqlDb implements ContainerInterface
     {
         if (!is_null($properties->id($this))) {
 
-            $row = $this->db->fetchAssoc(
+            $row = $this->db->fetchAssociative(
                 'SELECT * FROM ' . $this->db->quoteIdentifier($this->names->propertiesToName($properties))
                 . ' WHERE ' . $this->db->quoteIdentifier(($properties->naturalKeyFieldName() ?: 'id')) . '=?',
                 array($properties->id($this))
@@ -194,7 +194,7 @@ class SqlDb implements ContainerInterface
             $referenceName = $this->names->manyToManyRelationName($collection, $ownerProperties);
             $rightPropertiesName = $this->names->collectionToName($collection);
 
-            $list = $this->db->fetchAll(
+            $list = $this->db->fetchAllAssociative(
                 'SELECT * FROM ' . $this->db->quoteIdentifier($referenceName)
                 . ' WHERE ' . $this->db->quoteIdentifier($leftPropertiesName) . '=?',
                 array($ownerProperties->id($this))
