@@ -5,17 +5,18 @@ namespace Magomogo\Persisted;
 use Magomogo\Persisted\Container\ContainerInterface;
 use Magomogo\Persisted\Container\Db;
 use Magomogo\Persisted\Container\Memory;
+use PHPUnit\Framework\TestCase;
 use Test\DbFixture;
 use Test\ObjectMother;
 use Test\Person;
 
-class ModelEditorWorkflowTest extends \PHPUnit_Framework_TestCase
+class ModelEditorWorkflowTest extends TestCase
 {
     private $fixture;
 
     private $propertiesId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->fixture = new DbFixture();
         $this->fixture->install();

@@ -2,8 +2,9 @@
 namespace Test\Employee;
 
 use Test\ObjectMother\Employee as EmployeeMother;
+use PHPUnit\Framework\TestCase;
 
-class ModelTest extends \PHPUnit_Framework_TestCase
+class ModelTest extends TestCase
 {
     public function testInstantiate()
     {

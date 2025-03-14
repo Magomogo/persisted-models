@@ -3,8 +3,9 @@
 namespace Test\JobRecord;
 
 use Test\ObjectMother\Company;
+use PHPUnit\Framework\TestCase;
 
-class ModelTest extends \PHPUnit_Framework_TestCase
+class ModelTest extends TestCase
 {
     public function testShowsSomeDescription()
     {

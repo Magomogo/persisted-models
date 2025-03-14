@@ -10,15 +10,16 @@ use Test\Person;
 use Test\JobRecord;
 use Test\Company;
 use Test\Employee;
+use PHPUnit\Framework\TestCase;
 
-class SqliteDbTest extends \PHPUnit_Framework_TestCase
+class SqliteDbTest extends TestCase
 {
     /**
      * @var DbFixture
      */
     private $fixture;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->fixture = new DbFixture();
         $this->fixture->install();
@@ -208,7 +209,7 @@ class SqliteDbTest extends \PHPUnit_Framework_TestCase
 
         $cc->deleteFrom($this->sqliteContainer());
 
-        $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
+        $this->expectException('Magomogo\\Persisted\\Exception\\NotFound');
         CreditCard\Model::load($this->sqliteContainer(), $id);
     }
 

@@ -2,7 +2,7 @@
 namespace Magomogo\Persisted;
 
 use Magomogo\Persisted\Container\ContainerInterface;
-use Magomogo\Persisted\Container\Memory;
+use Traversable;
 
 /**
  * @property string $id
@@ -76,7 +76,7 @@ abstract class PropertyBag implements \IteratorAggregate
         $this->idInContainer[get_class($container)] = $id;
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->properties);
     }

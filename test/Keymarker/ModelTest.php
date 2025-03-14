@@ -2,8 +2,9 @@
 namespace Test\Keymarker;
 
 use Test\ObjectMother\Keymarker;
+use PHPUnit\Framework\TestCase;
 
-class ModelTest extends \PHPUnit_Framework_TestCase
+class ModelTest extends TestCase
 {
     public function testCanBeRepresentedAsAString()
     {

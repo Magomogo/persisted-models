@@ -2,10 +2,14 @@
 namespace Test\Person;
 
 use Mockery as m;
+use PHPUnit\Framework\TestCase;
 use Test\ObjectMother;
 
-class ModelTest extends \PHPUnit_Framework_TestCase
+class ModelTest extends TestCase
 {
+
+    use m\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     public function testCreatingANewPerson()
     {
         $person = new Model(new Properties);

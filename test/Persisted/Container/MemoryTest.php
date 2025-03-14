@@ -9,8 +9,9 @@ use Test\ObjectMother;
 use Test\Employee\Model as Employee;
 use Test\CreditCard\Model as CreditCard;
 use Test\JobRecord;
+use PHPUnit\Framework\TestCase;
 
-class MemoryTest extends \PHPUnit_Framework_TestCase
+class MemoryTest extends TestCase
 {
 
     /**
@@ -46,7 +47,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
 
     public function testBehavesCorrectlyWhenEmpty()
     {
-        $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
+        $this->expectException('Magomogo\\Persisted\\Exception\\NotFound');
         Employee::load(new Memory, '12');
     }
 
@@ -57,7 +58,7 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $id = $cc->save($container);
         $cc->deleteFrom($container);
 
-        $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
+        $this->expectException('Magomogo\\Persisted\\Exception\\NotFound');
         CreditCard::load($container, $id);
     }
 

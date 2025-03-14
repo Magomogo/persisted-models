@@ -8,8 +8,11 @@ use Test\Company\Properties as CompanyProperties;
 use Test\ObjectMother\Employee;
 use Test\Employee\Properties as EmployeeProperties;
 
-class PropertyBagTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+class PropertyBagTest extends TestCase
 {
+    use m\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     public function testIsIterable()
     {
         $names = array();
@@ -50,7 +53,7 @@ class PropertyBagTest extends \PHPUnit_Framework_TestCase
 
     public function testRejectsNotConfiguredProperties()
     {
-        $this->setExpectedException('PHPUnit_Framework_Error_Notice');
+        $this->expectException(\PHPUnit\Framework\Error\Error::class);
         self::bag()->not_configured = 12;
     }
 

@@ -1,14 +1,20 @@
 <?php
 namespace Magomogo\Persisted\Container;
 
+use Hamcrest\Core\IsTypeOf;
 use Magomogo\Persisted\PossessionInterface;
 use Mockery as m;
+use PHPUnit\Framework\Test;
 use Test\ObjectMother\Person as TestPerson;
 use Magomogo\Persisted\PropertyBag;
 use Test\Person;
+use PHPUnit\Framework\TestCase;
 
-class DbTest extends \PHPUnit_Framework_TestCase
+class DbTest extends TestCase
 {
+
+    use m\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     public function testImplementsContainerInterface()
     {
         $this->assertInstanceOf('Magomogo\\Persisted\\Container\\ContainerInterface', self::container());
@@ -17,8 +23,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
     public function testFollowsTableNamingConvention()
     {
         $db = m::mock();
-        $db->shouldReceive('insert')->with('test_person_properties', typeOf('array'))->once();
-        $db->shouldReceive('insert')->with('test_creditcard_properties', typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('test_person_properties', IsTypeOf::typeOf('array'))->once();
+        $db->shouldReceive('insert')->with('test_creditcard_properties', IsTypeOf::typeOf('array'))->once();
         $db->shouldIgnoreMissing();
         $properties = new Person\Properties;
         $properties->putIn(self::container($db));
@@ -61,7 +67,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     public function testExceptionOnLoadingWhenPropertiesAreNotFound()
     {
-        $this->setExpectedException('Magomogo\\Persisted\\Exception\\NotFound');
+        $this->expectException('Magomogo\\Persisted\\Exception\\NotFound');
 
         $container = self::container(m::mock(array('fetchAssociative' => false)));
 

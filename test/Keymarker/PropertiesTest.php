@@ -1,7 +1,8 @@
 <?php
 namespace Test\Keymarker;
+use PHPUnit\Framework\TestCase;
 
-class PropertiesTest extends \PHPUnit_Framework_TestCase
+class PropertiesTest extends TestCase
 {
     public function testHasNaturalId()
     {

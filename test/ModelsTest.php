@@ -1,17 +1,18 @@
 <?php
 namespace Magomogo\Persisted;
 
+use PHPUnit\Framework\TestCase;
 use Test\DbFixture;
 use Magomogo\Persisted\Container\Db;
 use Test\ObjectMother;
 use Test\Company;
 use Test\Employee;
 
-class ModelsTest extends \PHPUnit_Framework_TestCase
+class ModelsTest extends TestCase
 {
     private $fixture;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->fixture = new DbFixture();
         $this->fixture->install();
